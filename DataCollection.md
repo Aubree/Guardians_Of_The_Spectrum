@@ -113,6 +113,22 @@ isVoiceCapable | "Voice capable" means that this device supports circuit-switche
 isWorldPhone | Whether the device is a world phone.
 
 
+##android.net.wifi
+*ScanResult* | Class containing information about detected wifi APs after scan  
+--------------------------- | -----------------------------
+BSSID | The "basic service set identifier". Usually, this is the MAC address of the AP
+SSID | The name of the wifi router
+capabilities | authentication, encryption, etc capabilities of router
+centerFreq0 | (API 23) center frequency of the router. Only available if channel bandwith is 40, 60, 80 or 160 MHz
+centerFreq1 | (API 23) inicates center frequency of second channel. Only used if AP is 80 + 80 mode.
+channelWidth | (API 23) the width of the channel in MHz. Is an enum.
+frequency | primary frequency of the AP. can be mapped to the channel number.
+level | the RSSI in dBm. It's the signal strength.
+operatorFriendlyName | (API 23) operator name published by the AP
+timestamp | (API 17) the time since boot (in microseconds)
+venueName | (API 17) name of the place where the AP is hosted, if published by the AP
+
+This also has two undocumented fields about the approximate distance to the wifi AP, but these are not widely supported by access points
 
 
 
