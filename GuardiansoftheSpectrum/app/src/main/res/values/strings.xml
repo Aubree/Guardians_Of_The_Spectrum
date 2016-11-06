@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Guardians of the Spectrum</string>
+    <string name="Hello">Hello Guardians of the Spectrum!</string>
+    <string name="imageDesc">Picture of our logo</string>
 </resources>
