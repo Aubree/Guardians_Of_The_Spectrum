@@ -23,13 +23,31 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:contentDescription="@string/imageDesc"
-        android:id="@+id/imageView" />
+        android:id="@+id/imageView"
+        android:adjustViewBounds="true"
+        android:maxWidth="42dp"
+        android:maxHeight="42dp"
+        android:scaleType="fitCenter"/>
 
-    <Button
-        android:text="Test Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imageView"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/button" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/LTEscan_button"
+            android:text="LTE Scan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="initiateLTEScan"
+            android:layout_weight="1" />
+
+        <Button
+            android:text="Test Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button"
+            android:layout_weight="1" />
+    </LinearLayout>
+
 </RelativeLayout>
