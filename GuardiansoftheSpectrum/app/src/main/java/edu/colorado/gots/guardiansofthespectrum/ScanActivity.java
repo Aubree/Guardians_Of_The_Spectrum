@@ -27,15 +27,16 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.List;
 
-public class WifiScanActivity extends AppCompatActivity implements
+
+public class ScanActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
+
+    //codes indicating why onActivityResult is being called
+    //also passed with startResolutionForResult
+    private final int LOCATION_SERVICE_RESOLUTION = 0;
 
     TextView textView;
     WifiManager wifiManager;
@@ -47,10 +48,8 @@ public class WifiScanActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wifiscan);
-        //grab our text view from view XML to populate some statistics
+        setContentView(R.layout.activity_scan);
         textView = (TextView) findViewById(R.id.wifi_scanStat);
-        //make the text view scrollable, since our JSON is going to take a lot of room
         textView.setMovementMethod(new ScrollingMovementMethod());
         //grab the wifi manager instance
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
@@ -82,7 +81,7 @@ public class WifiScanActivity extends AppCompatActivity implements
                     try {
                         //this is launch the dialogue. will call onActivityResult when dialogue
                         //is completed.
-                        status.startResolutionForResult(WifiScanActivity.this, 0);
+                        status.startResolutionForResult(ScanActivity.this, LOCATION_SERVICE_RESOLUTION);
                     } catch (IntentSender.SendIntentException e) {}
                 }
             }
@@ -113,7 +112,7 @@ public class WifiScanActivity extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int returnCode, Intent i) {
         //make sure that it was our startResolutionForResult that triggered this
         switch (requestCode) {
-            case 0:
+            case LOCATION_SERVICE_RESOLUTION:
                 if (returnCode != Activity.RESULT_OK) {
                     //changes not made successfully. just gripe for now
                     Toast.makeText(getApplicationContext(), "Location services needed to send data", Toast.LENGTH_SHORT).show();
@@ -165,50 +164,7 @@ public class WifiScanActivity extends AppCompatActivity implements
         //called when desired results arrive
         public void onReceive(Context context, Intent intent) {
             List<ScanResult> scanList = wifiManager.getScanResults();
-            String jsonText;
-            try {
-                jsonText = build_wifi_json(scanList, currentLocation).toString(4);
-            } catch (JSONException e) {
-                jsonText = "";
-            }
-            textView.setText(jsonText);
+            textView.setText(JSONBuilder.scanToJSON(scanList, currentLocation));
         }
     }
-
-    //build a JSON object of our results and current location
-    //final object will contain Latitude and Longitude values (if valid)
-    //and an array of JSON objects containing our wifi scan results
-    private JSONObject build_wifi_json(List<ScanResult> res, Location currentLocation) {
-        JSONObject main = new JSONObject();
-        JSONArray wifi_array = new JSONArray();
-        try {
-            for (int i = 0; i < res.size(); i++) {
-                wifi_array.put(i, scan_to_json(res.get(i)));
-            }
-            if (currentLocation != null) {
-                main.put("Latitude", currentLocation.getLatitude());
-                main.put("Longitude", currentLocation.getLongitude());
-            }
-            main.put("WifiResults", wifi_array);
-        } catch (JSONException e) {
-            return new JSONObject();
-        }
-        return main;
-    }
-
-    //build a JSON object out of a single wifi ScanResult object
-    private JSONObject scan_to_json(ScanResult res) {
-        JSONObject ret = new JSONObject();
-        try {
-            ret.put("SSID", res.SSID);
-            ret.put("BSSID", res.BSSID);
-            ret.put("frequency", res.frequency);
-            ret.put("RSSI", res.level);
-            ret.put("timestamp", res.timestamp);
-        } catch (JSONException e) {
-            return new JSONObject();
-        }
-        return ret;
-    }
-
 }
