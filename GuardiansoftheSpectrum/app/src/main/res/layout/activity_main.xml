@@ -40,4 +40,13 @@
         android:layout_alignParentRight="true"
         android:layout_alignBottom="@id/imageView"
         android:onClick="initiateScan"/>
+
+    <Switch
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scanServiceSwitch"
+        android:layout_above="@id/scan_button"
+        android:text="@string/scanServiceLabel"
+        android:textOn="@string/scanServiceLabelTextOn"
+        android:textOff="@string/scanServiceLabelTextOff"/>
 </RelativeLayout>

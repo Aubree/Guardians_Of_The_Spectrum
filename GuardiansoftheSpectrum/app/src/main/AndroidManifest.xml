@@ -22,7 +22,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".WifiScanActivity" />
+        <activity android:name=".ScanActivity" />
+
+        <service
+            android:name=".ScanService"
+            android:exported="false"
+            android:description="@string/serviceDesc"/>
     </application>
 
 </manifest>
