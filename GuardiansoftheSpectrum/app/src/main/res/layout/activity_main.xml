@@ -20,8 +20,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/guardians"
-        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
+        android:layout_below="@id/textview1"
         android:contentDescription="@string/imageDesc"
         android:id="@+id/imageView" />
 
@@ -29,7 +29,7 @@
         android:text="Test Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/imageView"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:id="@+id/button" />
     <Button
@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignBottom="@id/imageView"
+        android:layout_alignParentBottom="true"
         android:onClick="initiateScan"/>
 
     <Switch
