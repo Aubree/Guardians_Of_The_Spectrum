@@ -160,11 +160,25 @@ public class ScanActivity extends AppCompatActivity implements
 
     //private class to handle receiving the wifi results
     private class WifiScanReceiver extends BroadcastReceiver {
+        private boolean received = false;
+        private DataFileManager dataFileManager = new DataFileManager(getApplicationContext());
         //must implement to inherit from Broadcast Receiver
         //called when desired results arrive
         public void onReceive(Context context, Intent intent) {
+            //this check is really just a temporary hack to make sure files and stuff work. It
+            //won't need to be here in the future
+            if (received) {
+                return;
+            }
             List<ScanResult> scanList = wifiManager.getScanResults();
-            textView.setText(JSONBuilder.scanToJSON(scanList, currentLocation));
+            String jsonText = JSONBuilder.scanToJSON(scanList, currentLocation);
+            if (!dataFileManager.writeToFile(jsonText)) {
+                Toast.makeText(getApplicationContext(), "Writing data to local file failed", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "Writing data to local file succeeded", Toast.LENGTH_SHORT).show();
+                received = true;
+            }
+            textView.setText(jsonText);
         }
     }
 }

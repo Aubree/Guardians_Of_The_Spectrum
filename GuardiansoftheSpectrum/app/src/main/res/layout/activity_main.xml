@@ -26,26 +26,35 @@
         android:id="@+id/imageView" />
 
     <Button
-        android:text="Test Button"
+        android:text="@string/sendButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:id="@+id/button" />
+        android:id="@+id/sendButton"
+        android:onClick="initiateSend"/>
     <Button
-        android:id="@+id/scan_button"
-        android:text="Sean's Wifi Scan"
+        android:id="@+id/scanButton"
+        android:text="@string/scanButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:onClick="initiateScan"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@id/scanButton"
+        android:layout_toRightOf="@id/sendButton"
+        android:text="@string/deleteButton"
+        android:onClick="initiateDelete"/>
 
     <Switch
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/scanServiceSwitch"
-        android:layout_above="@id/scan_button"
+        android:layout_above="@id/scanButton"
         android:text="@string/scanServiceLabel"
         android:textOn="@string/scanServiceLabelTextOn"
         android:textOff="@string/scanServiceLabelTextOff"/>

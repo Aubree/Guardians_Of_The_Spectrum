@@ -8,4 +8,7 @@
     <string name="scanServiceLabel">Background Scanning Service</string>
     <string name="scanServiceLabelTextOn">Enabled</string>
     <string name="scanServiceLabelTextOff">Disabled</string>
+    <string name="sendButton">Send Data</string>
+    <string name="scanButton">Scan</string>
+    <string name="deleteButton">Delete Files</string>
 </resources>

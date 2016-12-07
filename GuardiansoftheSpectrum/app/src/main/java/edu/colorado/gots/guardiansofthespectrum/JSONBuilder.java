@@ -7,6 +7,7 @@ import android.net.wifi.ScanResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.List;
 
@@ -26,6 +27,28 @@ public class JSONBuilder {
         } catch (JSONException e) {
             return new JSONObject().toString();
         }
+    }
+
+    //take multiple JSON strings from data files, parse them, combine them into
+    //our transfer spec JSON, and return the string representation
+    public static String prepareSendData(String[] data) {
+        JSONArray message = new JSONArray();
+        for (int i = 0; i < data.length; i++) {
+            //parse the JSON string
+            JSONTokener tokener = new JSONTokener(data[i]);
+            try {
+                message.put(tokener.nextValue());
+            } catch (JSONException e) {
+                //this shouldn't happen since we're only storing well formed JSON
+            }
+        }
+        String ret;
+        try {
+            ret = message.toString(4);
+        } catch (JSONException e) {
+            ret = "JSON PARSING FAILED";
+        }
+        return ret;
     }
 
     //build array of JSON objects containing our wifi scan results

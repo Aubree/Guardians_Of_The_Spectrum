@@ -23,11 +23,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".ScanActivity" />
+        <activity android:name=".SendActivity" />
 
         <service
             android:name=".ScanService"
-            android:exported="false"
-            android:description="@string/serviceDesc"/>
+            android:description="@string/serviceDesc"
+            android:exported="false" />
+
     </application>
 
 </manifest>

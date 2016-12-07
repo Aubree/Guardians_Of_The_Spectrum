@@ -42,4 +42,15 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(this, ScanActivity.class);
         startActivity(i);
     }
+
+    //delete local data file storage
+    public void initiateDelete(View v) {
+        DataFileManager dFM = new DataFileManager(getApplicationContext());
+        dFM.deleteAllDataFiles();
+    }
+
+    public void initiateSend(View v) {
+        Intent i = new Intent(this, SendActivity.class);
+        startActivity(i);
+    }
 }
