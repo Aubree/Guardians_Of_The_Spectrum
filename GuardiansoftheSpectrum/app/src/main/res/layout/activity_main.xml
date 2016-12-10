@@ -12,9 +12,9 @@
     tools:context="edu.colorado.gots.guardiansofthespectrum.MainActivity">
 
     <TextView
+        android:id="@+id/textview1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello Guardians of the Spectrum!" />
+        android:layout_height="wrap_content" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -22,6 +22,7 @@
         app:srcCompat="@drawable/guardians"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
+        android:contentDescription="@string/imageDesc"
         android:id="@+id/imageView" />
 
     <Button
