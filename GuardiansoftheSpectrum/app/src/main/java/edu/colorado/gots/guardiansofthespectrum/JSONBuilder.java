@@ -3,6 +3,7 @@ package edu.colorado.gots.guardiansofthespectrum;
 
 import android.location.Location;
 import android.net.wifi.ScanResult;
+import android.os.Build;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,18 +33,21 @@ public class JSONBuilder {
     //take multiple JSON strings from data files, parse them, combine them into
     //our transfer spec JSON, and return the string representation
     public static String prepareSendData(String[] data) {
-        JSONArray message = new JSONArray();
+        JSONObject message = new JSONObject();
+        JSONArray scanData = new JSONArray();
         for (int i = 0; i < data.length; i++) {
             //parse the JSON string
             JSONTokener tokener = new JSONTokener(data[i]);
             try {
-                message.put(tokener.nextValue());
+                scanData.put(tokener.nextValue());
             } catch (JSONException e) {
                 //this shouldn't happen since we're only storing well formed JSON
             }
         }
         String ret;
         try {
+            message.put("metadata", buildMetadataJSON());
+            message.put("data", scanData);
             ret = message.toString(4);
         } catch (JSONException e) {
             ret = "JSON PARSING FAILED";
@@ -73,6 +77,37 @@ public class JSONBuilder {
             ret.put("frequency", res.frequency);
             ret.put("RSSI", res.level);
             ret.put("timestamp", res.timestamp);
+        } catch (JSONException e) {
+            return new JSONObject();
+        }
+        return ret;
+    }
+
+    private static JSONObject buildMetadataJSON() {
+        JSONObject ret = new JSONObject();
+        try {
+            ret.put("Board", Build.BOARD);
+            ret.put("Bootloader", Build.BOOTLOADER);
+            ret.put("Brand", Build.BRAND);
+            ret.put("Device", Build.DEVICE);
+            ret.put("Display", Build.DISPLAY);
+            ret.put("Fingerprint", Build.FINGERPRINT);
+            ret.put("Hardware", Build.HARDWARE);
+            ret.put("Host", Build.HOST);
+            ret.put("ID", Build.ID);
+            ret.put("Manufacturer", Build.MANUFACTURER);
+            ret.put("Model", Build.MODEL);
+            ret.put("Product", Build.PRODUCT);
+            ret.put("Serial", Build.SERIAL);
+            ret.put("Tags", Build.TAGS);
+            ret.put("Time", Build.TIME);
+            ret.put("Type", Build.TYPE);
+            ret.put("User", Build.USER);
+            ret.put("Radio", Build.getRadioVersion());
+            ret.put("Codename", Build.VERSION.CODENAME);
+            ret.put("Incremental", Build.VERSION.INCREMENTAL);
+            ret.put("Release", Build.VERSION.RELEASE);
+            ret.put("SDKint", Build.VERSION.SDK_INT);
         } catch (JSONException e) {
             return new JSONObject();
         }
