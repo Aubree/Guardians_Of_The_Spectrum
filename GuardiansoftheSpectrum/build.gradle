@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.android.tools.build:gradle:2.2.2'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -13,6 +13,10 @@ buildscript {
 }
 
 allprojects {
+    //I'd get build errors when trying to compile this project with the google play
+    //services in here due to there being some LONG file names. Windows balks at those,
+    //so moving the build directory into tmp to shorten the overall filename worked for me
+    buildDir = "C:/tmp/${rootProject.name}/${project.name}"
     repositories {
         jcenter()
     }

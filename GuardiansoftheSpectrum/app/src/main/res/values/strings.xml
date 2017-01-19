@@ -2,4 +2,13 @@
     <string name="app_name">Guardians of the Spectrum</string>
     <string name="Hello">Hello Guardians of the Spectrum!</string>
     <string name="imageDesc">Picture of our logo</string>
+    <!-- description for the service. will appear on list of running processes on phone -->
+    <string name="serviceDesc">The background scanning service for the Guardians of the Spectrum App</string>
+    <!-- main screen elements -->
+    <string name="scanServiceLabel">Background Scanning Service</string>
+    <string name="scanServiceLabelTextOn">Enabled</string>
+    <string name="scanServiceLabelTextOff">Disabled</string>
+    <string name="sendButton">Send Data</string>
+    <string name="scanButton">Scan</string>
+    <string name="deleteButton">Delete Files</string>
 </resources>
