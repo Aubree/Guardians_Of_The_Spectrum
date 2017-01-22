@@ -50,7 +50,6 @@ public class ScanActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
         textView = (TextView) findViewById(R.id.wifi_scanStat);
-        textView.setMovementMethod(new ScrollingMovementMethod());
         //grab the wifi manager instance
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         //instantiate a receiver class. defined below

@@ -15,7 +15,6 @@ public class SendActivity extends AppCompatActivity {
         setContentView(R.layout.activity_send);
         //grab the text view for now to display aggregated JSON data
         textView = (TextView) findViewById(R.id.full_json_data);
-        textView.setMovementMethod(new ScrollingMovementMethod());
     }
 
     public void onStart() {
