@@ -2,7 +2,6 @@ package edu.colorado.gots.guardiansofthespectrum;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.widget.TextView;
 
 public class SendActivity extends AppCompatActivity {
