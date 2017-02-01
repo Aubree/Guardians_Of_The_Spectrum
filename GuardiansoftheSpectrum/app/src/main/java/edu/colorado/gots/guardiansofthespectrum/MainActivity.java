@@ -1,6 +1,10 @@
 package edu.colorado.gots.guardiansofthespectrum;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     TextView mTextView;
     Switch serviceSwitch;
     Intent serviceIntent;
+    private CounterReceiver counterReceiver;
 
     /**
      *
@@ -21,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        counterReceiver = new CounterReceiver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(counterReceiver,
+                                                                 new IntentFilter(ScanService.GOTS_COUNTER));
         mTextView = (TextView)findViewById(R.id.textview1);
         mTextView.setText(R.string.Hello);
         serviceSwitch = (Switch) findViewById(R.id.scanServiceSwitch);
@@ -52,5 +60,12 @@ public class MainActivity extends AppCompatActivity {
     public void initiateSend(View v) {
         Intent i = new Intent(this, SendActivity.class);
         startActivity(i);
+    }
+
+    public class CounterReceiver extends BroadcastReceiver {
+        public void onReceive(Context context, Intent intent){
+            serviceSwitch.setText(String.format("Service running: %d\n",
+                                                intent.getIntExtra(ScanService.GOTS_COUNTER_EXTRA, 0)));
+        }
     }
 }

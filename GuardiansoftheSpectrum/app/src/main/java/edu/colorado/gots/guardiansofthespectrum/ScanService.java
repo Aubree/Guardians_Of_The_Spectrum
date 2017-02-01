@@ -2,10 +2,15 @@ package edu.colorado.gots.guardiansofthespectrum;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 
 public class ScanService extends IntentService {
 
     private boolean running = true;
+    private int counter = 0;
+
+    public static final String GOTS_COUNTER = "edu.colorado.gots.guardainsofthespectrum.counter";
+    public static final String GOTS_COUNTER_EXTRA = "edu.colorado.gots.guardiansofthespectrum.counter.extra";
 
     public ScanService() {
         //provides a name for our service thread
@@ -26,7 +31,14 @@ public class ScanService extends IntentService {
             System.out.println("Running background Scan Service\n");
             try {
                 Thread.sleep(1000);
-            } catch (InterruptedException e) {}
+                counter++;
+                Intent broadcast = new Intent(this, MainActivity.CounterReceiver.class);
+                broadcast.setAction(GOTS_COUNTER);
+                broadcast.putExtra(GOTS_COUNTER_EXTRA, counter);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
 
