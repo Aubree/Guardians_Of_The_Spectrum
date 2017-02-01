@@ -3,6 +3,8 @@ package edu.colorado.gots.guardiansofthespectrum;
 
 import android.location.Location;
 import android.net.wifi.ScanResult;
+import android.telephony.CellInfo;
+import android.telephony.CellInfoLte;
 import android.os.Build;
 
 import org.json.JSONArray;
@@ -14,12 +16,15 @@ import java.util.List;
 
 public class JSONBuilder {
     //handle building our main JSON Results String
-    public static String scanToJSON(List<ScanResult> wifi, Location current) {
+    public static String scanToJSON(List<CellInfo> lte, List<ScanResult> wifi, Location current) {
         JSONObject main = new JSONObject();
         try {
             if (current != null) {
                 main.put("Latitude", current.getLatitude());
                 main.put("Longitude", current.getLongitude());
+            }
+            if (lte != null) {
+                main.put("LTE", buildLTEJSON(lte));
             }
             if (wifi != null) {
                 main.put("Wifi", buildWifiJSON(wifi));
@@ -81,6 +86,26 @@ public class JSONBuilder {
             return new JSONObject();
         }
         return ret;
+    }
+    
+    private static JSONObject buildLTEJSON(List<CellInfo> lte) {
+        JSONObject ret = new JSONObject();
+       try {
+           for (CellInfo cellInfo : lte) {
+               if (cellInfo instanceof CellInfoLte) {
+                   CellInfoLte ci = (CellInfoLte) cellInfo;
+                   ret.put("Dbm", ci.getCellSignalStrength().getDbm());
+                   ret.put("CellID", ci.getCellIdentity().getCi());
+                   ret.put("MCC", ci.getCellIdentity().getMcc());
+                   ret.put("MNC", ci.getCellIdentity().getMnc());
+                   ret.put("PCI", ci.getCellIdentity().getPci());
+                   ret.put("TAC", ci.getCellIdentity().getTac());
+                   ret.put("TimingAdvance", ci.getCellSignalStrength().getTimingAdvance());
+               }
+           }
+       } catch (JSONException e) {
+           return new JSONObject();
+       }
     }
 
     private static JSONObject buildMetadataJSON() {
