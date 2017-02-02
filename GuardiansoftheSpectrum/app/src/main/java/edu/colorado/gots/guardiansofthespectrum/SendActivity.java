@@ -2,7 +2,6 @@ package edu.colorado.gots.guardiansofthespectrum;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.widget.TextView;
 
 public class SendActivity extends AppCompatActivity {
@@ -15,7 +14,6 @@ public class SendActivity extends AppCompatActivity {
         setContentView(R.layout.activity_send);
         //grab the text view for now to display aggregated JSON data
         textView = (TextView) findViewById(R.id.full_json_data);
-        textView.setMovementMethod(new ScrollingMovementMethod());
     }
 
     public void onStart() {
