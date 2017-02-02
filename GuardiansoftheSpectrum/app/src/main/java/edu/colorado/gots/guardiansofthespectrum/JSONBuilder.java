@@ -90,10 +90,13 @@ public class JSONBuilder {
     
     private static JSONObject buildLTEJSON(List<CellInfo> lte) {
         JSONObject ret = new JSONObject();
+        System.out.println("attempting to build lte json\n");
        try {
            for (CellInfo cellInfo : lte) {
+               System.out.println(String.format("%s\n", lte.toString()));
                if (cellInfo instanceof CellInfoLte) {
                    CellInfoLte ci = (CellInfoLte) cellInfo;
+                   System.out.println("building lte JSON\n");
                    ret.put("Dbm", ci.getCellSignalStrength().getDbm());
                    ret.put("CellID", ci.getCellIdentity().getCi());
                    ret.put("MCC", ci.getCellIdentity().getMcc());
@@ -105,6 +108,7 @@ public class JSONBuilder {
            }
            return ret;
        } catch (JSONException e) {
+           System.out.println("lte json fail\n");
            return new JSONObject();
        }
     }
