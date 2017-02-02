@@ -103,6 +103,7 @@ public class JSONBuilder {
                    ret.put("TimingAdvance", ci.getCellSignalStrength().getTimingAdvance());
                }
            }
+           return ret;
        } catch (JSONException e) {
            return new JSONObject();
        }
