@@ -9,6 +9,7 @@ import android.content.IntentSender;
 import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.telephony.TelephonyManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.CellInfo;
@@ -59,6 +60,8 @@ public class ScanActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_scan);
         textView = (TextView) findViewById(R.id.wifi_scanStat);
         dataFileManager = new DataFileManager(getApplicationContext());
+        //initialize scan data object for our async task
+        //scanData = new ScanData();
         //grab the wifi manager instance
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         //instantiate a receiver class. defined below
@@ -110,21 +113,8 @@ public class ScanActivity extends AppCompatActivity implements
         registerReceiver(scanReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         //initiate connection with google API
         googleClient.connect();
-            
-        while (currentLocation == null || cellInfo == null || wifiInfo == null) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-        String jsonText = JSONBuilder.scanToJSON(cellInfo, wifiInfo, currentLocation);
-            if (!dataFileManager.writeToFile(jsonText)) {
-                Toast.makeText(getApplicationContext(), "Writing data to local file failed", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getApplicationContext(), "Writing data to local file succeeded", Toast.LENGTH_SHORT).show();
-            }
-            textView.setText(jsonText);
+
+        new ScanTask().execute();
     }
 
     protected void onStop() {
@@ -199,9 +189,47 @@ public class ScanActivity extends AppCompatActivity implements
     }
                 
     private class SignalStrengthListener extends PhoneStateListener {
-            public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
-                    cellInfo = tM.getAllCellInfo();
-                    super.onSignalStrengthsChanged(signalStrength);
+        public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
+            cellInfo = tM.getAllCellInfo();
+            super.onSignalStrengthsChanged(signalStrength);
+        }
+    }
+
+    /*private class ScanData {
+        public List<CellInfo> cellInfo;
+        public List<ScanResult> wifiInfo;
+        public Location currentLocation;
+
+        ScanData() {
+            cellInfo = null;
+            wifiInfo = null;
+            currentLocation = null;
+        }
+    }*/
+
+    private class ScanTask extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... params) {
+            while (currentLocation == null || cellInfo == null || wifiInfo == null) {
+                try {
+                    System.out.println("waiting...\n");
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
             }
+            String jsonText = JSONBuilder.scanToJSON(cellInfo, wifiInfo, currentLocation);
+            /*if (!dataFileManager.writeToFile(jsonText)) {
+                Toast.makeText(getApplicationContext(), "Writing data to local file failed", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "Writing data to local file succeeded", Toast.LENGTH_SHORT).show();
+            }*/
+            //textView.setText(jsonText);
+            return jsonText;
+        }
+
+        protected void onPostExecute(String result) {
+            textView.setText(result);
+        }
     }
 }
