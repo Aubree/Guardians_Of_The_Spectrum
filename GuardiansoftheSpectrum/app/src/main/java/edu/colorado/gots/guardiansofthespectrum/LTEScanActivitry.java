@@ -17,6 +17,7 @@ import java.util.List;
  */
 
 public class LTEScanActivitry extends AppCompatActivity {
+
     SignalStrengthListener signalStrengthListener;
 
     TextView signalStrengthTextView, signalStrengthTextView2;
@@ -170,4 +171,5 @@ public class LTEScanActivitry extends AppCompatActivity {
 
         }
     }
+
 }

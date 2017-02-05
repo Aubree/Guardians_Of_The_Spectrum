@@ -50,8 +50,7 @@
             android:layout_weight="1" />
     </LinearLayout>
 
-<<<<<<< HEAD
-=======
+
     <Button
         android:text="@string/sendButton"
         android:layout_width="wrap_content"
@@ -85,5 +84,5 @@
         android:text="@string/scanServiceLabel"
         android:textOn="@string/scanServiceLabelTextOn"
         android:textOff="@string/scanServiceLabelTextOff"/>
->>>>>>> refs/remotes/origin/master
+
 </RelativeLayout>

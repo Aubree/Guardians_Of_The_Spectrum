@@ -4,11 +4,9 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-<<<<<<< HEAD
-=======
 import android.widget.CompoundButton;
 import android.widget.Switch;
->>>>>>> refs/remotes/origin/master
+
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
