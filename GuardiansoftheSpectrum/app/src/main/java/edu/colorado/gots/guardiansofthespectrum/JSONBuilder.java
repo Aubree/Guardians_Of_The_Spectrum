@@ -3,6 +3,8 @@ package edu.colorado.gots.guardiansofthespectrum;
 
 import android.location.Location;
 import android.net.wifi.ScanResult;
+import android.telephony.CellInfo;
+import android.telephony.CellInfoLte;
 import android.os.Build;
 
 import org.json.JSONArray;
@@ -14,12 +16,15 @@ import java.util.List;
 
 public class JSONBuilder {
     //handle building our main JSON Results String
-    public static String scanToJSON(List<ScanResult> wifi, Location current) {
+    public static String scanToJSON(List<CellInfo> lte, List<ScanResult> wifi, Location current) {
         JSONObject main = new JSONObject();
         try {
             if (current != null) {
                 main.put("Latitude", current.getLatitude());
                 main.put("Longitude", current.getLongitude());
+            }
+            if (lte != null) {
+                main.put("LTE", buildLTEJSON(lte));
             }
             if (wifi != null) {
                 main.put("Wifi", buildWifiJSON(wifi));
@@ -81,6 +86,31 @@ public class JSONBuilder {
             return new JSONObject();
         }
         return ret;
+    }
+    
+    private static JSONObject buildLTEJSON(List<CellInfo> lte) {
+        JSONObject ret = new JSONObject();
+        System.out.println("attempting to build lte json\n");
+       try {
+           for (CellInfo cellInfo : lte) {
+               System.out.println(String.format("%s\n", lte.toString()));
+               if (cellInfo instanceof CellInfoLte) {
+                   CellInfoLte ci = (CellInfoLte) cellInfo;
+                   System.out.println("building lte JSON\n");
+                   ret.put("Dbm", ci.getCellSignalStrength().getDbm());
+                   ret.put("CellID", ci.getCellIdentity().getCi());
+                   ret.put("MCC", ci.getCellIdentity().getMcc());
+                   ret.put("MNC", ci.getCellIdentity().getMnc());
+                   ret.put("PCI", ci.getCellIdentity().getPci());
+                   ret.put("TAC", ci.getCellIdentity().getTac());
+                   ret.put("TimingAdvance", ci.getCellSignalStrength().getTimingAdvance());
+               }
+           }
+           return ret;
+       } catch (JSONException e) {
+           System.out.println("lte json fail\n");
+           return new JSONObject();
+       }
     }
 
     private static JSONObject buildMetadataJSON() {

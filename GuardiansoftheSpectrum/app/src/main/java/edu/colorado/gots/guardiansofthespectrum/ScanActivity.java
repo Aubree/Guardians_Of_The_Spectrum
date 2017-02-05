@@ -9,14 +9,21 @@ import android.content.IntentSender;
 import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
+import android.telephony.TelephonyManager;
+import android.telephony.PhoneStateListener;
+import android.telephony.CellInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+<<<<<<< HEAD
 import android.telephony.CellInfo;
 import android.telephony.CellInfoLte;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+=======
+>>>>>>> master
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,23 +54,33 @@ public class ScanActivity extends AppCompatActivity implements
     TextView textView;
     WifiManager wifiManager;
     WifiScanReceiver scanReceiver;
-    GoogleApiClient googleClient;
-    Location currentLocation;
-    LocationRequest request;
-    TelephonyManager tm;
+    TelephonyManager tM;
     SignalStrengthListener signalStrengthListener;
+    GoogleApiClient googleClient;
+    LocationRequest request;
+    DataFileManager dataFileManager;
+                
+    Location currentLocation;
+    List<CellInfo> cellInfo;
+    List<ScanResult> wifiInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
         textView = (TextView) findViewById(R.id.wifi_scanStat);
-        textView.setMovementMethod(new ScrollingMovementMethod());
+        dataFileManager = new DataFileManager(getApplicationContext());
+        //initialize scan data object for our async task
+        //scanData = new ScanData();
         //grab the wifi manager instance
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         //instantiate a receiver class. defined below
         scanReceiver = new WifiScanReceiver();
 
+        //grab telephony manager instance
+        tM = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        //set up lte state listener
+        signalStrengthListener = new SignalStrengthListener();
         //set up our google client for location services
         GoogleApiClient.Builder apiBuilder = new GoogleApiClient.Builder(this);
         apiBuilder.addConnectionCallbacks(this);
@@ -99,6 +116,8 @@ public class ScanActivity extends AppCompatActivity implements
 
     protected void onStart() {
         super.onStart();
+        //register lte listener
+        tM.listen(signalStrengthListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
         //ask for scan to start
         wifiManager.startScan();
         //hook up our receiver class to get called when results are available
@@ -106,8 +125,7 @@ public class ScanActivity extends AppCompatActivity implements
         //initiate connection with google API
         googleClient.connect();
 
-        //start the signal strength listener
-        signalStrengthListener = new SignalStrengthListener();
+        new ScanTask().execute();
     }
 
     protected void onStop() {
@@ -115,6 +133,8 @@ public class ScanActivity extends AppCompatActivity implements
         googleClient.disconnect();
         //unhook our receiver class
         unregisterReceiver(scanReceiver);
+        //unregister our lte listener
+        tM.listen(signalStrengthListener, PhoneStateListener.LISTEN_NONE);
         super.onStop();
     }
 
@@ -172,25 +192,55 @@ public class ScanActivity extends AppCompatActivity implements
 
     //private class to handle receiving the wifi results
     private class WifiScanReceiver extends BroadcastReceiver {
-        private boolean received = false;
-        private DataFileManager dataFileManager = new DataFileManager(getApplicationContext());
         //must implement to inherit from Broadcast Receiver
         //called when desired results arrive
         public void onReceive(Context context, Intent intent) {
-            //this check is really just a temporary hack to make sure files and stuff work. It
-            //won't need to be here in the future
-            if (received) {
-                return;
+            wifiInfo = wifiManager.getScanResults();
+        }
+    }
+                
+    private class SignalStrengthListener extends PhoneStateListener {
+        public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
+            cellInfo = tM.getAllCellInfo();
+            super.onSignalStrengthsChanged(signalStrength);
+        }
+    }
+
+    /*private class ScanData {
+        public List<CellInfo> cellInfo;
+        public List<ScanResult> wifiInfo;
+        public Location currentLocation;
+
+        ScanData() {
+            cellInfo = null;
+            wifiInfo = null;
+            currentLocation = null;
+        }
+    }*/
+
+    private class ScanTask extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... params) {
+            while (currentLocation == null || cellInfo == null || wifiInfo == null) {
+                try {
+                    System.out.println("waiting...\n");
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
             }
-            List<ScanResult> scanList = wifiManager.getScanResults();
-            String jsonText = JSONBuilder.scanToJSON(scanList, currentLocation);
-            if (!dataFileManager.writeToFile(jsonText)) {
+            String jsonText = JSONBuilder.scanToJSON(cellInfo, wifiInfo, currentLocation);
+            /*if (!dataFileManager.writeToFile(jsonText)) {
                 Toast.makeText(getApplicationContext(), "Writing data to local file failed", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getApplicationContext(), "Writing data to local file succeeded", Toast.LENGTH_SHORT).show();
-                received = true;
-            }
-            textView.setText(jsonText);
+            }*/
+            //textView.setText(jsonText);
+            return jsonText;
+        }
+
+        protected void onPostExecute(String result) {
+            textView.setText(result);
         }
     }
 
