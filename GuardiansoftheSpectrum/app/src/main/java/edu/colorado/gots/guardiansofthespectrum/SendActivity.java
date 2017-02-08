@@ -44,14 +44,11 @@ public class SendActivity extends AppCompatActivity implements ServerDialogFragm
     }
 
     public void onDialogPositiveClick(DialogFragment dialog) {
-        String IP1 = getDialogText(dialog, R.id.serverIP1);
-        String IP2 = getDialogText(dialog, R.id.serverIP2);
-        String IP3 = getDialogText(dialog, R.id.serverIP3);
-        String IP4 = getDialogText(dialog, R.id.serverIP4);
+        String IP = getDialogText(dialog, R.id.serverIP);
         String port = getDialogText(dialog, R.id.serverPort);
-        System.out.println(String.format("opening socket to %s.%s.%s.%s:%s\n", IP1, IP2, IP3, IP4, port));
+        System.out.println(String.format("opening socket to %s:%s\n", IP, port));
 
-        new SendTask().execute(IP1, IP2, IP3, IP4, port, textView.getText().toString());
+        new SendTask().execute(IP, port, textView.getText().toString());
     }
 
     public void onDialogNegativeClick(DialogFragment dialog) {
@@ -77,7 +74,7 @@ public class SendActivity extends AppCompatActivity implements ServerDialogFragm
             }}
             InetAddress server;
             try {
-                server = InetAddress.getByName(String.format("%s.%s.%s.%s", params[0], params[1], params[2], params[3]));
+                server = InetAddress.getByName(params[0]);
             } catch (UnknownHostException e) {
                 //this should not happen since we only ever pass in a string representation of an
                 //IP address, thus no host checking or dns is ever done
@@ -86,7 +83,7 @@ public class SendActivity extends AppCompatActivity implements ServerDialogFragm
             //the main socket to our server
             Socket soc;
             try {
-                soc = new Socket(server, Integer.parseInt(params[4]));
+                soc = new Socket(server, Integer.parseInt(params[1]));
             } catch (IOException e) {
                 //something went wrong while opening the socket
                 System.out.println(String.format("exception: message: %s, cause: %s\n", e.getMessage(), e.getCause()));
@@ -97,7 +94,7 @@ public class SendActivity extends AppCompatActivity implements ServerDialogFragm
                 //convenience wrapper around the bare output stream that will handle flushing
                 //it for us and can handle format strings if we need them eventually
                 PrintWriter socWriter = new PrintWriter(soc.getOutputStream(), true);
-                socWriter.println(params[5]);
+                socWriter.println(params[2]);
                 socWriter.close();
                 soc.close();
             } catch (IOException e) {
