@@ -66,12 +66,6 @@ public class SendActivity extends AppCompatActivity implements ServerDialogFragm
 
         //send the data to our server
         protected String doInBackground(String... params) {
-            for (int i = 0; i < 10; i++) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }}
             InetAddress server;
             try {
                 server = InetAddress.getByName(params[0]);
