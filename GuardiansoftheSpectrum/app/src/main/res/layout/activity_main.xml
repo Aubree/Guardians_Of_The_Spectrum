@@ -19,43 +19,23 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/guardians"
+        app:srcCompat="@drawable/ntia"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/textview1"
+        android:layout_alignParentBottom = "true"
         android:contentDescription="@string/imageDesc"
-        android:id="@+id/imageView" />
+        android:id="@+id/imageView"
+        android:onClick="changelayout"/>
 
-    <Button
-        android:text="@string/sendButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:id="@+id/sendButton"
-        android:onClick="initiateSend"/>
-    <Button
-        android:id="@+id/scanButton"
-        android:text="@string/scanButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:onClick="initiateScan"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@id/scanButton"
-        android:layout_toRightOf="@id/sendButton"
-        android:text="@string/deleteButton"
-        android:onClick="initiateDelete"/>
-
-    <Switch
+    <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/scanServiceSwitch"
-        android:layout_above="@id/scanButton"
-        android:text="@string/scanServiceLabel"
-        android:textOn="@string/scanServiceLabelTextOn"
-        android:textOff="@string/scanServiceLabelTextOff"/>
+        android:background="?attr/colorPrimary"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:minHeight="?attr/actionBarSize"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="197dp"
+        android:id="@+id/toolbar" />
 </RelativeLayout>
+
+

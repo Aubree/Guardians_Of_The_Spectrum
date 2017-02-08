@@ -10,16 +10,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="edu.colorado.gots.guardiansofthespectrum.SendActivity">
 
-    <ScrollView
+    <TextView
+        android:id="@+id/full_json_data"
+        android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/full_json_data"
-            android:scrollbars="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-    </ScrollView>
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>

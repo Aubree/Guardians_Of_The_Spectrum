@@ -8,14 +8,10 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <!-- needed to access location -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!-- needed to access LTE data -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -26,8 +22,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ScanActivity" />
+        <activity
+            android:name=".ScanActivity"
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".SendActivity" />
+        <activity
+            android:name=".AboutActivity"
+            android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".MyInfoActivity"
+            android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".SettingsActivity"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".BaseActivity"/>
 
         <service
             android:name=".ScanService"
