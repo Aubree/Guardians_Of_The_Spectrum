@@ -9,6 +9,14 @@
     <string name="scanServiceLabelTextOn">Enabled</string>
     <string name="scanServiceLabelTextOff">Disabled</string>
     <string name="sendButton">Send Data</string>
+    <!--
     <string name="scanButton">Scan</string>
+    -->
     <string name="deleteButton">Delete Files</string>
+    <string name="menu_action_scan">scan</string>
+    <string name="menu_my_info">my info</string>
+    <string name="menu_settings">settings</string>
+    <string name="menu_about">about</string>
+    <string name="scanButton">scanButton</string>
 </resources>
+
