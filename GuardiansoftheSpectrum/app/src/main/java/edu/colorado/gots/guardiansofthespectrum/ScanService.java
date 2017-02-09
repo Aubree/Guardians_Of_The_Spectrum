@@ -31,11 +31,14 @@ public class ScanService extends IntentService {
             System.out.println("Running background Scan Service\n");
             try {
                 Thread.sleep(1000);
+                /*
                 counter++;
                 Intent broadcast = new Intent(this, MainActivity.CounterReceiver.class);
                 broadcast.setAction(GOTS_COUNTER);
                 broadcast.putExtra(GOTS_COUNTER_EXTRA, counter);
                 LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast);
+            */
+
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
