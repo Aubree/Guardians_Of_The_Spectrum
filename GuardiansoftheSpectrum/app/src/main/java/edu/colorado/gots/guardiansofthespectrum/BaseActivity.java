@@ -13,6 +13,7 @@ import edu.colorado.gots.guardiansofthespectrum.ScanActivity;
 import edu.colorado.gots.guardiansofthespectrum.SettingsActivity;
 
 public class BaseActivity extends MainActivity {
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater mMenuInflater = getMenuInflater();
