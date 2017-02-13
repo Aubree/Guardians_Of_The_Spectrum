@@ -86,8 +86,15 @@ public class SendActivity extends AppCompatActivity implements ServerDialogFragm
 
             try {
                 //convenience wrapper around the bare output stream that will handle flushing
-                //it for us and can handle format strings if we need them eventually
+                //it for us and can handle format strings
                 PrintWriter socWriter = new PrintWriter(soc.getOutputStream(), true);
+                //output POST headers
+                socWriter.printf("POST /post_point HTTP/1.1\n");
+                socWriter.printf("Content-Type: application/json\n");
+                socWriter.printf("Host: %s:%s\n", params[0], params[1]);
+                socWriter.printf("Content-Length: %d\n", params[2].length());
+                socWriter.printf("\n");
+                //output our data
                 socWriter.println(params[2]);
                 socWriter.close();
                 soc.close();
