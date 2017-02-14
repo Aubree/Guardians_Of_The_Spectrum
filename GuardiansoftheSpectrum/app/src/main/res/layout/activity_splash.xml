@@ -9,7 +9,7 @@
     <ImageView
         android:layout_width="348dp"
         android:layout_height="443dp"
-        app:srcCompat="@drawable/waveAndLogo"
+        app:srcCompat="@drawable/waveandlogo"
         android:id="@+id/imageView1"
         android:layout_gravity="center"
         android:layout_weight="0.90" />

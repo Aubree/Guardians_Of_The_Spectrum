@@ -15,15 +15,6 @@ import android.telephony.PhoneStateListener;
 import android.telephony.CellInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-<<<<<<< HEAD
-import android.telephony.CellInfo;
-import android.telephony.CellInfoLte;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
-import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
-=======
->>>>>>> master
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +33,6 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import java.util.List;
 
 
-
 public class ScanActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
@@ -59,7 +49,7 @@ public class ScanActivity extends AppCompatActivity implements
     GoogleApiClient googleClient;
     LocationRequest request;
     DataFileManager dataFileManager;
-                
+
     Location currentLocation;
     List<CellInfo> cellInfo;
     List<ScanResult> wifiInfo;
@@ -76,7 +66,6 @@ public class ScanActivity extends AppCompatActivity implements
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         //instantiate a receiver class. defined below
         scanReceiver = new WifiScanReceiver();
-
         //grab telephony manager instance
         tM = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         //set up lte state listener
@@ -198,7 +187,7 @@ public class ScanActivity extends AppCompatActivity implements
             wifiInfo = wifiManager.getScanResults();
         }
     }
-                
+
     private class SignalStrengthListener extends PhoneStateListener {
         public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
             cellInfo = tM.getAllCellInfo();
@@ -210,7 +199,6 @@ public class ScanActivity extends AppCompatActivity implements
         public List<CellInfo> cellInfo;
         public List<ScanResult> wifiInfo;
         public Location currentLocation;
-
         ScanData() {
             cellInfo = null;
             wifiInfo = null;
@@ -241,67 +229,6 @@ public class ScanActivity extends AppCompatActivity implements
 
         protected void onPostExecute(String result) {
             textView.setText(result);
-        }
-    }
-
-    //private class to handle LTE results
-    private class SignalStrengthListener extends PhoneStateListener {
-        @Override
-        public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
-
-            ((TelephonyManager) getSystemService(TELEPHONY_SERVICE)).listen(signalStrengthListener, SignalStrengthListener.LISTEN_SIGNAL_STRENGTHS);
-
-            tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-
-            String ltestr = signalStrength.toString();
-            String[] parts = ltestr.split(" ");
-            String cellSig2 = parts[9];
-
-            try {
-                List<CellInfo> cellInfoList = tm.getAllCellInfo();
-                for (CellInfo cellInfo : cellInfoList) {
-                    if (cellInfo instanceof CellInfoLte) {
-                        // cast to CellInfoLte and call all the CellInfoLte methods you need
-                        // gets RSRP cell signal strength:
-                        cellSig = ((CellInfoLte) cellInfo).getCellSignalStrength().getDbm();
-
-                        // Gets the LTE cell identity: (returns 28-bit Cell Identity, Integer.MAX_VALUE if unknown)
-                        cellID = ((CellInfoLte) cellInfo).getCellIdentity().getCi();
-
-                        // Gets the LTE MCC: (returns 3-digit Mobile Country Code, 0..999, Integer.MAX_VALUE if unknown)
-                        cellMcc = ((CellInfoLte) cellInfo).getCellIdentity().getMcc();
-
-                        // Gets theLTE MNC: (returns 2 or 3-digit Mobile Network Code, 0..999, Integer.MAX_VALUE if unknown)
-                        cellMnc = ((CellInfoLte) cellInfo).getCellIdentity().getMnc();
-
-                        // Gets the LTE PCI: (returns Physical Cell Id 0..503, Integer.MAX_VALUE if unknown)
-                        cellPci = ((CellInfoLte) cellInfo).getCellIdentity().getPci();
-
-                        // Gets the LTE TAC: (returns 16-bit Tracking Area Code, Integer.MAX_VALUE if unknown)
-                        cellTac = ((CellInfoLte) cellInfo).getCellIdentity().getTac();
-
-                        //Gets the timing advance value for LTE
-                        timeAdvance = ((CellInfoLte) cellInfo).getCellSignalStrength().getTimingAdvance();
-
-                    }
-                }
-            } catch (Exception e) {
-                Log.d("SignalStrength", "+++++++++++++++++++++++++++++++ null array spot 3: " + e);
-            }
-
-            signalStrengthTextView.setText("RSRP 1 cell signal strength = " + cellSig + " dbm");
-            signalStrengthTextView2.setText("RSRP 2 cell signal strength = " + cellSig2 + " dbm");
-            cellIDTextView.setText("Cell Identity = " + cellID);
-            cellMccTextView.setText("Mobile Country Code = " + cellMcc);
-            cellMncTextView.setText("Mobile Network Code = " + cellMnc);
-            cellPciTextView.setText("Physical Cell Id = " + cellPci);
-            cellTacTextView.setText("Tracking Area Code = " + cellTac);
-            timeAdvanceView.setText("Timing Advance value = " + timeAdvance);
-
-            super.onSignalStrengthsChanged(signalStrength);
-
-            //++++++++++++++++++++++++++++++++++++
-
         }
     }
 }
