@@ -7,6 +7,17 @@
     android:weightSum="1">
 
 
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:minHeight="?attr/actionBarSize"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="197dp"
+        android:id="@+id/toolbar" />
+
     <TextView
         android:text="This app is for you to see how strong signals are for WiFi and cell phone. By sending your signal strength you help in creating a map of various levels of signal strength. Just scan and view results!"
         android:layout_width="match_parent"

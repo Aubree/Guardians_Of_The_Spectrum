@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
-    TextView mTextView;
     Switch serviceSwitch;
     Intent serviceIntent;
 
@@ -39,10 +38,6 @@ public class MainActivity extends AppCompatActivity {
         intentFilter.addAction(Intent.ACTION_BATTERY_LOW);
         intentFilter.addAction(Intent.ACTION_BATTERY_OKAY);
         registerReceiver(batteryReceiver, new IntentFilter());
-
-
-        mTextView = (TextView)findViewById(R.id.textview1);
-        mTextView.setText(R.string.Hello);
 
     }
     @Override
@@ -70,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(settings);
                 return true;
             case R.id.action_about:
-                Intent about = new Intent(this, SettingsActivity.class);
+                Intent about = new Intent(this, AboutActivity.class);
                 startActivity(about);
                 return true;
             default:
