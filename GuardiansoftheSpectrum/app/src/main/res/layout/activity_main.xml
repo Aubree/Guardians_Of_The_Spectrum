@@ -31,7 +31,7 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/scanbutton"
+        app:srcCompat="@drawable/scan_button"
         android:id="@+id/imageButton3"
         android:layout_marginTop="60dp"
         android:layout_below="@+id/textview1"
@@ -75,7 +75,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/heatmap"
+        app:srcCompat="@drawable/heat_map"
         android:id="@+id/imageView"
         android:layout_below="@+id/Settings"
         android:layout_toEndOf="@+id/textview1" />

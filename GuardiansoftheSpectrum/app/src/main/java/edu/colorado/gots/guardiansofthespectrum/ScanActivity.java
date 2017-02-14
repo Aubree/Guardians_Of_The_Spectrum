@@ -15,6 +15,7 @@ import android.telephony.PhoneStateListener;
 import android.telephony.CellInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,9 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import java.util.List;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 
 public class ScanActivity extends AppCompatActivity implements
@@ -207,7 +211,14 @@ public class ScanActivity extends AppCompatActivity implements
     }*/
 
     private class ScanTask extends AsyncTask<Void, Void, String> {
-        @Override
+
+        private ProgressBar bar;
+
+        protected void onPreExecute() {
+            bar = (ProgressBar) findViewById(R.id.scanProgressBar);
+            bar.setVisibility(VISIBLE);
+        }
+
         protected String doInBackground(Void... params) {
             while (currentLocation == null || cellInfo == null || wifiInfo == null) {
                 try {
@@ -217,17 +228,16 @@ public class ScanActivity extends AppCompatActivity implements
                     Thread.currentThread().interrupt();
                 }
             }
-            String jsonText = JSONBuilder.scanToJSON(cellInfo, wifiInfo, currentLocation);
-            /*if (!dataFileManager.writeToFile(jsonText)) {
-                Toast.makeText(getApplicationContext(), "Writing data to local file failed", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getApplicationContext(), "Writing data to local file succeeded", Toast.LENGTH_SHORT).show();
-            }*/
-            //textView.setText(jsonText);
-            return jsonText;
+            return JSONBuilder.scanToJSON(cellInfo, wifiInfo, currentLocation);
         }
 
         protected void onPostExecute(String result) {
+            bar.setVisibility(GONE);
+            if (!dataFileManager.writeToFile(result)) {
+                Toast.makeText(getApplicationContext(), "Writing data to local file failed", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "Writing data to local file succeeded", Toast.LENGTH_SHORT).show();
+            }
             textView.setText(result);
         }
     }
