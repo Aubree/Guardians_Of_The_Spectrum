@@ -38,7 +38,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 
-public class ScanActivity extends AppCompatActivity implements
+public class ScanActivity extends BaseActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
@@ -64,8 +64,11 @@ public class ScanActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
         textView = (TextView) findViewById(R.id.wifi_scanStat);
+
+
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+
         dataFileManager = new DataFileManager(getApplicationContext());
         //initialize scan data object for our async task
         //scanData = new ScanData();
