@@ -32,6 +32,7 @@ public class SendActivity extends AppCompatActivity implements ServerDialogFragm
 
     public void onStart() {
         super.onStart();
+        //note: call this for data.
         textView.setText(JSONBuilder.prepareSendData(new DataFileManager(getApplicationContext()).readAllDataFiles()));
         DialogFragment serverInfo = new ServerDialogFragment();
         serverInfo.show(getSupportFragmentManager(), "serverInfo");

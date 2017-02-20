@@ -12,11 +12,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="edu.colorado.gots.guardiansofthespectrum.MainActivity">
 
-    <TextView
-        android:id="@+id/textview1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,7 +29,6 @@
         app:srcCompat="@drawable/scan_button"
         android:id="@+id/imageButton3"
         android:layout_marginTop="60dp"
-        android:layout_below="@+id/textview1"
         android:layout_centerHorizontal="true" />
 
     <Button
@@ -76,8 +70,7 @@
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/heat_map"
         android:id="@+id/imageView"
-        android:layout_below="@+id/Settings"
-        android:layout_toEndOf="@+id/textview1" />
+        android:layout_below="@+id/Settings" />
 
     <!--<ImageView
         android:layout_width="wrap_content"
