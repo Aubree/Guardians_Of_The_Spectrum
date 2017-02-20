@@ -16,9 +16,6 @@ import android.widget.TextView;
 import android.view.MenuItem;
 
 public class MainActivity extends BaseActivity {
-    Switch serviceSwitch;
-    Intent serviceIntent;
-
     protected boolean scanEnabled = true;
     private BatteryReceiver batteryReceiver;
 
@@ -47,16 +44,5 @@ public class MainActivity extends BaseActivity {
     public void onDestroy() {
         unregisterReceiver(batteryReceiver);
         super.onDestroy();
-    }
-    private class BatteryReceiver extends BroadcastReceiver  {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals(Intent.ACTION_BATTERY_LOW)) {
-                scanEnabled = false;
-                serviceSwitch.setChecked(false);
-            } else if (action.equals(Intent.ACTION_BATTERY_OKAY)) {
-                scanEnabled = true;
-            }
-        }
     }
 }
