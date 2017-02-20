@@ -18,38 +18,29 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 class LocationServicesManager implements GoogleApiClient.ConnectionCallbacks {
 
-    interface LocationServicesCallback {
+    interface LocationServicesCallbacks {
         void onLocationEnabled();
+        void onLocationNotEnabled();
     }
 
     final static int LOCATION_SERVICE_RESOLUTION = 0;
 
     private static GoogleApiClient client;
     private static LocationServicesManager instance = null;
-    private static boolean locationPermission = false;
-    private LocationServicesManager(Context c) throws Exception {
+
+    private LocationServicesManager(Context c) {
         GoogleApiClient.Builder builder = new GoogleApiClient.Builder(c);
         builder.addConnectionCallbacks(this);
         //builder.addOnConnectionFailedListener(this);
         builder.addApi(LocationServices.API);
         client = builder.build();
-        /*ConnectionResult res = client.blockingConnect();
-        if (res.getErrorCode() != ConnectionResult.SUCCESS) {
-            System.out.println(String.format("Connection error: %s\n", res.getErrorMessage()));
-            throw new Exception(res.getErrorMessage());
-        }*/
         client.connect();
     }
 
     public static LocationServicesManager getInstance(Context c) {
         synchronized(LocationServicesManager.class) {
             if (instance == null) {
-                try {
-                    instance = new LocationServicesManager(c);
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                    return null;
-                }
+                instance = new LocationServicesManager(c);
             }
         }
         return instance;
@@ -92,9 +83,8 @@ class LocationServicesManager implements GoogleApiClient.ConnectionCallbacks {
                             } catch (IntentSender.SendIntentException e) {}
                         } else if (statusCode == LocationSettingsStatusCodes.SUCCESS) {
                             System.out.println("location settings are already set\n");
-                            locationPermission = true;
                             try {
-                                ((LocationServicesCallback) activity).onLocationEnabled();
+                                ((LocationServicesCallbacks) activity).onLocationEnabled();
                             } catch (ClassCastException e) {
                                 System.out.println("cannot trigger location enabled callback\n");
                             }
@@ -130,15 +120,6 @@ class LocationServicesManager implements GoogleApiClient.ConnectionCallbacks {
 
     void removeLocationUpdates(PendingIntent intent) {
         LocationServices.FusedLocationApi.removeLocationUpdates(client, intent);
-    }
-
-    boolean isConnected() {
-        return client.isConnected();
-    }
-
-    boolean getLocationPermission() {
-        System.out.println("returning permission\n");
-        return locationPermission;
     }
 
     public void onConnected(Bundle connectionHint) {

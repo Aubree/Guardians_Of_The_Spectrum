@@ -1,7 +1,6 @@
 package edu.colorado.gots.guardiansofthespectrum;
 
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,11 +11,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
-import android.widget.Toast;
 
-public class SettingsActivity extends BaseActivity implements LocationServicesManager.LocationServicesCallback {
+public class SettingsActivity extends BaseActivity implements LocationServicesManager.LocationServicesCallbacks {
     private Switch serviceSwitch;
     private Intent serviceIntent;
+    private boolean scanEnabled = true;
+    private BatteryReceiver batteryReceiver;
     private CounterReceiver counterReceiver;
     private LocationServicesManager LSManager;
 
@@ -26,6 +26,13 @@ public class SettingsActivity extends BaseActivity implements LocationServicesMa
         setContentView(R.layout.activity_settings);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+
+        //set up a listener to manage low-battery notifications
+        batteryReceiver = new BatteryReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_BATTERY_LOW);
+        intentFilter.addAction(Intent.ACTION_BATTERY_OKAY);
+        registerReceiver(batteryReceiver, intentFilter);
 
         //set up a quick and dirty listener to receiver counter updates from the service
         counterReceiver = new CounterReceiver();
@@ -50,10 +57,11 @@ public class SettingsActivity extends BaseActivity implements LocationServicesMa
 
     public void onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(counterReceiver);
+        unregisterReceiver(batteryReceiver);
         super.onDestroy();
     }
 
-    //called when an activity we start gets completed. In this case, we're interested
+    /*//called when an activity we start gets completed. In this case, we're interested
     //in the ResultCallback we set up for out LocationSettingsRequest. After the user
     //completes the dialogue, we will parse the results here.
     protected void onActivityResult(int requestCode, int returnCode, Intent i) {
@@ -72,10 +80,14 @@ public class SettingsActivity extends BaseActivity implements LocationServicesMa
             default:
                 break;
         }
-    }
+    }*/
 
     public void onLocationEnabled() {
         startService(serviceIntent);
+    }
+
+    public void onLocationNotEnabled() {
+        serviceSwitch.setChecked(false);
     }
 
     //delete local data file storage
@@ -96,6 +108,16 @@ public class SettingsActivity extends BaseActivity implements LocationServicesMa
         }
     }
 
-    
+    private class BatteryReceiver extends BroadcastReceiver  {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Intent.ACTION_BATTERY_LOW)) {
+                scanEnabled = false;
+                serviceSwitch.setChecked(false);
+            } else if (action.equals(Intent.ACTION_BATTERY_OKAY)) {
+                scanEnabled = true;
+            }
+        }
+    }
 
 }
