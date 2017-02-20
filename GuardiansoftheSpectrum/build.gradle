@@ -19,6 +19,7 @@ allprojects {
     buildDir = "C:/tmp/${rootProject.name}/${project.name}"
     repositories {
         jcenter()
+        maven { url "https://jitpack.io" }
     }
 }
 
