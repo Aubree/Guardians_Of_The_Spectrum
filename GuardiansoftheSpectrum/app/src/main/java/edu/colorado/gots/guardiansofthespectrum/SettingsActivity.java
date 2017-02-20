@@ -8,12 +8,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
 public class SettingsActivity extends BaseActivity implements LocationServicesManager.LocationServicesCallback {
+    private Switch serviceSwitch;
+    private Intent serviceIntent;
     private CounterReceiver counterReceiver;
     private LocationServicesManager LSManager;
 
@@ -21,6 +24,8 @@ public class SettingsActivity extends BaseActivity implements LocationServicesMa
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
 
         //set up a quick and dirty listener to receiver counter updates from the service
         counterReceiver = new CounterReceiver();
@@ -90,5 +95,7 @@ public class SettingsActivity extends BaseActivity implements LocationServicesMa
                     intent.getIntExtra(ScanService.GOTS_COUNTER_EXTRA, 0)));
         }
     }
+
+    
 
 }
