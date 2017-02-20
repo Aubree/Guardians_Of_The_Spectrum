@@ -61,27 +61,6 @@ public class SettingsActivity extends BaseActivity implements LocationServicesMa
         super.onDestroy();
     }
 
-    /*//called when an activity we start gets completed. In this case, we're interested
-    //in the ResultCallback we set up for out LocationSettingsRequest. After the user
-    //completes the dialogue, we will parse the results here.
-    protected void onActivityResult(int requestCode, int returnCode, Intent i) {
-        switch (requestCode) {
-            case LocationServicesManager.LOCATION_SERVICE_RESOLUTION:
-                if (returnCode != Activity.RESULT_OK) {
-                    //changes not made successfully. just gripe for now
-                    Toast.makeText(getApplicationContext(), "Location services needed to send data", Toast.LENGTH_SHORT).show();
-                    serviceSwitch.setChecked(false);
-                } else {
-                    System.out.println("sending start service request\n");
-                    //trigger service start
-                    startService(serviceIntent);
-                }
-                break;
-            default:
-                break;
-        }
-    }*/
-
     public void onLocationEnabled() {
         startService(serviceIntent);
     }

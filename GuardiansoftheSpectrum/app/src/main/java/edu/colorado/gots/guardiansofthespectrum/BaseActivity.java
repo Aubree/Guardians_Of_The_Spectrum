@@ -25,8 +25,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Location
 
         switch (item.getItemId()){
             case R.id.action_scan:
-                //Intent scan = new Intent(this, ScanActivity.class);
-                //startActivity(scan);
                 LocationServicesManager.getInstance(getApplicationContext()).checkAndResolvePermissions(this);
                 return true;
             case R.id.action_my_info:
@@ -54,11 +52,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Location
                     //changes not made successfully. just gripe for now
                     Toast.makeText(getApplicationContext(), "Location services needed to send data", Toast.LENGTH_SHORT).show();
                     this.onLocationNotEnabled();
-                    //serviceSwitch.setChecked(false);
                 } else {
-                    //System.out.println("sending start service request\n");
-                    //trigger service start
-                    //startService(serviceIntent);
                     this.onLocationEnabled();
                 }
                 break;
