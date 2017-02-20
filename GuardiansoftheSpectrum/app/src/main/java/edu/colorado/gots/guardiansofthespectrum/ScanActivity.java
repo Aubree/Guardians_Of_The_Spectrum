@@ -13,7 +13,7 @@ import android.widget.TextView;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class ScanActivity extends AppCompatActivity {
+public class ScanActivity extends BaseActivity {
 
     TextView textView;
     ProgressBar bar;

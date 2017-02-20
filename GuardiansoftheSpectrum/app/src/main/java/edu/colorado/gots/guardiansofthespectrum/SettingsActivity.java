@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
-public class SettingsActivity extends BaseActivity implements LocationServicesManager.LocationServicesCallbacks {
+public class SettingsActivity extends BaseActivity {
     private Switch serviceSwitch;
     private Intent serviceIntent;
     private boolean scanEnabled = true;
