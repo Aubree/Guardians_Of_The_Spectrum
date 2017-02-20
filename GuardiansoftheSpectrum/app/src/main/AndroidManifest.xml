@@ -31,17 +31,17 @@
         </activity>
         <activity
             android:name=".ScanActivity"
-            android:parentActivityName=".BaseActivity"/>
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".SendActivity" />
         <activity
             android:name=".AboutActivity"
-            android:parentActivityName=".BaseActivity"/>
+            android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".MyInfoActivity"
-            android:parentActivityName=".BaseActivity"/>
+            android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".SettingsActivity"
-            android:parentActivityName=".BaseActivity"/>
+            android:parentActivityName=".MainActivity"/>
 
         <service
             android:name=".ScanService"
