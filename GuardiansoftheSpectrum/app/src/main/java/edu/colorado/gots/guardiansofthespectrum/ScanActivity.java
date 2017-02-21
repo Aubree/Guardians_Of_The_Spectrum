@@ -1,19 +1,20 @@
 package edu.colorado.gots.guardiansofthespectrum;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class ScanActivity extends BaseActivity {
+public class ScanActivity extends BaseActivity implements LocationServicesManager.LocationServicesCallbacks {
 
     TextView textView;
     ProgressBar bar;
@@ -31,9 +32,7 @@ public class ScanActivity extends BaseActivity {
 
     protected void onStart() {
         super.onStart();
-        Intent serviceIntent = new Intent(this, ScanService.class);
-        serviceIntent.setAction(ScanService.GOTS_SCAN_FOREGROUND_START);
-        startService(serviceIntent);
+        LocationServicesManager.getInstance(this).checkAndResolvePermissions(this);
     }
 
     protected void onStop() {
@@ -46,6 +45,33 @@ public class ScanActivity extends BaseActivity {
     protected void onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         super.onDestroy();
+    }
+
+
+    protected void onActivityResult(int requestCode, int returnCode, Intent i) {
+        switch (requestCode) {
+            case LocationServicesManager.LOCATION_SERVICE_RESOLUTION:
+                if (returnCode != Activity.RESULT_OK) {
+                    //changes not made successfully. just gripe for now
+                    Toast.makeText(getApplicationContext(), "Location services needed to send data", Toast.LENGTH_SHORT).show();
+                    this.onLocationNotEnabled();
+                } else {
+                    this.onLocationEnabled();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void onLocationEnabled() {
+        Intent serviceIntent = new Intent(this, ScanService.class);
+        serviceIntent.setAction(ScanService.GOTS_SCAN_FOREGROUND_START);
+        startService(serviceIntent);
+    }
+
+    public void onLocationNotEnabled() {
+        bar.setVisibility(GONE);
     }
 
     private class ScanDataReceiver extends BroadcastReceiver {

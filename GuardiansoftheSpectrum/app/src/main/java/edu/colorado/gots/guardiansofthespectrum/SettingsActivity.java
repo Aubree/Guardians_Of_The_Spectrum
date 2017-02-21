@@ -1,6 +1,7 @@
 package edu.colorado.gots.guardiansofthespectrum;
 
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,11 +12,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.Toast;
 
-public class SettingsActivity extends BaseActivity {
+public class SettingsActivity extends BaseActivity implements LocationServicesManager.LocationServicesCallbacks {
     private Switch serviceSwitch;
     private Intent serviceIntent;
     private boolean scanEnabled = true;
+    private static boolean switchState = false;
     private BatteryReceiver batteryReceiver;
     private CounterReceiver counterReceiver;
     private LocationServicesManager LSManager;
@@ -42,6 +45,7 @@ public class SettingsActivity extends BaseActivity {
         //grab location manager
         LSManager = LocationServicesManager.getInstance(getApplicationContext());
         serviceSwitch = (Switch) findViewById(R.id.scanServiceSwitch);
+        serviceSwitch.setChecked(switchState);
         serviceIntent = new Intent(this, ScanService.class);
         serviceIntent.setAction(ScanService.GOTS_SCAN_BACKGROUND_START);
         serviceSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -50,6 +54,7 @@ public class SettingsActivity extends BaseActivity {
                     LSManager.checkAndResolvePermissions(SettingsActivity.this);
                 } else {
                     stopService(serviceIntent);
+                    switchState = false;
                 }
             }
         });
@@ -63,6 +68,7 @@ public class SettingsActivity extends BaseActivity {
 
     public void onLocationEnabled() {
         startService(serviceIntent);
+        switchState = true;
     }
 
     public void onLocationNotEnabled() {
@@ -78,6 +84,23 @@ public class SettingsActivity extends BaseActivity {
     public void initiateSend(View v) {
         Intent i = new Intent(this, SendActivity.class);
         startActivity(i);
+    }
+
+
+    protected void onActivityResult(int requestCode, int returnCode, Intent i) {
+        switch (requestCode) {
+            case LocationServicesManager.LOCATION_SERVICE_RESOLUTION:
+                if (returnCode != Activity.RESULT_OK) {
+                    //changes not made successfully. just gripe for now
+                    Toast.makeText(getApplicationContext(), "Location services needed to send data", Toast.LENGTH_SHORT).show();
+                    onLocationNotEnabled();
+                } else {
+                    onLocationEnabled();
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     public class CounterReceiver extends BroadcastReceiver {
