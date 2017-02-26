@@ -19,6 +19,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -31,6 +36,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.GONE;
@@ -57,6 +63,7 @@ public class ScanActivity extends AppCompatActivity implements
     Location currentLocation;
     List<CellInfo> cellInfo;
     List<ScanResult> wifiInfo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +112,23 @@ public class ScanActivity extends AppCompatActivity implements
                 }
             }
         });
+
+        //initialize line chart
+        LineChart chart = (LineChart) findViewById(R.id.chart);
+
+        List<Entry> entries = new ArrayList<>();
+        entries.add(new Entry(4f, 0));
+        entries.add(new Entry(8f, 1));
+        entries.add(new Entry(6f, 2));
+        entries.add(new Entry(12f, 3));
+        entries.add(new Entry(18f, 4));
+        entries.add(new Entry(9f, 5));
+
+        LineDataSet dataSet = new LineDataSet(entries, "Label"); // add entries to dataset
+        LineData lineData = new LineData(dataSet);
+        chart.setData(lineData);
+        chart.invalidate(); // refresh
+
     }
 
     protected void onStart() {
@@ -238,7 +262,7 @@ public class ScanActivity extends AppCompatActivity implements
             } else {
                 Toast.makeText(getApplicationContext(), "Writing data to local file succeeded", Toast.LENGTH_SHORT).show();
             }
-            textView.setText(result);
+            //textView.setText(result);
         }
     }
 }

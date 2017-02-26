@@ -24,6 +24,11 @@
             android:scrollbars="vertical"/>
     </ScrollView>
 
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <ProgressBar
         android:id="@+id/scanProgressBar"
         android:layout_width="wrap_content"
