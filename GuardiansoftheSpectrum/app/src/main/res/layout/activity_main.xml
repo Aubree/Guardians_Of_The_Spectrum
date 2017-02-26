@@ -12,32 +12,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="edu.colorado.gots.guardiansofthespectrum.MainActivity">
 
-    <TextView
-        android:id="@+id/textview1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <android.support.v7.widget.Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:minHeight="?attr/actionBarSize"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="197dp"
-        android:id="@+id/toolbar" />
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/scan_button"
-        android:id="@+id/imageButton3"
-        android:layout_marginTop="60dp"
-        android:layout_below="@+id/textview1"
-        android:layout_centerHorizontal="true" />
-
-
     <Button
         android:text="My Info"
         android:layout_width="wrap_content"
@@ -77,8 +51,26 @@
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/heat_map"
         android:id="@+id/imageView"
-        android:layout_below="@+id/Settings"
-        android:layout_toEndOf="@+id/textview1" />
+        android:layout_below="@+id/Settings" />
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:minHeight="?attr/actionBarSize"
+        android:id="@+id/toolbar"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/scan_button"
+        android:id="@+id/imageButton3"
+        android:layout_below="@+id/toolbar"
+        android:layout_centerHorizontal="true" />
 
     <!--<ImageView
         android:layout_width="wrap_content"

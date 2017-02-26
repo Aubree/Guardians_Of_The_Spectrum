@@ -25,13 +25,28 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+
+        <!-- Splash screen -->
+        <activity android:name=".SplashScreen"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".BaseActivity"></activity>
+
+        <activity android:name=".MainActivity">
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.coderefer.androidsplashscreenexample.MAINACTIVITY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".ScanActivity"
             android:parentActivityName=".MainActivity"/>
@@ -46,7 +61,6 @@
         <activity
             android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity"/>
-        <activity android:name=".BaseActivity"/>
 
         <service
             android:name=".ScanService"

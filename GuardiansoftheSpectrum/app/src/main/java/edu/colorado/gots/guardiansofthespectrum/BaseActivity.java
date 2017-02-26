@@ -1,48 +1,46 @@
 package edu.colorado.gots.guardiansofthespectrum;
 
 import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import edu.colorado.gots.guardiansofthespectrum.AboutActivity;
-import edu.colorado.gots.guardiansofthespectrum.MainActivity;
-import edu.colorado.gots.guardiansofthespectrum.MyInfoActivity;
-import edu.colorado.gots.guardiansofthespectrum.R;
-import edu.colorado.gots.guardiansofthespectrum.ScanActivity;
-import edu.colorado.gots.guardiansofthespectrum.SettingsActivity;
-
-public class BaseActivity extends MainActivity {
-
+public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater mMenuInflater = getMenuInflater();
         mMenuInflater.inflate(R.menu.our_menu, menu);
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        mToolbar.setTitle("NTIA");
+        //mToolbar.setLogo(R.drawable.tool_logo);
         return true;
-
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_scan){
-            Intent i = new Intent(this, ScanActivity.class);
-            startActivity(i);
-            return true;
+
+        switch (item.getItemId()){
+            case R.id.action_scan:
+                Intent scan = new Intent(this, ScanActivity.class);
+                startActivity(scan);
+                return true;
+            case R.id.action_my_info:
+                Intent info = new Intent(this, MyInfoActivity.class);
+                startActivity(info);
+                return true;
+            case R.id.action_settings:
+                Intent settings = new Intent(this, SettingsActivity.class);
+                startActivity(settings);
+                return true;
+            case R.id.action_about:
+                Intent about = new Intent(this, AboutActivity.class);
+                startActivity(about);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
         }
-        if(item.getItemId() == R.id.action_my_info){
-            Intent i = new Intent(this, MyInfoActivity.class);
-            startActivity(i);
-            return true;
-        }
-        if(item.getItemId() == R.id.action_settings){
-            Intent i = new Intent(this, SettingsActivity.class);
-            startActivity(i);
-            return true;
-        }
-        if(item.getItemId() == R.id.action_about){
-            Intent i = new Intent(this, AboutActivity.class);
-            startActivity(i);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

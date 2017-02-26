@@ -10,6 +10,7 @@ public class AboutActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState){
        super.onCreate(savedInstanceState);
        setContentView(R.layout.activity_about);
-        //getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+       Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+       setSupportActionBar(mToolbar);
    }
 }
