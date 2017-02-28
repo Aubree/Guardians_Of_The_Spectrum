@@ -10,10 +10,20 @@ import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class MyInfoActivity extends BaseActivity{
+public class MyInfoActivity extends BaseActivity {
     private WebView myWebView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,18 +31,36 @@ public class MyInfoActivity extends BaseActivity{
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        TextView textView=(TextView)findViewById(R.id.textView);
+        TextView textView = (TextView) findViewById(R.id.textView);
         textView.setTextColor(0xFFFFFFFF);
         textView.setTextSize(getResources().getDimension(R.dimen.textsize));
         textView.getPaddingTop();
-        textView.setText("Hardware information: "+System.getProperty("line.separator")+ "- " +
-                "hardware name: "+Build
-                .HARDWARE+System.getProperty("line.separator")+"- device name: "+ Build
-                .DEVICE+System.getProperty("line.separator")+"- " +
-                "manufacture name: "+Build.MANUFACTURER);
+        textView.setText("Hardware information: " + System.getProperty("line.separator") + "- " +
+                "hardware name: " + Build
+                .HARDWARE + System.getProperty("line.separator") + "- device name: " + Build
+                .DEVICE + System.getProperty("line.separator") + "- " +
+                "manufacture name: " + Build.MANUFACTURER);
         //textView.setGravity(Gravity.TOP);
 
-        myWebView = (WebView) findViewById(R.id.activity_webview);
+
+        // in this example, a LineChart is initialized from xml
+        BarChart chart = (BarChart) findViewById(R.id.chart);
+
+        int[] sampleData = {1,2,3,4,5};
+
+        ArrayList<Entry> entries = new ArrayList<Entry>();
+        entries.add(new BarEntry(4f, 0));
+        entries.add(new BarEntry(8f, 1));
+        entries.add(new BarEntry(6f, 2));
+        entries.add(new BarEntry(12f, 3));
+        entries.add(new BarEntry(18f, 4));
+        entries.add(new BarEntry(9f, 5));
+        BarDataSet dataset = new BarDataSet(entries, );
+    }
+}
+/*
+
+myWebView = (WebView) findViewById(R.id.activity_webview);
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
@@ -71,7 +99,5 @@ public class MyInfoActivity extends BaseActivity{
         myWebView.requestFocusFromTouch();
         myWebView.loadDataWithBaseURL( "file:///android_asset/", content, "text/html", "utf-8", null );
         myWebView.loadUrl("file:///android_asset/Code.html"); // Can be used in this way too.
-    }
 
-
-}
+ */
