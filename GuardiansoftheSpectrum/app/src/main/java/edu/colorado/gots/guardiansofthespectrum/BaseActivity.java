@@ -1,6 +1,7 @@
 package edu.colorado.gots.guardiansofthespectrum;
 
 import android.content.Intent;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -22,6 +23,10 @@ public class BaseActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()){
+            /*
+            case R.id.activity_main:
+                NavUtils.navigateUpFromSameTask(this);
+                return true; */
             case R.id.action_scan:
                 Intent scan = new Intent(this, ScanActivity.class);
                 startActivity(scan);

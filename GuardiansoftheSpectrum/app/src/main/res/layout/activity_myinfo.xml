@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blue"
     android:weightSum="1">
-
     <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
@@ -14,27 +15,28 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:minHeight="?attr/actionBarSize"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="197dp"
-        android:id="@+id/toolbar" />
-
+        android:layout_marginBottom="197dp"/>
     <TextView
-        android:text="My Phone Info:"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/textView"
-        android:layout_weight="0.15" />
-
-    <TextView
-        android:text="My WiFi info:"
+        android:text="TextView"
+        android:layout_height="20dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView3"
-        android:layout_weight="0.15" />
-
-    <TextView
-        android:text="My Phone connection info:"
+        android:textColor="@color/white"
+        android:gravity="center_vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="200dp"
+        android:paddingBottom="-400dp"/>
+    <WebView
+        android:id="@+id/activity_webview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView4"
-        android:layout_weight="0.15" />
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_below="@id/textView"/>
+
+</RelativeLayout>
+
+<!--
+android:includeFontPadding="false"
+        android:layout_marginTop="-5dp"
+        android:layout_marginBottom="-5dp"
+        -->

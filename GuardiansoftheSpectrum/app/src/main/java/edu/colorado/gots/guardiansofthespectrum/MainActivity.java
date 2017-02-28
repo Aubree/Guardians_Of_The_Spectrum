@@ -35,6 +35,7 @@ public class MainActivity extends BaseActivity {
 
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+        //getActionBar().setDisplayHomeAsUpEnabled(true);
 
         //set up a listener to manage low-battery notifications
         batteryReceiver = new BatteryReceiver();
