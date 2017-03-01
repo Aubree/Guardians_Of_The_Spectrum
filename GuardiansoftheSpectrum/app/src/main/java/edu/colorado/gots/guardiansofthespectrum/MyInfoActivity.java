@@ -55,7 +55,7 @@ public class MyInfoActivity extends BaseActivity {
         entries.add(new BarEntry(12f, 3));
         entries.add(new BarEntry(18f, 4));
         entries.add(new BarEntry(9f, 5));
-        BarDataSet dataset = new BarDataSet(entries, );
+        //BarDataSet dataset = new BarDataSet(entries, );
     }
 }
 /*
