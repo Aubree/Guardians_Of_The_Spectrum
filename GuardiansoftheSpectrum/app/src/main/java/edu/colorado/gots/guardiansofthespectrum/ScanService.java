@@ -79,7 +79,7 @@ public class ScanService extends Service {
         //register lte listener
         tM.listen(signalStrengthListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS | PhoneStateListener.LISTEN_CELL_INFO);
         //register to get location updates
-        LSManager = LocationServicesManager.getInstance(this);
+        LSManager = new LocationServicesManager(this);
         Intent locationIntent = new Intent(this, ScanService.class);
         locationIntent.setAction(GOTS_SCAN_SERVICE_LOCATION);
         locationPendingIntent = PendingIntent.getService(this, 0, locationIntent, FLAG_UPDATE_CURRENT);
@@ -153,7 +153,6 @@ public class ScanService extends Service {
             //just do the scan
             while (running) {
                 while ((currentLocation == null || cellInfo == null || wifiInfo == null) && running) {
-                //while ((cellInfo == null || wifiInfo == null) && running) {
                     try {
                         System.out.printf("waiting... running is %b\n", running);
                         Thread.sleep(100);
@@ -165,6 +164,9 @@ public class ScanService extends Service {
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
+                }
+                if (!running) {
+                    break;
                 }
                 String jsonText = JSONBuilder.scanToJSON(cellInfo, wifiInfo, currentLocation);
                 dataFileManager.writeToFile(jsonText);

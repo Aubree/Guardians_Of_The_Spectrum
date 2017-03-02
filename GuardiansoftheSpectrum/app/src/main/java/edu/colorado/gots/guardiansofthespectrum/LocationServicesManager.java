@@ -1,12 +1,22 @@
 package edu.colorado.gots.guardiansofthespectrum;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -16,40 +26,48 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
-class LocationServicesManager implements GoogleApiClient.ConnectionCallbacks {
+public class LocationServicesManager implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     interface LocationServicesCallbacks {
         void onLocationEnabled();
         void onLocationNotEnabled();
+        void onConnectionResolveDialogDismissed();
     }
 
     final static int LOCATION_SERVICE_RESOLUTION = 0;
+    final static int CONNECTION_RESOLUTION = 1;
+    final static int SCAN_PERMISSIONS_REQUEST = 0;
 
-    private static GoogleApiClient client;
-    private static LocationServicesManager instance = null;
+    private final static String GOTS_CONNECTION_ERROR = "edu.colorado.gots.guardiansofthespectrum.connection.error";
 
-    private LocationServicesManager(Context c) {
+    private GoogleApiClient client;
+    private boolean resolvingError = false;
+    private Activity activity;
+
+
+    LocationServicesManager(Context c) {
         GoogleApiClient.Builder builder = new GoogleApiClient.Builder(c);
         builder.addConnectionCallbacks(this);
-        //builder.addOnConnectionFailedListener(this);
+        builder.addOnConnectionFailedListener(this);
         builder.addApi(LocationServices.API);
         client = builder.build();
         client.connect();
-    }
-
-    public static LocationServicesManager getInstance(Context c) {
-        synchronized(LocationServicesManager.class) {
-            if (instance == null) {
-                instance = new LocationServicesManager(c);
-            }
+        if (c instanceof Activity) {
+            activity = (Activity) c;
         }
-        return instance;
     }
 
     //make sure location services are enabled and if not, get the user to do it
-    void checkAndResolvePermissions(final Activity activity) {
+    void checkAndResolvePermissions() {
         class LocationResolveTask extends AsyncTask<Void, Void, Void> {
             protected Void doInBackground(Void... params) {
+                if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(activity,
+                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(activity, new String[] {
+                            Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.READ_PHONE_STATE}, SCAN_PERMISSIONS_REQUEST);
+                }
                 while (!client.isConnected()) {
                     try {
                         System.out.println("waiting on connection in resolve\n");
@@ -128,5 +146,50 @@ class LocationServicesManager implements GoogleApiClient.ConnectionCallbacks {
 
     public void onConnectionSuspended(int cause) {
 
+    }
+
+    public void onConnectionFailed(ConnectionResult result) {
+        if (resolvingError) {
+            return;
+        } else if (result.hasResolution()) {
+            resolvingError = true;
+            try {
+                result.startResolutionForResult(activity, CONNECTION_RESOLUTION);
+            } catch (IntentSender.SendIntentException e) {
+                client.connect();
+            }
+        } else {
+            showErrorDialog(result.getErrorCode());
+        }
+    }
+
+    private void showErrorDialog(int code) {
+        ConnectionErrorDialogFragment frag = new ConnectionErrorDialogFragment();
+        Bundle args = new Bundle();
+        args.putInt(GOTS_CONNECTION_ERROR, code);
+        frag.setArguments(args);
+        frag.show(activity.getFragmentManager(), "connectionErrorFragment");
+    }
+
+    public void onDialogDismissed() {
+        resolvingError = false;
+    }
+
+    public static class ConnectionErrorDialogFragment extends DialogFragment {
+        public void onAttach(Context c) {
+            super.onAttach(c);
+            if (!(c instanceof LocationServicesCallbacks)) {
+                throw new ClassCastException(c.toString() + " must implement LocationServicesCallbacks");
+            }
+        }
+
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            int error = this.getArguments().getInt(GOTS_CONNECTION_ERROR);
+            return GoogleApiAvailability.getInstance().getErrorDialog(this.getActivity(), error, CONNECTION_RESOLUTION);
+        }
+
+        public void onDismiss(DialogInterface dialog) {
+            ((LocationServicesCallbacks) getActivity()).onConnectionResolveDialogDismissed();
+        }
     }
 }

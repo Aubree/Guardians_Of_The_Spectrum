@@ -14,11 +14,13 @@ import android.widget.Toast;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class ScanActivity extends BaseActivity implements LocationServicesManager.LocationServicesCallbacks {
+//public class ScanActivity extends BaseActivity implements LocationServicesManager.LocationServicesCallbacks {
+public class ScanActivity extends LocationActivity {
 
     TextView textView;
     ProgressBar bar;
     ScanDataReceiver receiver;
+    //LocationServicesManager LSManager;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +34,8 @@ public class ScanActivity extends BaseActivity implements LocationServicesManage
 
     protected void onStart() {
         super.onStart();
-        LocationServicesManager.getInstance(this).checkAndResolvePermissions(this);
+        //LSManager = new LocationServicesManager(this);
+        LSManager.checkAndResolvePermissions();
     }
 
     protected void onStop() {
@@ -48,7 +51,7 @@ public class ScanActivity extends BaseActivity implements LocationServicesManage
     }
 
 
-    protected void onActivityResult(int requestCode, int returnCode, Intent i) {
+    /*protected void onActivityResult(int requestCode, int returnCode, Intent i) {
         switch (requestCode) {
             case LocationServicesManager.LOCATION_SERVICE_RESOLUTION:
                 if (returnCode != Activity.RESULT_OK) {
@@ -59,10 +62,14 @@ public class ScanActivity extends BaseActivity implements LocationServicesManage
                     this.onLocationEnabled();
                 }
                 break;
+            case LocationServicesManager.CONNECTION_RESOLUTION:
+                if (returnCode != Activity.RESULT_OK) {
+
+                }
             default:
                 break;
         }
-    }
+    }*/
 
     public void onLocationEnabled() {
         Intent serviceIntent = new Intent(this, ScanService.class);
