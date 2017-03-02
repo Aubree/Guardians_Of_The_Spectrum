@@ -80,6 +80,7 @@ public class ScanService extends Service {
         tM.listen(signalStrengthListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS | PhoneStateListener.LISTEN_CELL_INFO);
         //register to get location updates
         LSManager = new LocationServicesManager(this);
+        LSManager.connect();
         Intent locationIntent = new Intent(this, ScanService.class);
         locationIntent.setAction(GOTS_SCAN_SERVICE_LOCATION);
         locationPendingIntent = PendingIntent.getService(this, 0, locationIntent, FLAG_UPDATE_CURRENT);

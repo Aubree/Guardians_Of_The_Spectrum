@@ -52,7 +52,8 @@ public class LocationServicesManager implements GoogleApiClient.ConnectionCallba
         builder.addOnConnectionFailedListener(this);
         builder.addApi(LocationServices.API);
         client = builder.build();
-        //client.connect();
+        //if we're making this from an activity, grab it for callbacks
+        //we don't need to hang on to the service though
         if (c instanceof Activity) {
             activity = (Activity) c;
             System.out.println("connecting client for activity " + activity);
@@ -74,6 +75,7 @@ public class LocationServicesManager implements GoogleApiClient.ConnectionCallba
                     ActivityCompat.requestPermissions(activity, new String[] {
                             Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.READ_PHONE_STATE}, SCAN_PERMISSIONS_REQUEST);
+                    return null;
                 }
                 while (!client.isConnected()) {
                     try {
@@ -148,7 +150,10 @@ public class LocationServicesManager implements GoogleApiClient.ConnectionCallba
     }
 
     public void onConnected(Bundle connectionHint) {
-        ((LocationServicesCallbacks) activity).onConnected();
+        //only trigger callback if invoked from activity, not service
+        if (activity != null) {
+            ((LocationServicesCallbacks) activity).onConnected();
+        }
     }
 
     public void onConnectionSuspended(int cause) {
