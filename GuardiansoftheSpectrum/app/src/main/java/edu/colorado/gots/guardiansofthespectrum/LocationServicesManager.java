@@ -32,6 +32,7 @@ public class LocationServicesManager implements GoogleApiClient.ConnectionCallba
         void onLocationEnabled();
         void onLocationNotEnabled();
         void onConnectionResolveDialogDismissed();
+        void onConnected();
     }
 
     final static int LOCATION_SERVICE_RESOLUTION = 0;
@@ -51,10 +52,16 @@ public class LocationServicesManager implements GoogleApiClient.ConnectionCallba
         builder.addOnConnectionFailedListener(this);
         builder.addApi(LocationServices.API);
         client = builder.build();
-        client.connect();
+        //client.connect();
         if (c instanceof Activity) {
             activity = (Activity) c;
+            System.out.println("connecting client for activity " + activity);
         }
+    }
+
+    //manually connect the client
+    void connect() {
+        client.connect();
     }
 
     //make sure location services are enabled and if not, get the user to do it
@@ -141,7 +148,7 @@ public class LocationServicesManager implements GoogleApiClient.ConnectionCallba
     }
 
     public void onConnected(Bundle connectionHint) {
-
+        ((LocationServicesCallbacks) activity).onConnected();
     }
 
     public void onConnectionSuspended(int cause) {
@@ -149,17 +156,21 @@ public class LocationServicesManager implements GoogleApiClient.ConnectionCallba
     }
 
     public void onConnectionFailed(ConnectionResult result) {
+        System.out.println("connecting client failed for activity " + activity);
         if (resolvingError) {
             return;
         } else if (result.hasResolution()) {
             resolvingError = true;
             try {
+                System.out.println("starting client resolution for activity " + activity);
                 result.startResolutionForResult(activity, CONNECTION_RESOLUTION);
             } catch (IntentSender.SendIntentException e) {
                 client.connect();
             }
         } else {
+            System.out.println("unresolvable error in connecting client for activity " + activity);
             showErrorDialog(result.getErrorCode());
+            ((LocationServicesCallbacks) activity).onLocationNotEnabled();
         }
     }
 

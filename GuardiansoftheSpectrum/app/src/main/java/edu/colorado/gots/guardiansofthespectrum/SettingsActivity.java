@@ -48,7 +48,8 @@ public class SettingsActivity extends LocationActivity {
         serviceSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton button, boolean isChecked) {
                 if (isChecked && scanEnabled) {
-                    LSManager.checkAndResolvePermissions();
+                    //LSManager.checkAndResolvePermissions();
+                    LSManager.connect();
                 } else {
                     stopService(serviceIntent);
                     switchState = false;
@@ -61,6 +62,10 @@ public class SettingsActivity extends LocationActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(counterReceiver);
         unregisterReceiver(batteryReceiver);
         super.onDestroy();
+    }
+
+    public void onConnected() {
+        LSManager.checkAndResolvePermissions();
     }
 
     public void onLocationEnabled() {
