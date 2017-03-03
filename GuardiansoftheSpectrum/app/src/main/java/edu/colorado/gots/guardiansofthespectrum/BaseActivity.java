@@ -14,8 +14,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         mMenuInflater.inflate(R.menu.our_menu, menu);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        mToolbar.setTitle("NTIA");
-        //mToolbar.setLogo(R.drawable.tool_logo);
+        //mToolbar.setTitle("NTIA");
+        mToolbar.setLogo(R.drawable.logo_small);
         return true;
     }
     @Override
