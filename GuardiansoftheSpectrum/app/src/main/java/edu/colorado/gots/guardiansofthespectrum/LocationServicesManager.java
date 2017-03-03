@@ -35,10 +35,14 @@ public class LocationServicesManager implements GoogleApiClient.ConnectionCallba
         void onConnected();
     }
 
+    //onActivityResult request codes
     final static int LOCATION_SERVICE_RESOLUTION = 0;
     final static int CONNECTION_RESOLUTION = 1;
+
+    //onRequestPermissionsResult() request codes
     final static int SCAN_PERMISSIONS_REQUEST = 0;
 
+    //extra key for our ConnectionFailed dialog
     private final static String GOTS_CONNECTION_ERROR = "edu.colorado.gots.guardiansofthespectrum.connection.error";
 
     private GoogleApiClient client;
@@ -145,8 +149,21 @@ public class LocationServicesManager implements GoogleApiClient.ConnectionCallba
         new RequestLocationTask().execute();
     }
 
-    void removeLocationUpdates(PendingIntent intent) {
-        LocationServices.FusedLocationApi.removeLocationUpdates(client, intent);
+    void removeLocationUpdates(final PendingIntent intent) {
+        class RemoveLocationTask extends AsyncTask<Void, Void, Void> {
+            public Void doInBackground(Void... params) {
+                while (!client.isConnected()) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+                LocationServices.FusedLocationApi.removeLocationUpdates(client, intent);
+                return null;
+            }
+        }
+        new RemoveLocationTask().execute();
     }
 
     public void onConnected(Bundle connectionHint) {
