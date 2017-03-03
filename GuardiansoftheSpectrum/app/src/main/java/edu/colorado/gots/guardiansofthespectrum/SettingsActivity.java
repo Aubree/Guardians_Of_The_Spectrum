@@ -1,7 +1,5 @@
 package edu.colorado.gots.guardiansofthespectrum;
 
-
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,16 +10,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
-import android.widget.Toast;
 
-public class SettingsActivity extends BaseActivity implements LocationServicesManager.LocationServicesCallbacks {
+//public class SettingsActivity extends BaseActivity implements LocationServicesManager.LocationServicesCallbacks {
+public class SettingsActivity extends LocationActivity {
     private Switch serviceSwitch;
     private Intent serviceIntent;
     private boolean scanEnabled = true;
     private static boolean switchState = false;
     private BatteryReceiver batteryReceiver;
     private CounterReceiver counterReceiver;
-    private LocationServicesManager LSManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,7 +40,7 @@ public class SettingsActivity extends BaseActivity implements LocationServicesMa
                 new IntentFilter(ScanService.GOTS_COUNTER));
 
         //grab location manager
-        LSManager = LocationServicesManager.getInstance(getApplicationContext());
+        //LSManager = new LocationServicesManager(this);
         serviceSwitch = (Switch) findViewById(R.id.scanServiceSwitch);
         serviceSwitch.setChecked(switchState);
         serviceIntent = new Intent(this, ScanService.class);
@@ -51,7 +48,8 @@ public class SettingsActivity extends BaseActivity implements LocationServicesMa
         serviceSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton button, boolean isChecked) {
                 if (isChecked && scanEnabled) {
-                    LSManager.checkAndResolvePermissions(SettingsActivity.this);
+                    //LSManager.checkAndResolvePermissions();
+                    LSManager.connect();
                 } else {
                     stopService(serviceIntent);
                     switchState = false;
@@ -64,6 +62,10 @@ public class SettingsActivity extends BaseActivity implements LocationServicesMa
         LocalBroadcastManager.getInstance(this).unregisterReceiver(counterReceiver);
         unregisterReceiver(batteryReceiver);
         super.onDestroy();
+    }
+
+    public void onConnected() {
+        LSManager.checkAndResolvePermissions();
     }
 
     public void onLocationEnabled() {
@@ -87,7 +89,7 @@ public class SettingsActivity extends BaseActivity implements LocationServicesMa
     }
 
 
-    protected void onActivityResult(int requestCode, int returnCode, Intent i) {
+    /*protected void onActivityResult(int requestCode, int returnCode, Intent i) {
         switch (requestCode) {
             case LocationServicesManager.LOCATION_SERVICE_RESOLUTION:
                 if (returnCode != Activity.RESULT_OK) {
@@ -101,7 +103,7 @@ public class SettingsActivity extends BaseActivity implements LocationServicesMa
             default:
                 break;
         }
-    }
+    }*/
 
     public class CounterReceiver extends BroadcastReceiver {
         public void onReceive(Context context, Intent intent){

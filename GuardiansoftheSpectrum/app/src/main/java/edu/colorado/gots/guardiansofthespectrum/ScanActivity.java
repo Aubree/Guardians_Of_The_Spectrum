@@ -1,6 +1,5 @@
 package edu.colorado.gots.guardiansofthespectrum;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +10,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -35,15 +33,20 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static java.lang.Integer.parseInt;
 
-public class ScanActivity extends BaseActivity implements LocationServicesManager.LocationServicesCallbacks {
+//public class ScanActivity extends BaseActivity implements LocationServicesManager.LocationServicesCallbacks {
+public class ScanActivity extends LocationActivity {
 
     TextView textView;
 
     ProgressBar bar;
     ScanDataReceiver receiver;
+
     List<Entry> entries;
     LineChart chart;
     int count;
+
+    private boolean scanning = false;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,17 +123,20 @@ public class ScanActivity extends BaseActivity implements LocationServicesManage
         bar.setVisibility(VISIBLE);
         receiver = new ScanDataReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(ScanService.GOTS_SCAN_SERVICE_RESULTS));
-    }
-
-    protected void onStart() {
-        super.onStart();
-        LocationServicesManager.getInstance(this).checkAndResolvePermissions(this);
+        LSManager.connect();
     }
 
     protected void onStop() {
-        Intent serviceIntent = new Intent(this, ScanService.class);
-        serviceIntent.setAction(ScanService.GOTS_SCAN_FOREGROUND_END);
-        startService(serviceIntent);
+        //only send an intent to the service if it's running successfully
+        //(i.e. all permission checks have passed and googleApiClient has
+        //connected), otherwise we'll start running into errors if permissions
+        //and connections aren't present because telling the service to stop will
+        //start it up
+        if (scanning) {
+            Intent serviceIntent = new Intent(this, ScanService.class);
+            serviceIntent.setAction(ScanService.GOTS_SCAN_FOREGROUND_END);
+            startService(serviceIntent);
+        }
         super.onStop();
     }
 
@@ -139,24 +145,13 @@ public class ScanActivity extends BaseActivity implements LocationServicesManage
         super.onDestroy();
     }
 
-
-    protected void onActivityResult(int requestCode, int returnCode, Intent i) {
-        switch (requestCode) {
-            case LocationServicesManager.LOCATION_SERVICE_RESOLUTION:
-                if (returnCode != Activity.RESULT_OK) {
-                    //changes not made successfully. just gripe for now
-                    Toast.makeText(getApplicationContext(), "Location services needed to send data", Toast.LENGTH_SHORT).show();
-                    this.onLocationNotEnabled();
-                } else {
-                    this.onLocationEnabled();
-                }
-                break;
-            default:
-                break;
-        }
+    public void onConnected() {
+        LSManager.checkAndResolvePermissions();
     }
 
     public void onLocationEnabled() {
+        System.out.println("starting service from scan activity");
+        scanning = true;
         Intent serviceIntent = new Intent(this, ScanService.class);
         serviceIntent.setAction(ScanService.GOTS_SCAN_FOREGROUND_START);
         startService(serviceIntent);
