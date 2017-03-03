@@ -14,8 +14,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
+<<<<<<< HEAD
         app:theme="@style/ThemeOverlay.AppCompat.Dark"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
+=======
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+>>>>>>> 8cf1f76d35e8e0ce79bd98a7aee1125a59197d6c
         android:minHeight="?attr/actionBarSize"
         android:id="@+id/toolbar"
         android:layout_alignParentTop="true"
