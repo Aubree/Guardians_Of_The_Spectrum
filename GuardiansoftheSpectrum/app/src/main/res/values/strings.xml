@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Guardians of the Spectrum</string>
+    <string name="app_name">NTIA</string>
     <string name="Hello">Hello Guardians of the Spectrum!</string>
     <string name="about_text">About text goes here.</string>
     <string name="imageDesc">Picture of our logo</string>
@@ -12,6 +12,7 @@
     <string name="sendButton">Send Data</string>
     <!--
     <string name="scanButton">Scan</string>
+    NTIA Spectrum Map - name of the app.
     -->
     <string name="deleteButton">Delete Files</string>
     <string name="menu_action_scan">scan</string>

@@ -1,5 +1,6 @@
 package edu.colorado.gots.guardiansofthespectrum;
 
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +13,8 @@ import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -40,24 +43,58 @@ public class MyInfoActivity extends BaseActivity {
                 .HARDWARE + System.getProperty("line.separator") + "- device name: " + Build
                 .DEVICE + System.getProperty("line.separator") + "- " +
                 "manufacture name: " + Build.MANUFACTURER);
-        //textView.setGravity(Gravity.TOP);
 
+        BarChart myinfo_chart = (BarChart) findViewById(R.id.chart);
 
-        // in this example, a LineChart is initialized from xml
-        BarChart chart = (BarChart) findViewById(R.id.chart);
+        //enable interaction
+        myinfo_chart.setTouchEnabled(true);
+        myinfo_chart.setDragEnabled(true);
+        myinfo_chart.setScaleEnabled(true);
+        myinfo_chart.setScaleXEnabled(true);
+        myinfo_chart.setScaleYEnabled(true);
+        myinfo_chart.setPinchZoom(true);
+        myinfo_chart.setDoubleTapToZoomEnabled(true);
 
-        int[] sampleData = {1,2,3,4,5};
+        //chart fling / deceleration
+        myinfo_chart.setDragDecelerationEnabled(true);
+        myinfo_chart.setDragDecelerationFrictionCoef(1);
 
-        ArrayList<Entry> entries = new ArrayList<Entry>();
-        entries.add(new BarEntry(4f, 0));
-        entries.add(new BarEntry(8f, 1));
-        entries.add(new BarEntry(6f, 2));
-        entries.add(new BarEntry(12f, 3));
-        entries.add(new BarEntry(18f, 4));
-        entries.add(new BarEntry(9f, 5));
-        //BarDataSet dataset = new BarDataSet(entries, );
+        XAxis xline = myinfo_chart.getXAxis();
+        xline.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xline.setTextSize(10f);
+        xline.setTextColor(Color.RED);
+        xline.setDrawAxisLine(true);
+        xline.setDrawGridLines(false);
+
+        YAxis yline = myinfo_chart.getAxisLeft();
+        yline.setDrawLabels(false); // no axis labels
+        yline.setDrawAxisLine(false); // no axis line
+        yline.setDrawGridLines(false); // no grid lines
+        yline.setDrawZeroLine(true); // draw a zero line
+        myinfo_chart.getAxisRight().setEnabled(false); // no right axis
+
+        List<BarEntry> entries = new ArrayList<>();
+        entries.add(new BarEntry(0f, 30f));
+        entries.add(new BarEntry(1f, 80f));
+        entries.add(new BarEntry(2f, 60f));
+        entries.add(new BarEntry(3f, 50f));
+        // gap of 2f
+        entries.add(new BarEntry(5f, 70f));
+        entries.add(new BarEntry(6f, 60f));
+
+        BarDataSet set = new BarDataSet(entries, "BarDataSet");
+        BarData lineData = new BarData(set);
+        lineData.setBarWidth(0.9f); // set custom bar width
+        myinfo_chart.setData(lineData);
+        myinfo_chart.setFitBars(true); // make the x-axis fit exactly all bars
+        myinfo_chart.invalidate(); // refresh
+
     }
+
+
 }
+
+
 /*
 
 myWebView = (WebView) findViewById(R.id.activity_webview);
