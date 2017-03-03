@@ -12,9 +12,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater mMenuInflater = getMenuInflater();
         mMenuInflater.inflate(R.menu.our_menu, menu);
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        mToolbar.setTitle("NTIA");
+        //Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(mToolbar);
+        //mToolbar.setTitle("NTIA");
         //mToolbar.setLogo(R.drawable.tool_logo);
         return true;
     }
