@@ -6,16 +6,7 @@
     android:layout_height="match_parent"
     android:weightSum="1">
 
-    <android.support.v7.widget.Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:minHeight="?attr/actionBarSize"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="197dp"
-        android:id="@+id/toolbar" />
+    <include layout="@layout/toolbar" />
 
     <TextView
         android:text="My Phone Info:"
