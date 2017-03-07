@@ -61,6 +61,7 @@ public class ScanActivity extends LocationActivity {
         chart.setDrawGridBackground(false);
         chart.setHighlightPerDragEnabled(true);
 
+
         // set an alternative background color
         chart.setBackgroundColor(Color.WHITE);
 
@@ -69,13 +70,13 @@ public class ScanActivity extends LocationActivity {
         xAxis.setTextSize(10f);
         xAxis.setTextColor(Color.WHITE);
         xAxis.setDrawAxisLine(false);
-        xAxis.setDrawGridLines(true);
-        xAxis.setTextColor(Color.rgb(255, 192, 56));
+        xAxis.setDrawGridLines(false);
+        xAxis.setTextColor(Color.rgb(0, 0, 255));
         xAxis.setCenterAxisLabels(true);
         xAxis.setGranularity(1f); // one hour
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
+        /*xAxis.setValueFormatter(new IAxisValueFormatter() {
 
-            private SimpleDateFormat mFormat = new SimpleDateFormat("dd MMM HH:mm");
+            private SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm");
 
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
@@ -83,7 +84,7 @@ public class ScanActivity extends LocationActivity {
                 long millis = TimeUnit.HOURS.toMillis((long) value);
                 return mFormat.format(new Date(millis));
             }
-        });
+        });*/
 
         YAxis leftAxis = chart.getAxisLeft();
 
@@ -109,14 +110,14 @@ public class ScanActivity extends LocationActivity {
         leftAxis.setAxisMinimum(-130f);
         leftAxis.setAxisMaximum(-80f);
         leftAxis.setYOffset(-9f);
-        leftAxis.setTextColor(Color.rgb(255, 192, 56));
+        leftAxis.setTextColor(Color.rgb(0, 0, 255));
 
         YAxis rightAxis = chart.getAxisRight();
         rightAxis.setEnabled(false);
 
         // initialize data set for chart
         entries = new ArrayList<>();
-        count = 0;
+        count = 1;
 
 
         bar = (ProgressBar) findViewById(R.id.scanProgressBar);
