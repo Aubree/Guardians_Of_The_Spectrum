@@ -22,7 +22,6 @@
         android:background="@color/blue"
         android:textSize="30sp"
         android:id="@+id/MyInfo"
-        android:onClick="com.example.aubree_2.seniorproject.MyInfoPage"
         android:layout_below="@+id/imageButton3"
         android:layout_centerHorizontal="true" />
 
@@ -62,6 +61,15 @@
         android:id="@+id/imageButton3"
         android:layout_below="@+id/toolbar"
         android:layout_centerHorizontal="true" />
+
+    <!-- it's a secret to everybody -->
+    <Button
+        android:id="@+id/button2"
+        android:background="@android:color/transparent"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignTop="@+id/imageButton3"
+        android:layout_toStartOf="@+id/imageButton3" />
 
     <!--<ImageView
         android:layout_width="wrap_content"
