@@ -19,6 +19,15 @@ allprojects {
     buildDir = "C:/tmp/${rootProject.name}/${project.name}"
     repositories {
         jcenter()
+        maven { url "https://jitpack.io" }
+    }
+}
+
+//This is the library for the graphics.
+//See https://github.com/PhilJay/MPAndroidChart
+allprojects {
+    repositories {
+        maven { url "https://jitpack.io" }
     }
 }
 
