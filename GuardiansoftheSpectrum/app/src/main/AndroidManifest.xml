@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.colorado.gots.guardiansofthespectrum">
 
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
     <!-- needed to get access to wifi scan results -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <!-- needed to initiate wifi scans -->
@@ -43,6 +47,7 @@
         <activity
             android:name=".ScanActivity"
             android:parentActivityName=".MainActivity"/>
+
         <activity android:name=".SendActivity" />
         <activity
             android:name=".AboutActivity"
