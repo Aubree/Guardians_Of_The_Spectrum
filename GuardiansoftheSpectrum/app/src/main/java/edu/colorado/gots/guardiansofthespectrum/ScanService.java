@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -17,11 +18,13 @@ import android.os.Message;
 import android.os.Process;
 import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.CellInfo;
+import android.telephony.CellInfoLte;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 
 import com.google.android.gms.location.LocationResult;
 
+import java.util.Date;
 import java.util.List;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
@@ -36,11 +39,12 @@ public class ScanService extends Service {
     TelephonyManager tM;
     SignalStrengthListener signalStrengthListener;
     DataFileManager dataFileManager;
+    CSVFileManager csvFileManager;
     LocationServicesManager LSManager;
     PendingIntent locationPendingIntent;
 
     volatile Location currentLocation;
-    volatile List<CellInfo> cellInfo;
+    volatile CellInfoLte LTEInfo;
     volatile List<ScanResult> wifiInfo;
 
     private int counter = 0;
@@ -56,6 +60,8 @@ public class ScanService extends Service {
     public static final String GOTS_SCAN_BACKGROUND_START = "edu.colorado.gots.guardiansofthespectrum.scan.background.start";
     public static final String GOTS_SCAN_SERVICE_RESULTS = "edu.colorado.gots.guardiansofthespectrum.scan.service.results";
     public static final String GOTS_SCAN_SERVICE_RESULTS_EXTRA = "edu.colorado.gots.guardiansofthespectrum.scan.service.results.extra";
+    public static final String GOTS_SCAN_SERVICE_RESULTS_CURRENT_WIFI_SSID = "edu.colorado.gots.guardiansofthespectrum.scan.service.results.current.wifi.ssid";
+    public static final String GOTS_SCAN_SERVICE_RESULTS_CURRENT_WIFI_RSSI = "edu.colorado.gots.guardiansofthespectrum.scan.service.results.current.wifi.rssi";
 
     public void onCreate() {
         //start up the background thread
@@ -64,6 +70,7 @@ public class ScanService extends Service {
         //get handle that we can pass messages to
         serviceHandler = new ScanServiceHandler(backgroundThread.getLooper());
         dataFileManager = new DataFileManager(getApplicationContext());
+        csvFileManager = new CSVFileManager(getApplicationContext());
         //grab the wifi manager instance
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         //instantiate a receiver class. defined below
@@ -153,7 +160,7 @@ public class ScanService extends Service {
         public void handleMessage(Message m) {
             //just do the scan
             while (running) {
-                while ((currentLocation == null || cellInfo == null || wifiInfo == null) && running) {
+                while ((currentLocation == null || LTEInfo == null || wifiInfo == null) && running) {
                     try {
                         System.out.printf("waiting... running is %b\n", running);
                         Thread.sleep(100);
@@ -169,12 +176,17 @@ public class ScanService extends Service {
                 if (!running) {
                     break;
                 }
-                String jsonText = JSONBuilder.scanToJSON(cellInfo, wifiInfo, currentLocation);
+                String jsonText = JSONBuilder.scanToJSON(LTEInfo, wifiInfo, currentLocation);
                 dataFileManager.writeToFile(jsonText);
                 Intent resultsIntent = new Intent(GOTS_SCAN_SERVICE_RESULTS);
                 resultsIntent.putExtra(GOTS_SCAN_SERVICE_RESULTS_EXTRA, jsonText);
+                WifiInfo currentWifi = wifiManager.getConnectionInfo();
+                resultsIntent.putExtra(GOTS_SCAN_SERVICE_RESULTS_CURRENT_WIFI_SSID, currentWifi.getSSID());
+                resultsIntent.putExtra(GOTS_SCAN_SERVICE_RESULTS_CURRENT_WIFI_RSSI, currentWifi.getRssi());
                 LocalBroadcastManager.getInstance(ScanService.this).sendBroadcast(resultsIntent);
-                cellInfo = null;
+                csvFileManager.writeData(new Date().getTime(), LTEInfo.getCellSignalStrength().getDbm(),
+                        currentWifi.getSSID(), currentWifi.getRssi());
+                LTEInfo = null;
                 wifiInfo = null;
             }
             stopSelf();
@@ -194,14 +206,23 @@ public class ScanService extends Service {
 
         public void onCellInfoChanged(List<CellInfo> info) {
             System.out.println("cell info changed\n");
-            cellInfo = info;
+            LTEInfo = getLTEInfo(info);
             super.onCellInfoChanged(info);
         }
 
         public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
             System.out.println("signal strength changed\n");
-            cellInfo = tM.getAllCellInfo();
+            LTEInfo = getLTEInfo(tM.getAllCellInfo());
             super.onSignalStrengthsChanged(signalStrength);
+        }
+
+        private CellInfoLte getLTEInfo(List<CellInfo> info) {
+            for (CellInfo i : info) {
+                if (i instanceof CellInfoLte) {
+                    return (CellInfoLte) i;
+                }
+            }
+            return null;
         }
     }
 }
