@@ -1,30 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1">
-
-    <android.support.v7.widget.Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:minHeight="?attr/actionBarSize"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="197dp"
-        android:id="@+id/toolbar" />
+    android:layout_width="match_parent">
 
     <TextView
-        android:text="@string/about_text"
-        android:layout_width="match_parent"
+        android:text="This is the about section. \nYou will learn things about the app here.\nStuff and things."
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView2"
-        android:fontFamily="sans-serif" />
-
-
-</LinearLayout>
-
-
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/textView6" />
+</RelativeLayout>

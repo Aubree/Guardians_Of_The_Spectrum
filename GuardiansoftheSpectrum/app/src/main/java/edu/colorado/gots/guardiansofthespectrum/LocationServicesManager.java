@@ -66,7 +66,7 @@ public class LocationServicesManager implements GoogleApiClient.ConnectionCallba
 
     //manually connect the client
     void connect() {
-        client.connect();
+        client.reconnect();
     }
 
     //make sure location services are enabled and if not, get the user to do it

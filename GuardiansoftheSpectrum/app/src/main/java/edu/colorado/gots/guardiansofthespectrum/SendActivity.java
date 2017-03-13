@@ -9,6 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -86,19 +87,20 @@ public class SendActivity extends AppCompatActivity implements ServerDialogFragm
             }
 
             try {
-                //convenience wrapper around the bare output stream that will handle flushing
-                //it for us and can handle format strings
-                PrintWriter socWriter = new PrintWriter(soc.getOutputStream(), true);
-                //output POST headers
-                socWriter.printf("POST /post_point HTTP/1.1\n");
-                socWriter.printf("Content-Type: application/json\n");
-                socWriter.printf("Host: %s:%s\n", params[0], params[1]);
-                socWriter.printf("Content-Length: %d\n", params[2].length());
-                socWriter.printf("\n");
-                //output our data
-                socWriter.println(params[2]);
-                socWriter.close();
+                //wrap our data in a post request
+                //Data Output stream works better than other Higher-level
+                //constructs like PrintWriter which seem to silently swallow
+                //certain characters (probably due to mixing line-buffered streams
+                //with non-line buffered streams)
+                DataOutputStream socStream = new DataOutputStream(soc.getOutputStream());
+                socStream.writeBytes("POST /post_point HTTP/1.1\n");
+                socStream.writeBytes("Content-Type: application/json\n");
+                socStream.writeBytes("Host: " + params[0] + ":" + params[1] + "\n");
+                socStream.writeBytes("Content-Length: " + String.valueOf(params[2].length()) + "\n");
+                socStream.writeBytes("\n");
+                socStream.writeBytes(params[2]);
                 soc.close();
+                System.out.println(String.format("content length: %d, written: %d\n", params[2].length(), socStream.size()));
             } catch (IOException e) {
                 System.out.println(String.format("exception: message %s, cause %s\n", e.getMessage(), e.getCause()));
                 return "Sending data to server failed";
