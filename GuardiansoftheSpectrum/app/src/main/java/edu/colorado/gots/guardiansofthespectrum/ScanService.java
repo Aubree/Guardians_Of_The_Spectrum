@@ -217,6 +217,9 @@ public class ScanService extends Service {
         }
 
         private CellInfoLte getLTEInfo(List<CellInfo> info) {
+            if (info == null) {
+                return null;
+            }
             for (CellInfo i : info) {
                 if (i instanceof CellInfoLte) {
                     return (CellInfoLte) i;
