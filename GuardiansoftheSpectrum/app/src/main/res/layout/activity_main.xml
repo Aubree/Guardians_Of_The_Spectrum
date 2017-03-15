@@ -1,63 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
+    android:id="@+id/sidebar"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/blue"
-    tools:context="edu.colorado.gots.guardiansofthespectrum.MainActivity">
+    android:layout_height="match_parent">
 
-    <!-- <include layout="@layout/toolbar" /> -->
+    <ListView
+        android:id="@+id/navList"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="left|start"
+        android:background="#ffeeeeee"/>
 
-    <android.support.v7.widget.Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:id="@+id/activity_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/blue"
+                    tools:context="edu.colorado.gots.guardiansofthespectrum.MainActivity">
 
-        android:minHeight="?attr/actionBarSize"
-        android:id="@+id/toolbar"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ntia_logo"
-        android:id="@+id/logo"
-        android:layout_below="@+id/toolbar"
-        android:layout_centerHorizontal="true" />
-
-    <!-- it's a secret to everybody -->
-    <Button
-        android:id="@+id/button2"
-        android:background="@android:color/transparent"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_alignTop="@+id/logo"
-        android:layout_toStartOf="@+id/logo" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/heat_map"
-        android:id="@+id/heat_map"
-        android:layout_below="@+id/logo" />
+        <include layout="@layout/toolbar" />
 
 
 
-<!--<ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ntia"
-        android:contentDescription="@string/imageDesc"
-        android:id="@+id/imageView"
-        android:onClick="changelayout"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" /> -->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ntia_logo"
+            android:id="@+id/logo"
+            android:layout_below="@+id/toolbar"
+            android:layout_centerHorizontal="true" />
 
-</RelativeLayout>
+        <!-- it's a secret to everybody -->
+        <Button
+            android:id="@+id/button2"
+            android:background="@android:color/transparent"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignTop="@+id/logo"
+            android:layout_toStartOf="@+id/logo" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/heat_map"
+            android:id="@+id/heat_map"
+            android:layout_below="@+id/logo" />
+
+
+
+        <!--
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ntia"
+            android:contentDescription="@string/imageDesc"
+            android:id="@+id/imageView"
+            android:onClick="changelayout"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true" />
+            -->
+
+    </RelativeLayout>
+
+
+
+</android.support.v4.widget.DrawerLayout>
 
 
