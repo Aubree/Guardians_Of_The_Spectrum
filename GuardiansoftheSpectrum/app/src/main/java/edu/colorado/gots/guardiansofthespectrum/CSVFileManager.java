@@ -22,6 +22,13 @@ public class CSVFileManager {
         String ssid;
         int rssi;
 
+        private CSVEntry() {
+            this.time = -1L;
+            this.dbm = Integer.MAX_VALUE;
+            this.ssid = "invalid";
+            this.rssi = Integer.MAX_VALUE;
+        }
+
         public CSVEntry(long time, int dbm, String ssid, int rssi) {
             this.time = time;
             this.dbm = dbm;
@@ -30,15 +37,22 @@ public class CSVFileManager {
         }
 
         public CSVEntry(String data) {
-            String[] fields = data.split(", ");
-            this.time = Long.parseLong(fields[0]);
-            this.dbm = Integer.parseInt(fields[1]);
-            this.ssid = fields[2];
-            this.rssi = Integer.parseInt(fields[3]);
+            //call our default constructor
+            //needs to be first statement. we override the values
+            //if our data isn't null
+            this();
+            System.out.println("CSVEntry: " + data);
+            if (data != null) {
+                String[] fields = data.split(", ");
+                this.time = Long.parseLong(fields[0]);
+                this.dbm = Integer.parseInt(fields[1]);
+                this.ssid = fields[2];
+                this.rssi = Integer.parseInt(fields[3]);
+            }
         }
 
         public String toCSVString() {
-            return String.format("%d, %d, %s, %d", time, dbm, ssid, rssi);
+            return String.format("%d, %d, %s, %d\n", time, dbm, ssid, rssi);
         }
 
         public long getTime() {
@@ -108,7 +122,9 @@ public class CSVFileManager {
             } catch (IOException e) {
                 res = null;
             }
-            ret.add(new CSVEntry(res));
+            if (res != null) {
+                ret.add(new CSVEntry(res));
+            }
         } while (res != null);
         return ret;
     }
@@ -121,17 +137,8 @@ public class CSVFileManager {
             return -1;
         }
         StringBuffer buf = new StringBuffer();
-        int res;
-        /*do {
-            try {
-                res = reader.read();
-            } catch (IOException e) {
-                return -1;
-            }
-            buf.appendCodePoint(res);
-        } while (Character.isDigit(res));*/
         try {
-            for (res = reader.read(); res != -1 && Character.isDigit(res); res = reader.read()) {
+            for (int res = reader.read(); res != -1 && Character.isDigit(res); res = reader.read()) {
                 buf.appendCodePoint(res);
             }
         } catch (IOException e) {
