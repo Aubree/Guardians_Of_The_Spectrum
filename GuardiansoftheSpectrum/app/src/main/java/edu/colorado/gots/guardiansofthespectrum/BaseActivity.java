@@ -15,14 +15,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         mMenuInflater.inflate(R.menu.our_menu, menu);
         return true;
     }
-    @Override
+
+    /*@Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()){
-            /*
+            *//*
             case R.id.activity_main:
                 NavUtils.navigateUpFromSameTask(this);
-                return true; */
+                return true; *//*
             case R.id.action_scan:
                 Intent scan = new Intent(this, ScanActivity.class);
                 startActivity(scan);
@@ -43,5 +44,5 @@ public abstract class BaseActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
-    }
+    }*/
 }
