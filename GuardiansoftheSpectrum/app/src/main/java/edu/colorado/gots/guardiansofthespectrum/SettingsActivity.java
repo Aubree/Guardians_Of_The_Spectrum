@@ -81,6 +81,8 @@ public class SettingsActivity extends LocationActivity {
     public void initiateDelete(View v) {
         DataFileManager dFM = new DataFileManager(getApplicationContext());
         dFM.deleteAllDataFiles();
+        CSVFileManager cFM = new CSVFileManager(getApplicationContext());
+        cFM.deleteFiles();
     }
 
     public void initiateSend(View v) {
