@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.support.v7.widget.Toolbar;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -37,9 +39,7 @@ import static java.lang.Integer.parseInt;
 //public class ScanActivity extends BaseActivity implements LocationServicesManager.LocationServicesCallbacks {
 public class ScanActivity extends LocationActivity {
 
-    TextView textView;
-
-    ProgressBar bar;
+    ImageView bar;
     ScanDataReceiver receiver;
 
     List<Entry> entries;
@@ -52,7 +52,6 @@ public class ScanActivity extends LocationActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
-        textView = (TextView) findViewById(R.id.wifi_scanStat);
 
         //initialize line chart
         chart = (LineChart) findViewById(R.id.chart);
@@ -121,7 +120,8 @@ public class ScanActivity extends LocationActivity {
         count = 1;
 
 
-        bar = (ProgressBar) findViewById(R.id.scanProgressBar);
+        bar = (ImageView) findViewById(R.id.scanProgressAnim);
+        ((AnimationDrawable) bar.getDrawable()).start();
         bar.setVisibility(VISIBLE);
         receiver = new ScanDataReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(ScanService.GOTS_SCAN_SERVICE_RESULTS));
@@ -206,10 +206,10 @@ public class ScanActivity extends LocationActivity {
 
     private class ScanDataReceiver extends BroadcastReceiver {
         public void onReceive(Context c, Intent i) {
+            ((AnimationDrawable) bar.getDrawable()).stop();
             bar.setVisibility(GONE);
+            chart.setVisibility(VISIBLE);
             ParseData(i.getStringExtra(ScanService.GOTS_SCAN_SERVICE_RESULTS_EXTRA));
-            //textView.setText(i.getStringExtra(ScanService.GOTS_SCAN_SERVICE_RESULTS_EXTRA));
-
         }
     }
 

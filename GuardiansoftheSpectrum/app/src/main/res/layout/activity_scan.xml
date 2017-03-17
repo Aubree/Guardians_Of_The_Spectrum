@@ -5,7 +5,19 @@
     android:id="@+id/activity_scan"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/blue"
     tools:context="edu.colorado.gots.guardiansofthespectrum.ScanActivity">
+
+    <ImageView
+        android:id="@+id/scanProgressAnim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:scaleType="center"
+        android:src="@drawable/spec_animated"
+        android:visibility="gone" />
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -16,33 +28,10 @@
         android:minHeight="?attr/actionBarSize"
         android:layout_centerHorizontal="true"/>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="35dp"
-        android:layout_below="@id/toolbar">
-
-        <TextView
-            android:id="@+id/wifi_scanStat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="vertical"/>
-    </ScrollView>
-
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <ProgressBar
-        android:id="@+id/scanProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:indeterminate="true"
-        android:visibility="gone" />
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 
 </RelativeLayout>
