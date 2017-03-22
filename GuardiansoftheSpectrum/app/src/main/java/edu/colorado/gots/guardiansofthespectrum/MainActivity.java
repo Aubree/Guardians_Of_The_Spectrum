@@ -28,6 +28,7 @@ public class MainActivity extends BaseActivity {
                 link.onClick(MainActivity.this, getSupportFragmentManager());
             }
         });
+
     }
 
 }
