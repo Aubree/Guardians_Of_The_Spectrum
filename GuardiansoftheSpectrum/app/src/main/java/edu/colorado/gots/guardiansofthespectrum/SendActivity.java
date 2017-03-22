@@ -49,18 +49,9 @@ public class SendActivity extends AppCompatActivity implements ServerDialogFragm
         serverInfo.show(getSupportFragmentManager(), "serverInfo");
     }
 
-    //quick helper function because even though java will let you nest classes, functions
-    //are apparently a different story...
-    private String getDialogText(DialogFragment dialog, int id) {
-        return ((EditText) dialog.getDialog().findViewById(id)).getText().toString();
-    }
 
     public void onDialogPositiveClick(DialogFragment dialog) {
-        String IP = getDialogText(dialog, R.id.serverIP);
-        String port = getDialogText(dialog, R.id.serverPort);
-        System.out.println(String.format("opening socket to %s:%s\n", IP, port));
-
-        new SendTask().execute(IP, port, textView.getText().toString());
+        new SendTask().execute(textView.getText().toString());
     }
 
     public void onDialogNegativeClick(DialogFragment dialog) {
@@ -127,10 +118,8 @@ public class SendActivity extends AppCompatActivity implements ServerDialogFragm
                 return "cannot establish SSL context";
             }
             //initialize connection to server
-            int port = Integer.parseInt(params[1]);
             HttpsURLConnection serverConnection;
             try {
-                //URL server = new URL("https", params[0], port, "post_point");
                 URL server = new URL("https", "gotspec.tk", 443, "post_point");
                 System.out.println(String.format("url: %s", server.toExternalForm()));
                 serverConnection = (HttpsURLConnection) server.openConnection();
@@ -141,8 +130,8 @@ public class SendActivity extends AppCompatActivity implements ServerDialogFragm
                 serverConnection.setDoOutput(true);
                 //set HTTP header info
                 serverConnection.setRequestProperty("Content-Type", "application/json");
-                serverConnection.setRequestProperty("Content-Length", String.valueOf(params[2].getBytes().length));
-                serverConnection.setRequestProperty("Host", "gotspec.tk:" + String.valueOf(443));
+                serverConnection.setRequestProperty("Content-Length", String.valueOf(params[0].getBytes().length));
+                serverConnection.setRequestProperty("Host", "gotspec.tk:443");
                 //connect
                 serverConnection.connect();
             } catch (MalformedURLException e) {
@@ -157,7 +146,7 @@ public class SendActivity extends AppCompatActivity implements ServerDialogFragm
                 //certain characters (probably due to mixing line-buffered streams
                 //with non-line buffered streams)
                 DataOutputStream socStream = new DataOutputStream(serverConnection.getOutputStream());
-                socStream.writeBytes(params[2]);
+                socStream.writeBytes(params[0]);
                 socStream.close();
                 serverConnection.disconnect();
             } catch (IOException e) {
