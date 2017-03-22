@@ -39,24 +39,21 @@
         android:layout_alignTop="@+id/logo"
         android:layout_toStartOf="@+id/logo" />
 
-    <ImageView
+    <WebView
+        android:id="@+id/webview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/heat_map"
-        android:id="@+id/heat_map"
-        android:layout_below="@+id/logo" />
+        android:layout_below="@+id/logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="112dp" />
 
+    <!-- <ImageView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         app:srcCompat="@drawable/heat_map"
+         android:id="@+id/heat_map"
+         android:layout_below="@+id/logo" /> -->
 
-
-<!--<ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ntia"
-        android:contentDescription="@string/imageDesc"
-        android:id="@+id/imageView"
-        android:onClick="changelayout"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" /> -->
 
 </RelativeLayout>
 
