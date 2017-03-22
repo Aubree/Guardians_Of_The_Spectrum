@@ -15,6 +15,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         mMenuInflater.inflate(R.menu.our_menu, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 

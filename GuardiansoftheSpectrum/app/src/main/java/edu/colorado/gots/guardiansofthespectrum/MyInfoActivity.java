@@ -26,6 +26,7 @@ import java.text.SimpleDateFormat;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -77,19 +78,18 @@ public class MyInfoActivity extends BaseActivity {
 
         ArrayList<BarData> list = new ArrayList<BarData>();
 
-
-        list.add(generateData(1, "Connection Info"));
-        list.add(generateData(2, "WiFi Info"));
+        list.add(generateData(1, "WiFi Info"));
+        list.add(generateData(2, "Connection Info"));
 
         ChartDataAdapter my_adapter = new ChartDataAdapter(getApplicationContext(), list);
         my_listview.setAdapter(my_adapter);
 
-        csvManager = new CSVFileManager(getApplicationContext());
+        /*csvManager = new CSVFileManager(getApplicationContext());
         String data = "";
         for (CSVFileManager.CSVEntry e : csvManager.readData().getAllData()) {
             data += String.format("time: %d, dbm: %d, ssid: %s, rssi: %d\n", e.getTime(), e.getDbm(), e.getSsid(), e.getRssi());
         }
-        ((TextView) findViewById(R.id.dataDemo)).setText(data);
+        ((TextView) findViewById(R.id.dataDemo)).setText(data);*/
     }
 
     private class ChartDataAdapter extends ArrayAdapter<BarData>{
@@ -110,36 +110,30 @@ public class MyInfoActivity extends BaseActivity {
                 holder = (ViewHolder) convertView.getTag();
             }
             // apply styling
-            //data.setValueTypeface(mTfLight);
             data.setValueTextColor(Color.BLACK);
             holder.chart.getDescription().setEnabled(false);
             holder.chart.setDrawGridBackground(false);
 
             XAxis xAxis = holder.chart.getXAxis();
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-            //xAxis.setTypeface(mTfLight);
             xAxis.setDrawGridLines(false);
 
 
-            xAxis.setValueFormatter(new IAxisValueFormatter() {
-                private SimpleDateFormat hour_format = new SimpleDateFormat("HH");
+            /*xAxis.setValueFormatter(new IAxisValueFormatter() {
+                private SimpleDateFormat hour_format = new SimpleDateFormat("HH:MM");
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
 
                     long millis = TimeUnit.HOURS.toMillis((long) value);
                     return hour_format.format(new Date(millis));
                 }
-            });
-
-
+            });*/
 
             YAxis leftAxis = holder.chart.getAxisLeft();
-            //leftAxis.setTypeface(mTfLight);
             leftAxis.setLabelCount(5, false);
             leftAxis.setSpaceTop(15f);
 
             YAxis rightAxis = holder.chart.getAxisRight();
-            //rightAxis.setTypeface(mTfLight);
             rightAxis.setLabelCount(5, false);
             rightAxis.setSpaceTop(15f);
 
@@ -148,8 +142,20 @@ public class MyInfoActivity extends BaseActivity {
             holder.chart.setFitBars(true);
 
             // do not forget to refresh the chart
+            //holder.chart.clear();
             holder.chart.invalidate();
             holder.chart.animateY(700);
+
+
+            Legend l = holder.chart.getLegend();
+            l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+            l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+            l.setDrawInside(false);
+            l.setForm(Legend.LegendForm.SQUARE);
+            l.setFormSize(9f);
+            l.setTextSize(11f);
+            l.setXEntrySpace(4f);
 
             return convertView;
         }
@@ -158,27 +164,47 @@ public class MyInfoActivity extends BaseActivity {
             BarChart chart;
         }
     }
-    /**
-     * generates a random ChartData object with just one DataSet
-     *
-     * @return
-     */
     private BarData generateData(int cnt, String str) {
-
         ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
+        String data = "";
+        String time = "";
+        float dbm; //power
+        String ssid = ""; //service identifier
+        float rssi; //signal strength
 
-        for (int i = 0; i < 12; i++) {
-            entries.add(new BarEntry(i, (float) (Math.random() * 70) + 30));
+        csvManager = new CSVFileManager(getApplicationContext());
+
+        List<CSVFileManager.CSVEntry> csvData = csvManager.readData().getAllData();
+        for (CSVFileManager.CSVEntry e : csvData) {
+            time += String.format("", e.getTime());
+            ssid = String.format("", e.getSsid());
+            dbm = e.getDbm();
+            rssi = e.getRssi();
+            if (cnt == 1){
+                for (int i = 0; i < csvData.size(); i++) {
+                    entries.add(new BarEntry(i, rssi));
+                }
+            }
+            else
+                for (int i = 0; i < csvData.size(); i++) {
+                    entries.add(new BarEntry(i, dbm));
+                }
         }
+
         BarDataSet d = new BarDataSet(entries, str);
         d.setColors(ColorTemplate.VORDIPLOM_COLORS);
         d.setBarShadowColor(Color.rgb(203, 203, 203));
+
+        BarData cd = new BarData(d);
+
+        /*
+        //Does not do anything
 
         ArrayList<IBarDataSet> sets = new ArrayList<IBarDataSet>();
         sets.add(d);
 
         BarData cd = new BarData(sets);
-        cd.setBarWidth(0.9f);
+        cd.setBarWidth(0.9f);*/
         return cd;
     }
 }
