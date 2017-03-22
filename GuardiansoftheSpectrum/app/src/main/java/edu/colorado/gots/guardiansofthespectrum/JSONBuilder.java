@@ -14,9 +14,20 @@ import org.json.JSONTokener;
 
 import java.util.List;
 
+/**
+ * Class containing functionality to build JSON formatted strings of the data we've collected in
+ * a scan.
+ */
 public class JSONBuilder {
-    //handle building our main JSON Results String
-    public static String scanToJSON(List<CellInfo> lte, List<ScanResult> wifi, Location current) {
+    /**
+     * Builds the main JSON formatted string of our results.
+     * @param lte The LTE data collected or <code>null</code> if none
+     * @param wifi The WIFI data collected or <code>null</code> if none
+     * @param current The current Location, or <code>null</code> if none
+     * @return The JSON string. Will always be valid, but may be an empty JSON object if an error
+     * occurs.
+     */
+    public static String scanToJSON(CellInfoLte lte, List<ScanResult> wifi, Location current) {
         JSONObject main = new JSONObject();
         try {
             if (current != null) {
@@ -35,8 +46,14 @@ public class JSONBuilder {
         }
     }
 
-    //take multiple JSON strings from data files, parse them, combine them into
-    //our transfer spec JSON, and return the string representation
+    /**
+     * Combines the multiple JSON strings from the stored data files, combines them into a single
+     * JSON string which conforms to our Transfer Specification for transmitting the data to the
+     * server.
+     * @param data A String array with the individual JSON strings from each stored data file
+     * @return The full JSON string adhering to our transfer spec, and ready to be added into
+     * the body of a POST request to our server
+     */
     public static String prepareSendData(String[] data) {
         JSONObject message = new JSONObject();
         JSONArray scanData = new JSONArray();
@@ -60,7 +77,12 @@ public class JSONBuilder {
         return ret;
     }
 
-    //build array of JSON objects containing our wifi scan results
+    /**
+     * Builds a JSON Array which contains JSON objects representing the WIFI data collected during
+     * a scan.
+     * @param res The List of WIFI ScanResults
+     * @return The JSONArray of our results. Will be empty if an error occurs
+     */
     private static JSONArray buildWifiJSON(List<ScanResult> res) {
         JSONArray wifi_array = new JSONArray();
         try {
@@ -73,7 +95,11 @@ public class JSONBuilder {
         return wifi_array;
     }
 
-    //build a JSON object out of a single wifi ScanResult object
+    /**
+     * Builds a JSON Object out of a single WIFI ScanResult object.
+     * @param res A ScanResult object returned from the WifiManager class.
+     * @return The JSONObject. May be empty if an error occurs.
+     */
     private static JSONObject scanToJSON(ScanResult res) {
         JSONObject ret = new JSONObject();
         try {
@@ -87,25 +113,23 @@ public class JSONBuilder {
         }
         return ret;
     }
-    
-    private static JSONObject buildLTEJSON(List<CellInfo> lte) {
+
+    /**
+     * Builds a JSON Object from the data gathered from a scan.
+     * @param lte The LTE information collected from the scan
+     * @return A JSONObject representing the LTE information. Will be empty if an error occurs.
+     */
+    private static JSONObject buildLTEJSON(CellInfoLte lte) {
         JSONObject ret = new JSONObject();
-        System.out.println("attempting to build lte json\n");
        try {
-           for (CellInfo cellInfo : lte) {
-               System.out.println(String.format("%s\n", lte.toString()));
-               if (cellInfo instanceof CellInfoLte) {
-                   CellInfoLte ci = (CellInfoLte) cellInfo;
-                   System.out.println("building lte JSON\n");
-                   ret.put("Dbm", ci.getCellSignalStrength().getDbm());
-                   ret.put("CellID", ci.getCellIdentity().getCi());
-                   ret.put("MCC", ci.getCellIdentity().getMcc());
-                   ret.put("MNC", ci.getCellIdentity().getMnc());
-                   ret.put("PCI", ci.getCellIdentity().getPci());
-                   ret.put("TAC", ci.getCellIdentity().getTac());
-                   ret.put("TimingAdvance", ci.getCellSignalStrength().getTimingAdvance());
-               }
-           }
+           System.out.println("building lte JSON\n");
+           ret.put("Dbm", lte.getCellSignalStrength().getDbm());
+           ret.put("CellID", lte.getCellIdentity().getCi());
+           ret.put("MCC", lte.getCellIdentity().getMcc());
+           ret.put("MNC", lte.getCellIdentity().getMnc());
+           ret.put("PCI", lte.getCellIdentity().getPci());
+           ret.put("TAC", lte.getCellIdentity().getTac());
+           ret.put("TimingAdvance", lte.getCellSignalStrength().getTimingAdvance());
            return ret;
        } catch (JSONException e) {
            System.out.println("lte json fail\n");
@@ -113,6 +137,10 @@ public class JSONBuilder {
        }
     }
 
+    /**
+     * Builds a JSON Object containing information about the phone that did the scanning.
+     * @return A JSONObject with various metadata. Will be empty if an error occurs.
+     */
     private static JSONObject buildMetadataJSON() {
         JSONObject ret = new JSONObject();
         try {

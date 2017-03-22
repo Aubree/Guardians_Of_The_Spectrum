@@ -49,6 +49,8 @@ public class MyInfoActivity extends BaseActivity {
     String[] info_options = {"Hardware Info", "Cell Connection", "WiFi Connection"};
     private ListView my_listview;
 
+    CSVFileManager csvManager;
+
     //Make image view and set it to gone -> set visibility
 //Then in Java code write a listener
     @Override
@@ -81,6 +83,13 @@ public class MyInfoActivity extends BaseActivity {
 
         ChartDataAdapter my_adapter = new ChartDataAdapter(getApplicationContext(), list);
         my_listview.setAdapter(my_adapter);
+
+        csvManager = new CSVFileManager(getApplicationContext());
+        String data = "";
+        for (CSVFileManager.CSVEntry e : csvManager.readData().getAllData()) {
+            data += String.format("time: %d, dbm: %d, ssid: %s, rssi: %d\n", e.getTime(), e.getDbm(), e.getSsid(), e.getRssi());
+        }
+        ((TextView) findViewById(R.id.dataDemo)).setText(data);
     }
 
     private class ChartDataAdapter extends ArrayAdapter<BarData>{

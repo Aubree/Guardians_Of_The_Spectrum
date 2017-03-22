@@ -10,15 +10,28 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Date;
 
-//class to handle working with our JSON files
+/**
+ * Class to handle working with the storage of data collected from scanning.
+ */
 public class DataFileManager {
+    /**
+     * The directory in which we store the data before we send it to the server.
+     */
     private File newDataDir;
 
+    /**
+     * Creates and initializes the Manager.
+     * @param c The Context of the application
+     */
     DataFileManager(Context c) {
         newDataDir = c.getDir("new", Context.MODE_PRIVATE);
     }
 
-    //write JSON data into a file with the current timestamp as the filename
+    /**
+     * Writes the provided JSON formatted data into a new data file.
+     * @param JSONData The String of JSON data
+     * @return <code>true</code> if the write completed successfully, <code>false</code> otherwise.
+     */
     boolean writeToFile(String JSONData) {
         long time = new Date().getTime();
         File name = new File(newDataDir, String.format("%d", time));
@@ -37,12 +50,19 @@ public class DataFileManager {
         return true;
     }
 
-    //list all new (i.e. not yet sent) JSON files
+    /**
+     * Lists all data files.
+     * @return An array of the data files
+     */
     File[] listDataFiles() {
         return newDataDir.listFiles();
     }
 
-    //read the contents a the new (i.e. not yet sent) JSON file
+    /**
+     * Reads the contents of the data file with the provided name.
+     * @param name The filename to read
+     * @return The contents of the file, or <code>null</code> if an error occurs
+     */
     String readDataFile(String name) {
         BufferedReader in;
         try {
@@ -66,7 +86,10 @@ public class DataFileManager {
         return buf.toString();
     }
 
-    //read contents of ALL new (i.e. not yet sent) JSON data files
+    /**
+     * Reads the contents of all data files.
+     * @return An array containing the contents of each file.
+     */
     String[] readAllDataFiles() {
         File[] newFiles = listDataFiles();
         String[] ret = new String[newFiles.length];
@@ -77,7 +100,11 @@ public class DataFileManager {
         return ret;
     }
 
-    //delete a new (i.e. not yet sent) JSON data file
+    /**
+     * Deletes the file that has the provided name.
+     * @param name The name of the file to delete
+     * @return <code>true</code> if the file was deleted successfully, <code>false</code> if not
+     */
     boolean deleteDataFile(String name) {
         File f = new File(newDataDir, name);
         if (f.exists()) {
@@ -87,7 +114,10 @@ public class DataFileManager {
         }
     }
 
-    //delete ALL new (i.e. not yet sent) JSON data files
+    /**
+     * Deletes all stored data files
+     * @return <code>true</code> if all files were deleted successfully, <code>false</code> otherwise
+     */
     boolean deleteAllDataFiles() {
         File[] s = listDataFiles();
         boolean ret = true;
