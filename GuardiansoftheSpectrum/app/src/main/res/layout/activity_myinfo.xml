@@ -26,6 +26,7 @@
         android:textColor="@color/blue"
         android:layout_below="@id/toolbar"
         />
+    <!--
     <ScrollView
         android:id="@+id/dataDemoScroll"
         android:layout_width="match_parent"
@@ -35,12 +36,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/dataDemo" /></ScrollView>
-
+        -->
 <ListView
     android:id="@+id/id_list_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_below="@id/dataDemoScroll"
+    android:layout_below="@id/textView"
     >
 </ListView>
 

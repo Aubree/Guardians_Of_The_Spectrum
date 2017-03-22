@@ -23,5 +23,9 @@
     <string name="appname">ListDisplay</string>
     <string name="action_settings">Settings</string>
     <string name="hardware_text">Hardware Info</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
+    <string name="action_websearch">Web search</string>
 </resources>
 
