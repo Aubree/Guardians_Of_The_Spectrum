@@ -62,9 +62,6 @@ public class MyInfoActivity extends BaseActivity {
                 .LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_myinfo);
 
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-
         TextView textView = (TextView) findViewById(R.id.textView);
         textView.setTextSize(getResources().getDimension(R.dimen.textsize));
         textView.getPaddingTop();

@@ -126,8 +126,6 @@ public class ScanActivity extends LocationActivity {
         receiver = new ScanDataReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(ScanService.GOTS_SCAN_SERVICE_RESULTS));
         LSManager.connect();
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
     }
 
     protected void onStop() {

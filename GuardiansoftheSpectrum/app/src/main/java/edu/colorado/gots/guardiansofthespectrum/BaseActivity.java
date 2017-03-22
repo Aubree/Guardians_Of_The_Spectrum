@@ -25,12 +25,18 @@ public abstract class BaseActivity extends AppCompatActivity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
 
+    protected Toolbar mToolbar;
+
     @Override
     //responsible for adding in the NavigationDrawer Items, and setting the
     //base content view
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_base);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setLogo(R.drawable.home);
+        mToolbar.setTitle("NTIA");
+        setSupportActionBar(mToolbar);
         addDrawerItems();
     }
 
@@ -46,11 +52,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater mMenuInflater = getMenuInflater();
         mMenuInflater.inflate(R.menu.our_menu, menu);
-
-        //Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(mToolbar);
-        //mToolbar.setTitle("NTIA");
-        //mToolbar.setLogo(R.drawable.home);
 
         return true;
     }

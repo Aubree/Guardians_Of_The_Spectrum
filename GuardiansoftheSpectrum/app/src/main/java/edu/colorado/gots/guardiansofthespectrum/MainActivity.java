@@ -27,8 +27,8 @@ public class MainActivity extends BaseActivity {
         webSettings.setJavaScriptEnabled(true);
       
         //Sets up a top bar.
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
+        //Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(mToolbar);
 
         link = new LinkDialogFragment();
 

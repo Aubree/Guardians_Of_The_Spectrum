@@ -4,13 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- this is the main screen. Overwritten when setting the content
-         view in the individual activities -->
-    <FrameLayout
-        android:id="@+id/contentLayout"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
+        <!-- include the base toolbar -->
+        <include layout="@layout/toolbar" />
+
+        <!-- this is the main screen. Overwritten when setting the content
+         view in the individual activities -->
+        <FrameLayout
+            android:id="@+id/contentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
     <!-- ListView that will contain the items in our drawer -->
     <ListView
         android:id="@+id/navList"

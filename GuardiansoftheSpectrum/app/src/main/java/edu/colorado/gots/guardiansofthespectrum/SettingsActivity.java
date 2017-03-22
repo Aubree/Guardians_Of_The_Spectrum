@@ -24,8 +24,6 @@ public class SettingsActivity extends LocationActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
 
         //set up a listener to manage low-battery notifications
         batteryReceiver = new BatteryReceiver();
