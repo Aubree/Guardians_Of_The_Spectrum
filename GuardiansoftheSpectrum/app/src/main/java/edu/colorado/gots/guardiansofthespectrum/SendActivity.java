@@ -21,8 +21,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.util.List;
-import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -145,13 +143,6 @@ public class SendActivity extends AppCompatActivity implements ServerDialogFragm
                 serverConnection.setRequestProperty("Content-Type", "application/json");
                 serverConnection.setRequestProperty("Content-Length", String.valueOf(params[2].getBytes().length));
                 serverConnection.setRequestProperty("Host", "gotspec.tk:" + String.valueOf(443));
-                for (Map.Entry<String, List<String>> h : serverConnection.getRequestProperties().entrySet()) {
-                    System.out.print(h.getKey()+":");
-                    for (String v : h.getValue()) {
-                        System.out.print(v+",");
-                    }
-                    System.out.print("\n");
-                }
                 //connect
                 serverConnection.connect();
             } catch (MalformedURLException e) {
