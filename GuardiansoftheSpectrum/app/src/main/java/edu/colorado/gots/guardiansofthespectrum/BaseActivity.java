@@ -47,10 +47,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         MenuInflater mMenuInflater = getMenuInflater();
         mMenuInflater.inflate(R.menu.our_menu, menu);
 
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
+        //Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(mToolbar);
         //mToolbar.setTitle("NTIA");
-        mToolbar.setLogo(R.drawable.home);
+        //mToolbar.setLogo(R.drawable.home);
 
         return true;
     }
@@ -119,5 +119,69 @@ public abstract class BaseActivity extends AppCompatActivity {
                 }
             }
         });
+
+        /*mDrawerToggle = new ActionBarDrawerToggle(MainActivity.this, mDrawerLayout, R.string
+                .drawer_open, R.string.drawer_close) {
+            *//**
+         * Called when a drawer has settled in a completely closed state.
+         *//*
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                if (mTitle != null){
+                    getActionBar().setTitle(mTitle);
+                }
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            *//**
+         * Called when a drawer has settled in a completely open state.
+         *//*
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                getActionBar().setTitle(mDrawerTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
+
+        //getActionBar().setDisplayHomeAsUpEnabled(true);
+        //getActionBar().setHomeButtonEnabled(true);
+    }
+
+    *//* Called whenever we call invalidateOptionsMenu() *//*
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // If the nav drawer is open, hide action items related to the content view
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        //menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);//!!!!!!!!!!!!!!!!!!!!!!!
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        // Handle your other action bar items...
+
+        return super.onOptionsItemSelected(item);
+
+    }*/
     }
 }
