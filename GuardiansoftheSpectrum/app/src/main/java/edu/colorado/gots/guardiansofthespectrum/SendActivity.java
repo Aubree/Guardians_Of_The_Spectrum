@@ -11,10 +11,22 @@ import android.widget.Toast;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.util.List;
+import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -68,39 +80,95 @@ public class SendActivity extends AppCompatActivity implements ServerDialogFragm
 
         //send the data to our server
         protected String doInBackground(String... params) {
-            InetAddress server;
+            //load in our certificate authority information
+            CertificateFactory cf;
+            Certificate cA;
+            InputStream certInfo = getResources().openRawResource(R.raw.cert);
             try {
-                server = InetAddress.getByName(params[0]);
-            } catch (UnknownHostException e) {
-                //this should not happen since we only ever pass in a string representation of an
-                //IP address, thus no host checking or dns is ever done
-                return "Creating ip address for server failed";
+                cf = CertificateFactory.getInstance("X.509");
+                cA = cf.generateCertificate(certInfo);
+            } catch (CertificateException e) {
+                return "can't load certificate authority information";
             }
-            //the main socket to our server
-            Socket soc;
             try {
-                soc = new Socket(server, Integer.parseInt(params[1]));
+                certInfo.close();
+            } catch (IOException e) {}
+            //store certificate in storage to initialize trustmanagers
+            KeyStore store;
+            try {
+                store = KeyStore.getInstance(KeyStore.getDefaultType());
+                store.load(null, null);
+                store.setCertificateEntry("cA", cA);
+            } catch (KeyStoreException e) {
+                return "can't create keystore for certificate information";
             } catch (IOException e) {
-                //something went wrong while opening the socket
-                System.out.println(String.format("exception: message: %s, cause: %s\n", e.getMessage(), e.getCause()));
-                return "Couldn't connect to server";
+                return "can't create keystore for certificate information";
+            } catch (NoSuchAlgorithmException e) {
+                return "can't create keystore for certificate information";
+            } catch (CertificateException e) {
+                return "can't create keystore for certificate information";
+            }
+            //create trustmanager to handle making credential information
+            TrustManagerFactory tmf;
+            try {
+                tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                tmf.init(store);
+            } catch (NoSuchAlgorithmException e) {
+                return "can't create trust managers for certificates";
+            } catch (KeyStoreException e) {
+                return "can't create trust managers for certificates";
+            }
+            //create context in which our SSL connection will operate
+            SSLContext sslContext;
+            try {
+                sslContext = SSLContext.getInstance("TLS");
+                sslContext.init(null, tmf.getTrustManagers(), null);
+            } catch (NoSuchAlgorithmException e) {
+                return "cannot establish SSL context";
+            } catch (KeyManagementException e) {
+                return "cannot establish SSL context";
+            }
+            //initialize connection to server
+            int port = Integer.parseInt(params[1]);
+            HttpsURLConnection serverConnection;
+            try {
+                //URL server = new URL("https", params[0], port, "post_point");
+                URL server = new URL("https", "gotspec.tk", 443, "post_point");
+                System.out.println(String.format("url: %s", server.toExternalForm()));
+                serverConnection = (HttpsURLConnection) server.openConnection();
+                serverConnection.setSSLSocketFactory(sslContext.getSocketFactory());
+                //make connection use a post method
+                serverConnection.setRequestMethod("POST");
+                //allow outgoing data
+                serverConnection.setDoOutput(true);
+                //set HTTP header info
+                serverConnection.setRequestProperty("Content-Type", "application/json");
+                serverConnection.setRequestProperty("Content-Length", String.valueOf(params[2].getBytes().length));
+                serverConnection.setRequestProperty("Host", "gotspec.tk:" + String.valueOf(443));
+                for (Map.Entry<String, List<String>> h : serverConnection.getRequestProperties().entrySet()) {
+                    System.out.print(h.getKey()+":");
+                    for (String v : h.getValue()) {
+                        System.out.print(v+",");
+                    }
+                    System.out.print("\n");
+                }
+                //connect
+                serverConnection.connect();
+            } catch (MalformedURLException e) {
+                return "bad ip and port specification";
+            } catch (IOException e) {
+                return "can't connect to server";
             }
 
             try {
-                //wrap our data in a post request
                 //Data Output stream works better than other Higher-level
                 //constructs like PrintWriter which seem to silently swallow
                 //certain characters (probably due to mixing line-buffered streams
                 //with non-line buffered streams)
-                DataOutputStream socStream = new DataOutputStream(soc.getOutputStream());
-                socStream.writeBytes("POST /post_point HTTP/1.1\n");
-                socStream.writeBytes("Content-Type: application/json\n");
-                socStream.writeBytes("Host: " + params[0] + ":" + params[1] + "\n");
-                socStream.writeBytes("Content-Length: " + String.valueOf(params[2].length()) + "\n");
-                socStream.writeBytes("\n");
+                DataOutputStream socStream = new DataOutputStream(serverConnection.getOutputStream());
                 socStream.writeBytes(params[2]);
-                soc.close();
-                System.out.println(String.format("content length: %d, written: %d\n", params[2].length(), socStream.size()));
+                socStream.close();
+                serverConnection.disconnect();
             } catch (IOException e) {
                 System.out.println(String.format("exception: message %s, cause %s\n", e.getMessage(), e.getCause()));
                 return "Sending data to server failed";
