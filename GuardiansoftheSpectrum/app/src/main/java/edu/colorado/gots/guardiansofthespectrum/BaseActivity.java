@@ -1,6 +1,8 @@
 package edu.colorado.gots.guardiansofthespectrum;
 
 import android.content.Intent;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -36,9 +38,8 @@ public abstract class BaseActivity extends AppCompatActivity {
                 startActivity(settings);
                 return true;
             case R.id.action_about:
-                Intent about = new Intent(this, AboutActivity.class);
-                startActivity(about);
-                return true;
+                AboutDialogFragment aboutDialog = new AboutDialogFragment();
+                aboutDialog.show(getSupportFragmentManager(), "aboutDialog");
             default:
                 return super.onOptionsItemSelected(item);
 
