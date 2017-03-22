@@ -37,6 +37,8 @@ public class MainActivity extends BaseActivity {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
+        link = new LinkDialogFragment();
+
         Button b2 = (Button) findViewById(R.id.button2);
         b2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -63,7 +65,7 @@ public class MainActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        Intent scan = new Intent(MainActivity.this, ScanActivity.class);
+                        Intent scan = new Intent(getApplicationContext(), ScanActivity.class);
                         startActivity(scan);
                         break;
                     case 1:
