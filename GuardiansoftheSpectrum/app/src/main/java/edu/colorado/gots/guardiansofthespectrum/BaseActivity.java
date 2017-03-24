@@ -3,6 +3,8 @@ package edu.colorado.gots.guardiansofthespectrum;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -77,9 +79,8 @@ public abstract class BaseActivity extends AppCompatActivity {
                 startActivity(settings);
                 return true;
             case R.id.action_about:
-                Intent about = new Intent(this, AboutActivity.class);
-                startActivity(about);
-                return true;
+                AboutDialogFragment aboutDialog = new AboutDialogFragment();
+                aboutDialog.show(getSupportFragmentManager(), "aboutDialog");
             default:
                 return super.onOptionsItemSelected(item);
 
@@ -112,8 +113,8 @@ public abstract class BaseActivity extends AppCompatActivity {
                         startActivity(settings);
                         break;
                     case 3:
-                        Intent about = new Intent(BaseActivity.this, AboutActivity.class);
-                        startActivity(about);
+                        AboutDialogFragment aboutDialog = new AboutDialogFragment();
+                        aboutDialog.show(getSupportFragmentManager(), "aboutDialog");
                         break;
                     default:
                         throw new RuntimeException("unreachable");

@@ -46,10 +46,6 @@
 
         <activity android:name=".SendActivity" />
         <activity
-            android:name=".AboutActivity"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.PopupTheme"/>
-        <activity
             android:name=".MyInfoActivity"
             android:parentActivityName=".MainActivity"/>
         <activity
