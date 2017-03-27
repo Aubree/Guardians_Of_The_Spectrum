@@ -27,5 +27,9 @@
     <string name="drawer_close">Close navigation drawer</string>
 
     <string name="action_websearch">Web search</string>
+
+    <string name="storageCapTitle">Local Storage Data Cap</string>
+    <string name="storageCapDesc">The maximum amount of space our stored data files will occupy on
+    your device before we send them to the server</string>
 </resources>
 
