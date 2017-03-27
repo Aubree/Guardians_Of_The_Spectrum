@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:key="serviceSwitch"
+        android:title="@string/scanServiceLabel"
+        android:summary="@string/serviceDesc"
+        android:defaultValue="false" />
+    <ListPreference
+        android:key="storageCap"
+        android:title="@string/storageCapTitle"
+        android:dialogTitle="@string/storageCapTitle"
+        android:summary="@string/storageCapDesc"
+        android:dialogMessage="@string/storageCapDesc"
+        android:entries="@array/storageCapNames"
+        android:entryValues="@array/storageCapValues"/>
+</PreferenceScreen>

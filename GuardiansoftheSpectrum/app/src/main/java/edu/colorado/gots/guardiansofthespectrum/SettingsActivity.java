@@ -4,7 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.SwitchPreference;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -12,11 +14,12 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 
 //public class SettingsActivity extends BaseActivity implements LocationServicesManager.LocationServicesCallbacks {
-public class SettingsActivity extends LocationActivity {
-    private Switch serviceSwitch;
+public class SettingsActivity extends LocationActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+    private SettingsFragment fragment;
+    private SwitchPreference serviceSwitch;
     private Intent serviceIntent;
     private boolean scanEnabled = true;
-    private static boolean switchState = false;
+    //private static boolean switchState = false;
     private BatteryReceiver batteryReceiver;
     private CounterReceiver counterReceiver;
 
@@ -39,11 +42,11 @@ public class SettingsActivity extends LocationActivity {
 
         //grab location manager
         //LSManager = new LocationServicesManager(this);
-        serviceSwitch = (Switch) findViewById(R.id.scanServiceSwitch);
-        serviceSwitch.setChecked(switchState);
+        //serviceSwitch = (Switch) findViewById(R.id.scanServiceSwitch);
+        //serviceSwitch.setChecked(switchState);
         serviceIntent = new Intent(this, ScanService.class);
         serviceIntent.setAction(ScanService.GOTS_SCAN_BACKGROUND_START);
-        serviceSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        /*serviceSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton button, boolean isChecked) {
                 if (isChecked && scanEnabled) {
                     //LSManager.checkAndResolvePermissions();
@@ -53,7 +56,23 @@ public class SettingsActivity extends LocationActivity {
                     switchState = false;
                 }
             }
-        });
+        });*/
+        fragment = new SettingsFragment();
+        getFragmentManager().beginTransaction().replace(R.id.settingsFragLayout, fragment).commit();
+        //force outstanding transactions to complete, else, we can get null instead of
+        //references to the preference items in the following line
+        getFragmentManager().executePendingTransactions();
+        serviceSwitch = (SwitchPreference) fragment.findPreference("serviceSwitch");
+    }
+
+    public void onResume() {
+        super.onResume();
+        fragment.getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+    }
+
+    public void onPause() {
+        super.onPause();
+        fragment.getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 
     public void onDestroy() {
@@ -68,11 +87,24 @@ public class SettingsActivity extends LocationActivity {
 
     public void onLocationEnabled() {
         startService(serviceIntent);
-        switchState = true;
+        //switchState = true;
     }
 
     public void onLocationNotEnabled() {
         serviceSwitch.setChecked(false);
+    }
+
+    public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
+        if (key.equals("serviceSwitch")) {
+            boolean isChecked = pref.getBoolean(key, false);
+            if (isChecked && scanEnabled) {
+                //LSManager.checkAndResolvePermissions();
+                LSManager.connect();
+            } else {
+                stopService(serviceIntent);
+                //switchState = false;
+            }
+        }
     }
 
     //delete local data file storage
@@ -107,7 +139,7 @@ public class SettingsActivity extends LocationActivity {
 
     public class CounterReceiver extends BroadcastReceiver {
         public void onReceive(Context context, Intent intent){
-            serviceSwitch.setText(String.format("Service running: %d\n",
+            serviceSwitch.setTitle(String.format("Service running: %d\n",
                     intent.getIntExtra(ScanService.GOTS_COUNTER_EXTRA, 0)));
         }
     }
