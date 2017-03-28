@@ -2,9 +2,11 @@
 <resources>
     <string-array name="storageCapNames">
         <item>10 KB</item>
+        <item>100 KB</item>
     </string-array>
 
     <string-array name="storageCapValues">
         <item>10</item>
+        <item>100</item>
     </string-array>
 </resources>

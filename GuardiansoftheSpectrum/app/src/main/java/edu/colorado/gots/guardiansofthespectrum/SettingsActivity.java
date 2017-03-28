@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.SwitchPreference;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
@@ -13,13 +14,11 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
-//public class SettingsActivity extends BaseActivity implements LocationServicesManager.LocationServicesCallbacks {
 public class SettingsActivity extends LocationActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private SettingsFragment fragment;
     private SwitchPreference serviceSwitch;
     private Intent serviceIntent;
     private boolean scanEnabled = true;
-    //private static boolean switchState = false;
     private BatteryReceiver batteryReceiver;
     private CounterReceiver counterReceiver;
 
@@ -87,7 +86,6 @@ public class SettingsActivity extends LocationActivity implements SharedPreferen
 
     public void onLocationEnabled() {
         startService(serviceIntent);
-        //switchState = true;
     }
 
     public void onLocationNotEnabled() {
@@ -98,12 +96,14 @@ public class SettingsActivity extends LocationActivity implements SharedPreferen
         if (key.equals("serviceSwitch")) {
             boolean isChecked = pref.getBoolean(key, false);
             if (isChecked && scanEnabled) {
-                //LSManager.checkAndResolvePermissions();
                 LSManager.connect();
             } else {
                 stopService(serviceIntent);
-                //switchState = false;
             }
+        } else if (key.equals("storageCap")) {
+            String cap = pref.getString(key, "");
+            ListPreference l = (ListPreference) fragment.findPreference(key);
+            l.setSummary(getResources().getString(R.string.storageCapDesc, cap));
         }
     }
 
@@ -119,23 +119,6 @@ public class SettingsActivity extends LocationActivity implements SharedPreferen
         Intent i = new Intent(this, SendActivity.class);
         startActivity(i);
     }
-
-
-    /*protected void onActivityResult(int requestCode, int returnCode, Intent i) {
-        switch (requestCode) {
-            case LocationServicesManager.LOCATION_SERVICE_RESOLUTION:
-                if (returnCode != Activity.RESULT_OK) {
-                    //changes not made successfully. just gripe for now
-                    Toast.makeText(getApplicationContext(), "Location services needed to send data", Toast.LENGTH_SHORT).show();
-                    onLocationNotEnabled();
-                } else {
-                    onLocationEnabled();
-                }
-                break;
-            default:
-                break;
-        }
-    }*/
 
     public class CounterReceiver extends BroadcastReceiver {
         public void onReceive(Context context, Intent intent){
