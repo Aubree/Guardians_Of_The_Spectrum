@@ -1,18 +1,21 @@
 package edu.colorado.gots.guardiansofthespectrum;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.SwitchPreference;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.Switch;
+
 
 public class SettingsActivity extends LocationActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private SettingsFragment fragment;
@@ -21,6 +24,33 @@ public class SettingsActivity extends LocationActivity implements SharedPreferen
     private boolean scanEnabled = true;
     private BatteryReceiver batteryReceiver;
     private CounterReceiver counterReceiver;
+
+    private void pushNotification() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        //taskbar icon
+        builder.setSmallIcon(R.drawable.notification);
+        //title and text on notification
+        builder.setContentTitle(getResources().getString(R.string.notificationTitle));
+        builder.setContentText(getResources().getString(R.string.notificationText));
+        //display updating running time
+        builder.setUsesChronometer(true);
+        //set category for the notification
+        builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
+        //create intent to start when user taps on the notification
+        Intent i = new Intent(this, SettingsActivity.class);
+        //enable navigation by pressing back button when tapping notification
+        TaskStackBuilder taskBuilder = TaskStackBuilder.create(this);
+        taskBuilder.addParentStack(SettingsActivity.class);
+        taskBuilder.addNextIntent(i);
+        //set pending intent to call on notification tap
+        builder.setContentIntent(taskBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT));
+        //send out the notification
+        ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(0, builder.build());
+    }
+
+    private void cancelNotification() {
+        ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).cancel(0);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,6 +116,10 @@ public class SettingsActivity extends LocationActivity implements SharedPreferen
 
     public void onLocationEnabled() {
         startService(serviceIntent);
+        //push notification if we are allowed to
+        if (fragment.getPreferenceScreen().getSharedPreferences().getBoolean("notificationEnabled", true)) {
+            pushNotification();
+        }
     }
 
     public void onLocationNotEnabled() {
@@ -99,11 +133,25 @@ public class SettingsActivity extends LocationActivity implements SharedPreferen
                 LSManager.connect();
             } else {
                 stopService(serviceIntent);
+                cancelNotification();
             }
         } else if (key.equals("storageCap")) {
             String cap = pref.getString(key, "");
             ListPreference l = (ListPreference) fragment.findPreference(key);
             l.setSummary(getResources().getString(R.string.storageCapDesc, cap));
+        } else if (key.equals("notificationEnabled")) {
+            boolean isEnabled = pref.getBoolean(key, true);
+            CheckBoxPreference c = (CheckBoxPreference) fragment.findPreference(key);
+            if (isEnabled) {
+                c.setSummary(getResources().getString(R.string.notifyOnDesc));
+                //push a notification if the service is running
+                if (fragment.getPreferenceScreen().getSharedPreferences().getBoolean("serviceSwitch", false)) {
+                    pushNotification();
+                }
+            } else {
+                c.setSummary(getResources().getString(R.string.notifyOffDesc));
+                cancelNotification();
+            }
         }
     }
 
