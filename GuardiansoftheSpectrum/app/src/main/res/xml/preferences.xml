@@ -11,5 +11,6 @@
         android:dialogTitle="@string/storageCapTitle"
         android:summary="@string/storageCapDesc"
         android:entries="@array/storageCapNames"
-        android:entryValues="@array/storageCapValues"/>
+        android:entryValues="@array/storageCapValues"
+        android:defaultValue="100"/>
 </PreferenceScreen>
