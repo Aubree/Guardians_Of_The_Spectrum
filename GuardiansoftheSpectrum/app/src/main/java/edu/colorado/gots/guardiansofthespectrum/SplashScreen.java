@@ -3,9 +3,10 @@ package edu.colorado.gots.guardiansofthespectrum;
 import android.os.Bundle;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-public class SplashScreen extends BaseActivity {
+public class SplashScreen extends AppCompatActivity {
 
     //Timer for how long splash screen lasts
     private static int SPLASH_TIME_OUT = 2000;
