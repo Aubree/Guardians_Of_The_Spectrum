@@ -37,13 +37,13 @@ import static java.lang.Integer.parseInt;
 //public class ScanActivity extends BaseActivity implements LocationServicesManager.LocationServicesCallbacks {
 public class ScanActivity extends LocationActivity {
 
-    TextView textView;
-
     ProgressBar bar;
     ScanDataReceiver receiver;
 
     List<Entry> entries;
-    LineChart chart;
+    LineChart chart1;
+    LineChart chart2;
+    TextView textView;
     int count;
 
     private boolean scanning = false;
@@ -52,21 +52,21 @@ public class ScanActivity extends LocationActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
-        textView = (TextView) findViewById(R.id.wifi_scanStat);
 
         //initialize line chart
-        chart = (LineChart) findViewById(R.id.chart);
+        chart1 = (LineChart) findViewById(R.id.chart1);
+        chart2 = (LineChart) findViewById(R.id.chart2);
         // enable scaling and dragging
-        chart.setDragEnabled(true);
-        chart.setScaleEnabled(true);
-        chart.setDrawGridBackground(false);
-        chart.setHighlightPerDragEnabled(true);
+        chart1.setDragEnabled(true);
+        chart1.setScaleEnabled(true);
+        chart1.setDrawGridBackground(false);
+        chart1.setHighlightPerDragEnabled(true);
 
 
         // set an alternative background color
-        chart.setBackgroundColor(Color.WHITE);
+        chart1.setBackgroundColor(Color.WHITE);
 
-        XAxis xAxis = chart.getXAxis();
+        XAxis xAxis = chart1.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.TOP_INSIDE);
         xAxis.setTextSize(10f);
         xAxis.setTextColor(Color.WHITE);
@@ -87,7 +87,7 @@ public class ScanActivity extends LocationActivity {
             }
         });*/
 
-        YAxis leftAxis = chart.getAxisLeft();
+        YAxis leftAxis = chart1.getAxisLeft();
 
         LimitLine ll = new LimitLine(-120f, "Poor Signal");
         ll.setLineColor(Color.RED);
@@ -113,7 +113,7 @@ public class ScanActivity extends LocationActivity {
         leftAxis.setYOffset(-9f);
         leftAxis.setTextColor(Color.rgb(0, 0, 255));
 
-        YAxis rightAxis = chart.getAxisRight();
+        YAxis rightAxis = chart1.getAxisRight();
         rightAxis.setEnabled(false);
 
         // initialize data set for chart
@@ -128,6 +128,10 @@ public class ScanActivity extends LocationActivity {
         LSManager.connect();
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+
+
+        textView = (TextView)findViewById(R.id.text);
+        textView.setText("LTE Monoitor");
     }
 
     protected void onStop() {
@@ -167,14 +171,15 @@ public class ScanActivity extends LocationActivity {
 
 
     /**
-     *
      * Parses data received from scan data receiver.
      * The data parsed will be sent to create a data set for graph.
      * @param data String of the JSON object from ScanDataReceiver
      */
-    protected void ParseData(String data){
+    protected void ParseData(String data, String wifi_ssid, int wifi_rssi){
         //String[] objects = data.split(Pattern.quote("{"));
         Log.d("ParseData", data);
+        Log.d("ParseData", wifi_ssid);
+        Log.d("ParseData", Integer.toString(wifi_rssi));
         int pos = data.indexOf("Dbm");
         int endPos = data.indexOf("CellID");
 
@@ -199,15 +204,17 @@ public class ScanActivity extends LocationActivity {
             dataSet.setLineWidth(1.5f);
             LineData lineData = new LineData(dataSet);
             //chart.animateX(3000);
-            chart.setData(lineData);
-            chart.invalidate(); // refresh
+            chart1.setData(lineData);
+            chart1.invalidate(); // refresh
+            chart2.setData(lineData);
+            chart2.invalidate(); // refresh
         }
     }
 
     private class ScanDataReceiver extends BroadcastReceiver {
         public void onReceive(Context c, Intent i) {
             bar.setVisibility(GONE);
-            ParseData(i.getStringExtra(ScanService.GOTS_SCAN_SERVICE_RESULTS_EXTRA));
+            ParseData(i.getStringExtra(ScanService.GOTS_SCAN_SERVICE_RESULTS_EXTRA), i.getStringExtra(ScanService.GOTS_SCAN_SERVICE_RESULTS_CURRENT_WIFI_SSID), i.getIntExtra(ScanService.GOTS_SCAN_SERVICE_RESULTS_CURRENT_WIFI_RSSI, Integer.MAX_VALUE));
             //textView.setText(i.getStringExtra(ScanService.GOTS_SCAN_SERVICE_RESULTS_EXTRA));
 
         }

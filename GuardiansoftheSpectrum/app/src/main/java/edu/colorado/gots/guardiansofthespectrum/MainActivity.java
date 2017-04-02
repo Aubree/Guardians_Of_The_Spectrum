@@ -85,8 +85,8 @@ public class MainActivity extends BaseActivity {
                         startActivity(settings);
                         break;
                     case 3:
-                        Intent about = new Intent(MainActivity.this, AboutActivity.class);
-                        startActivity(about);
+                        //Intent about = new Intent(MainActivity.this, AboutActivity.class);
+                        //startActivity(about);
                         break;
                     default:
                         throw new RuntimeException("unreachable");
