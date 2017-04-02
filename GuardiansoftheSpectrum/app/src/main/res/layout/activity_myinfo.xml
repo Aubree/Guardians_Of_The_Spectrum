@@ -7,17 +7,6 @@
                 android:layout_height="match_parent"
                 android:weightSum="1">
 
-    <!-- <include layout="@layout/toolbar" /> -->
-
-<android.support.v7.widget.Toolbar
-    android:id="@+id/toolbar"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?attr/colorPrimary"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-    android:minHeight="?attr/actionBarSize"
-    android:layout_centerHorizontal="true"/>
     <TextView
         android:id="@+id/textView"
         android:text="@string/hardware_text"
