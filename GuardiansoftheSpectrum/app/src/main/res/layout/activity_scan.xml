@@ -7,6 +7,57 @@
     android:background="@color/blue"
     tools:context="edu.colorado.gots.guardiansofthespectrum.ScanActivity">
 
+    <!--<com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"/>-->
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar" >
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/listView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_LTE"
+                android:background="@color/white"
+                android:visibility="gone"
+                android:textSize="20sp"/>
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chart1"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_Wifi"
+                android:background="@color/white"
+                android:visibility="gone"
+                android:textSize="20sp"/>
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chart2"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+    </ScrollView>
+
     <ImageView
         android:id="@+id/scanProgressAnim"
         android:layout_width="match_parent"
@@ -16,11 +67,5 @@
         android:scaleType="center"
         android:src="@drawable/spec_animated"
         android:visibility="gone" />
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
 
 </RelativeLayout>
