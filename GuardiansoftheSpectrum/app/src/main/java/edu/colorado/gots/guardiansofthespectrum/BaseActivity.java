@@ -16,8 +16,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        //mToolbar.setTitle("NTIA");
-        mToolbar.setLogo(R.drawable.home);
+        mToolbar.setTitle("NTIA");
+        //mToolbar.setLogo(R.drawable.home);
 
         return true;
     }
