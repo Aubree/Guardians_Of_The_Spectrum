@@ -27,7 +27,7 @@
         android:layout_toRightOf="@id/sendButton"
         android:text="@string/deleteButton"
         android:onClick="initiateDelete"/>
-    <Switch
+    <!-- <Switch
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/scanServiceSwitch"
@@ -47,5 +47,9 @@
         android:layout_width="364dp"
         android:layout_height="wrap_content"
         android:id="@+id/service_button"
-        android:layout_weight="0.02" />
+        android:layout_weight="0.02" /> -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/settingsFragLayout"/>
 </LinearLayout>
