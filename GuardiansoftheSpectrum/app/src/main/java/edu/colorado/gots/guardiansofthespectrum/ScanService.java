@@ -404,6 +404,9 @@ public class ScanService extends Service {
          */
         public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
             System.out.println("signal strength changed\n");
+            String ltestr = signalStrength.toString();
+            String[] parts = ltestr.split(" ");
+            String rsrp = parts[9];
             LTEInfo = getLTEInfo(tM.getAllCellInfo());
             super.onSignalStrengthsChanged(signalStrength);
         }
