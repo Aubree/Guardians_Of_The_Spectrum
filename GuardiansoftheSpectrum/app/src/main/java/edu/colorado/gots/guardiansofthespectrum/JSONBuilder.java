@@ -3,8 +3,6 @@ package edu.colorado.gots.guardiansofthespectrum;
 
 import android.location.Location;
 import android.net.wifi.ScanResult;
-import android.telephony.CellInfo;
-import android.telephony.CellInfoLte;
 import android.os.Build;
 
 import org.json.JSONArray;
@@ -132,7 +130,7 @@ public class JSONBuilder {
            ret.put("TimingAdvance", lte.getLTEinfo().getCellSignalStrength().getTimingAdvance());
            ret.put("RSSNR", lte.getRssnr());
            ret.put("CQI", lte.getCqi());
-           ret.put("RSRP", lte.getRsrp());
+           //ret.put("RSRP", lte.getRsrp());
            return ret;
        } catch (JSONException e) {
            System.out.println("lte json fail\n");
