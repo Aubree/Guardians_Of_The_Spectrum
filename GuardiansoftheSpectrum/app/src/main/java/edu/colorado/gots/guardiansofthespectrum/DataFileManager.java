@@ -127,4 +127,13 @@ public class DataFileManager {
         }
         return ret;
     }
+
+    long getUsedStorageSize() {
+        File[] files = listDataFiles();
+        long ret = 0;
+        for (File f : files) {
+            ret += f.length();
+        }
+        return ret;
+    }
 }

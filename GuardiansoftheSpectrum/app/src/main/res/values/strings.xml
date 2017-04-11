@@ -5,10 +5,6 @@
     <string name="imageDesc">Picture of our logo</string>
     <!-- description for the service. will appear on list of running processes on phone -->
     <string name="serviceDesc">The background scanning service for the Guardians of the Spectrum App</string>
-    <!-- main screen elements -->
-    <string name="scanServiceLabel">Background Scanning Service</string>
-    <string name="scanServiceLabelTextOn">Enabled</string>
-    <string name="scanServiceLabelTextOff">Disabled</string>
     <string name="sendButton">Send Data</string>
     <!--
     <string name="scanButton">Scan</string>
@@ -27,5 +23,19 @@
     <string name="drawer_close">Close navigation drawer</string>
 
     <string name="action_websearch">Web search</string>
+
+    <!-- Settings Activity Strings -->
+    <string name="scanServiceLabel">Background Scanning Service</string>
+    <string name="scanServiceLabelTextOn">Enabled</string>
+    <string name="scanServiceLabelTextOff">Disabled</string>
+    <string name="storageCapTitle">Local Storage Data Cap</string>
+    <string name="storageCapDesc">%s KB of data will be stored before sending data</string>
+    <string name="notifyEnableTitle">Background Scanning Notifications</string>
+    <string name="notifyOnDesc">Show notification when scanning in background</string>
+    <string name="notifyOffDesc">Do not show notification when scanning in background</string>
+
+    <!-- Notification Strings -->
+    <string name="notificationTitle">Background Scan Running</string>
+    <string name="notificationText">Tap to toggle state</string>
 </resources>
 
