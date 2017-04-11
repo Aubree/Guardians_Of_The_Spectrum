@@ -33,6 +33,7 @@
     <string name="notifyEnableTitle">Background Scanning Notifications</string>
     <string name="notifyOnDesc">Show notification when scanning in background</string>
     <string name="notifyOffDesc">Do not show notification when scanning in background</string>
+    <string name="xAxisMyInfo">Time</string>
 
     <!-- Notification Strings -->
     <string name="notificationTitle">Background Scan Running</string>
