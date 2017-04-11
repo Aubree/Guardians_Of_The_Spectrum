@@ -7,9 +7,14 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -49,10 +54,11 @@ public class ScanActivity extends LocationActivity {
     LineChart chart2;
     TextView LTEtext;
     TextView WIFItext;
+    ImageButton moreInfoLTE;
+    ImageButton moreInfoWIFI;
     int count;
 
     private boolean scanning = false;
-
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +78,24 @@ public class ScanActivity extends LocationActivity {
         LTEtext.setText("LTE Data:");
         WIFItext = (TextView) findViewById(R.id.text_Wifi);
         WIFItext.setText("WIFI Data:");
+
+        moreInfoLTE = (ImageButton) findViewById(R.id.info1);
+        moreInfoLTE.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LTEInfoDialogFragment LTEDialog = new LTEInfoDialogFragment();
+                LTEDialog.show(getSupportFragmentManager(), "LTE_info_Dialog");
+            }
+        });
+
+        moreInfoWIFI = (ImageButton) findViewById(R.id.info2);
+        moreInfoWIFI.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WIFIInfoDialogFragment WIFIDialog = new WIFIInfoDialogFragment();
+                WIFIDialog.show(getSupportFragmentManager(), "WIFI_info_Dialog");
+            }
+        });
 
         bar = (ImageView) findViewById(R.id.scanProgressAnim);
         ((AnimationDrawable) bar.getDrawable()).start();
@@ -116,7 +140,6 @@ public class ScanActivity extends LocationActivity {
         bar.setVisibility(GONE);
     }
 
-
     /**
      * Parses data received from scan data receiver.
      * If the data received is valid i.e. not NULL and Dbm and rssi are not max int,
@@ -147,7 +170,7 @@ public class ScanActivity extends LocationActivity {
     }
 
     /**
-     * Initializes the line chart fpr either LTE or WIFI and sets the appearance of graph
+     * Initializes the line chart for either LTE or WIFI and sets the appearance of graph
      * @param chart LineChant to initialized
      * @param LTE Boolean to determine to setup for LTE (true) or WIFI (false)
      */
@@ -191,7 +214,7 @@ public class ScanActivity extends LocationActivity {
             ll.setTextColor(Color.BLACK);
             ll.setTextSize(12f);
 
-            LimitLine l2 = new LimitLine(-90f, "Strong Signal");
+            LimitLine l2 = new LimitLine(-95f, "Excellent Signal");
             l2.setLineColor(Color.GREEN);
             l2.setLineWidth(4f);
             l2.setTextColor(Color.BLACK);
@@ -242,6 +265,8 @@ public class ScanActivity extends LocationActivity {
             chart2.setVisibility(VISIBLE);
             LTEtext.setVisibility(VISIBLE);
             WIFItext.setVisibility(VISIBLE);
+            moreInfoLTE.setVisibility(VISIBLE);
+            moreInfoWIFI.setVisibility(VISIBLE);
             ParseData(i.getStringExtra(ScanService.GOTS_SCAN_SERVICE_RESULTS_EXTRA), i.getStringExtra(ScanService.GOTS_SCAN_SERVICE_RESULTS_CURRENT_WIFI_SSID), i.getIntExtra(ScanService.GOTS_SCAN_SERVICE_RESULTS_CURRENT_WIFI_RSSI, Integer.MAX_VALUE));
         }
     }
@@ -290,7 +315,7 @@ public class ScanActivity extends LocationActivity {
     }
 
     /**
-     *
+     * Creates a new LineDataSet and initializes settings
      * @param LTE Boolean value to determine if LTE(true) or WIFI(false) dataset
      * @return returns a dataset for either LTE or WIFI
      */
@@ -311,7 +336,5 @@ public class ScanActivity extends LocationActivity {
 
         return set;
     }
-
-
-
 }
+

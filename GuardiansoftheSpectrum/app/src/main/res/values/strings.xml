@@ -38,5 +38,12 @@
     <!-- Notification Strings -->
     <string name="notificationTitle">Background Scan Running</string>
     <string name="notificationText">Tap to toggle state</string>
+
+    <!-- Scan Activity More Info -->
+    <string name="LTE_info">The strength of an LTE signal is determined by the Reference Signal Received Power (RSRP).
+        The reporting range of RSRP is -140 dBm to -44 dBm.
+        Usable signal is tpyically in a range from -75 dBm (Excellent) to -120 dBm (Unusable) </string>
+    <string name="WIFI_info">The strength of a WIFI signal is determined by the Received Siganl Strength Indicator (RSSI).
+        RSSI ranges from -30 dBm (Excellent) to -90 (Unusable).</string>
 </resources>
 
