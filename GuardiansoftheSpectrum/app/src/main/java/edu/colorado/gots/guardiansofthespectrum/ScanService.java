@@ -10,6 +10,7 @@ import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.nfc.Tag;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -21,6 +22,7 @@ import android.telephony.CellInfo;
 import android.telephony.CellInfoLte;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import com.google.android.gms.location.LocationResult;
 
@@ -91,6 +93,10 @@ public class ScanService extends Service {
      * The current LTE information of the device.
      */
     volatile CellInfoLte LTEInfo;
+    /**
+     *  The current LTE information of the device bundled with telephony info.
+     */
+    volatile LTE_Info LTE_Info;
     /**
      * The current WIFI information of the device.
      */
@@ -351,7 +357,7 @@ public class ScanService extends Service {
                 if (!running) {
                     break;
                 }
-                String jsonText = JSONBuilder.scanToJSON(LTEInfo, wifiInfo, currentLocation);
+                String jsonText = JSONBuilder.scanToJSON(LTE_Info, wifiInfo, currentLocation);
                 dataFileManager.writeToFile(jsonText);
                 Intent resultsIntent = new Intent(GOTS_SCAN_SERVICE_RESULTS);
                 resultsIntent.putExtra(GOTS_SCAN_SERVICE_RESULTS_EXTRA, jsonText);
@@ -406,8 +412,16 @@ public class ScanService extends Service {
             System.out.println("signal strength changed\n");
             String ltestr = signalStrength.toString();
             String[] parts = ltestr.split(" ");
-            String rsrp = parts[9];
+            String rsrq = parts[10];
+            String cqi = parts[12];
+            String rssnr = parts[11];
+            Log.d("SS Changed", "rsrq = " + parts[10]);
+            Log.d("SS Changed", "cqi = " + parts[12]);
+            Log.d("SS Changed", "rssnr = " + parts[11]);
+            // adjusted value: rsrp(parts[9]) + 80
+            Log.d("SS Changed", "LTE SS = " + parts[8]);
             LTEInfo = getLTEInfo(tM.getAllCellInfo());
+            LTE_Info = new LTE_Info(LTEInfo, rsrq, cqi, rssnr);
             super.onSignalStrengthsChanged(signalStrength);
         }
 
@@ -426,6 +440,39 @@ public class ScanService extends Service {
                 }
             }
             return null;
+        }
+    }
+
+    /**
+     *  Wrapper class to combine LTE objects and values.
+     */
+    protected class LTE_Info{
+        private CellInfoLte LTEinfo;
+        private String rsrq;
+        private String rssnr;
+        private String cqi;
+
+        private LTE_Info(CellInfoLte info, String rsrq, String cqi, String rssnr){
+            this.LTEinfo = info;
+            this.cqi = cqi;
+            this.rsrq = rsrq;
+            this.rssnr = rssnr;
+        }
+
+        public String getRsrq() {
+            return rsrq;
+        }
+
+        public String getRssnr() {
+            return rssnr;
+        }
+
+        public String getCqi() {
+            return cqi;
+        }
+
+        public CellInfoLte getLTEinfo() {
+            return LTEinfo;
         }
     }
 }
