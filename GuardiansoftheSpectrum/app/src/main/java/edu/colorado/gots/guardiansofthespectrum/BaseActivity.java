@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -48,12 +49,12 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater mMenuInflater = getMenuInflater();
-//        mMenuInflater.inflate(R.menu.our_menu, menu);
-//
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        mToolbar.setTitle("NTIA");
+        MenuInflater mMenuInflater = getMenuInflater();
+        mMenuInflater.inflate(R.menu.our_menu, menu);
+
+//        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(mToolbar);
+//        mToolbar.setTitle("NTIA");
         //mToolbar.setLogo(R.drawable.home);
         return true;
     }
