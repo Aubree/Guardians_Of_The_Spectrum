@@ -92,7 +92,7 @@ public class ScanService extends Service {
     /**
      * The current LTE information of the device.
      */
-    volatile CellInfoLte LTEInfo;
+    //volatile CellInfoLte LTEInfo;
     /**
      *  The current LTE information of the device bundled with telephony info.
      */
@@ -213,7 +213,8 @@ public class ScanService extends Service {
         //set up lte state listener
         signalStrengthListener = new SignalStrengthListener();
         //register lte listener
-        tM.listen(signalStrengthListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS | PhoneStateListener.LISTEN_CELL_INFO);
+        tM.listen(signalStrengthListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS /*|
+                PhoneStateListener.LISTEN_CELL_INFO*/);
         //see if we have an LTE network
         lteNetwork = tM.getNetworkType() == TelephonyManager.NETWORK_TYPE_LTE;
         System.out.println("LTE Network detected: " + lteNetwork);
@@ -322,11 +323,11 @@ public class ScanService extends Service {
          * @see #lteNetwork
          * @see #currentLocation
          * @see #wifiInfo
-         * @see #LTEInfo
+         * @see #LTE_Info
          */
         private boolean checkInfo() {
             if (lteNetwork) {
-                return (currentLocation == null || LTEInfo == null || wifiInfo == null) && running;
+                return (currentLocation == null || LTE_Info == null || wifiInfo == null) && running;
             } else {
                 return (currentLocation == null || wifiInfo == null) && running;
             }
@@ -365,9 +366,11 @@ public class ScanService extends Service {
                 resultsIntent.putExtra(GOTS_SCAN_SERVICE_RESULTS_CURRENT_WIFI_SSID, currentWifi.getSSID());
                 resultsIntent.putExtra(GOTS_SCAN_SERVICE_RESULTS_CURRENT_WIFI_RSSI, currentWifi.getRssi());
                 LocalBroadcastManager.getInstance(ScanService.this).sendBroadcast(resultsIntent);
-                csvFileManager.writeData(new Date().getTime(), LTEInfo.getCellSignalStrength().getDbm(),
+                csvFileManager.writeData(new Date().getTime(), LTE_Info
+                                .getLTEinfo().getCellSignalStrength()
+                                .getDbm(),
                         currentWifi.getSSID(), currentWifi.getRssi());
-                LTEInfo = null;
+                LTE_Info = null;
                 wifiInfo = null;
             }
             stopSelf();
@@ -398,11 +401,11 @@ public class ScanService extends Service {
          * Called when the Cell information of the device changes
          * @param info The list of cells the device can see.
          */
-        public void onCellInfoChanged(List<CellInfo> info) {
+        /*public void onCellInfoChanged(List<CellInfo> info) {
             System.out.println("cell info changed\n");
             LTEInfo = getLTEInfo(info);
             super.onCellInfoChanged(info);
-        }
+        }*/
 
         /**
          * Called when the signal strength of the phone changes.
@@ -420,8 +423,7 @@ public class ScanService extends Service {
             Log.d("SS Changed", "rssnr = " + parts[11]);
             // adjusted value: rsrp(parts[9]) + 80
             Log.d("SS Changed", "LTE SS = " + parts[8]);
-            LTEInfo = getLTEInfo(tM.getAllCellInfo());
-            LTE_Info = new LTE_Info(LTEInfo, rsrq, cqi, rssnr);
+            LTE_Info = new LTE_Info(getLTEInfo(tM.getAllCellInfo()), rsrq, cqi, rssnr);
             super.onSignalStrengthsChanged(signalStrength);
         }
 

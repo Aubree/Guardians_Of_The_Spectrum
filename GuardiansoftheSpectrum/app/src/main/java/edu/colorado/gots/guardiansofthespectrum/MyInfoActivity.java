@@ -1,6 +1,7 @@
 package edu.colorado.gots.guardiansofthespectrum;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -23,17 +25,15 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-//import com.xxmassdeveloper.mpchartexample.listviewitems.BarChartItem;
-//import com.xxmassdeveloper.mpchartexample.listviewitems.ChartItem;
-
-
-
 public class MyInfoActivity extends BaseActivity {
-    String[] info_options = {"Hardware Info", "Cell Connection", "WiFi Connection"};
     private ListView my_listview;
     protected Typeface mTfLight;
     private  Typeface mTypeFaceLight;
     CSVFileManager csvManager;
+    Button graphs_button;
+    Button button_hardware;
+
+    private String myString = "Checking fragment";
 
     //Make image view and set it to gone -> set visibility
 //Then in Java code write a listener
@@ -43,6 +43,25 @@ public class MyInfoActivity extends BaseActivity {
         setContentView(R.layout.activity_myinfo);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager
                 .LayoutParams.FLAG_FULLSCREEN);
+        graphs_button = (Button) findViewById(R.id.button_graphs);
+        graphs_button.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                ReadingGraphFragment GraphDialog = new ReadingGraphFragment();
+                GraphDialog.show(getSupportFragmentManager(), "Graph_dialog");
+            }
+        });
+        button_hardware = (Button) findViewById(R.id.button_hardware);
+        button_hardware.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+//                HardwareInfoFragment HardwareDialog = new HardwareInfoFragment();
+//                HardwareDialog.show(getSupportFragmentManager(), "Hardware_dialog");
+
+                Intent intent = new Intent(MyInfoActivity.this, HardwareInfo.class);
+                startActivity(intent);
+            }
+        });
         my_listview = (ListView) findViewById(R.id.id_list_view);
 //        ArrayList<CharItem> list1 = new ArrayList<CharItem>();
         ArrayList<BarData> list = new ArrayList<BarData>();
@@ -53,6 +72,11 @@ public class MyInfoActivity extends BaseActivity {
 
     }
 
+
+    public String getMyData(){
+
+        return myString;
+    }
     private class ChartDataAdapter extends ArrayAdapter<BarData>{
         public ChartDataAdapter(Context context, List<BarData> objects){
             super(context, 0, objects);
@@ -171,6 +195,13 @@ public class MyInfoActivity extends BaseActivity {
         BarData cd = new BarData(d);
         return cd;
     }
+
+
+
+//    String hardware_name = Build.HARDWARE;
+//    String device_name = Build.DEVICE;
+//    String manufacture_name = Build.MANUFACTURER;
+
 
 //    private TextView generateText(int cnt, String str){
 //        TextView textView = (TextView) findViewById(R.id.textView);
