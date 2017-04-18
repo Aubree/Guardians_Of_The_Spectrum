@@ -25,6 +25,10 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+// Local visualization is done using a free tool MPAnroidChart
+// https://github.com/PhilJay/MPAndroidChart
+// Bar chart code is following ListViewBarChartActivity.java
+
 public class MyInfoActivity extends BaseActivity {
     private ListView my_listview;
     protected Typeface mTfLight;
@@ -33,16 +37,14 @@ public class MyInfoActivity extends BaseActivity {
     Button graphs_button;
     Button button_hardware;
 
-    private String myString = "Checking fragment";
-
-    //Make image view and set it to gone -> set visibility
-//Then in Java code write a listener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_myinfo);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager
                 .LayoutParams.FLAG_FULLSCREEN);
+
+        // Setting up buttons.
         graphs_button = (Button) findViewById(R.id.button_graphs);
         graphs_button.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -55,28 +57,25 @@ public class MyInfoActivity extends BaseActivity {
         button_hardware.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-//                HardwareInfoFragment HardwareDialog = new HardwareInfoFragment();
-//                HardwareDialog.show(getSupportFragmentManager(), "Hardware_dialog");
-
                 Intent intent = new Intent(MyInfoActivity.this, HardwareInfo.class);
                 startActivity(intent);
             }
         });
+
+        // Bar graphs are set up within the Listview.
+        // Data for the bars is generated in generate.Data()
+        // Once the graphs are ready, they need to go into the ChartDataAdapter to set them into
+        // the listview.
         my_listview = (ListView) findViewById(R.id.id_list_view);
-//        ArrayList<CharItem> list1 = new ArrayList<CharItem>();
         ArrayList<BarData> list = new ArrayList<BarData>();
         list.add(generateData(1, "Cell Connection Info"));
         list.add(generateData(2, "WiFi Info"));
         ChartDataAdapter my_adapter = new ChartDataAdapter(getApplicationContext(), list);
         my_listview.setAdapter(my_adapter);
-
     }
 
 
-    public String getMyData(){
 
-        return myString;
-    }
     private class ChartDataAdapter extends ArrayAdapter<BarData>{
         public ChartDataAdapter(Context context, List<BarData> objects){
             super(context, 0, objects);
@@ -126,15 +125,6 @@ public class MyInfoActivity extends BaseActivity {
 
             YAxis rightAxis = holder.chart.getAxisRight();
             rightAxis.setEnabled(false);
-//            rightAxis.setTypeface(mTfLight);
-//            rightAxis.setLabelCount(5, false);
-//            rightAxis.setSpaceTop(15f);
-
-            // make bars clickable
-//            holder.chart.setTouchEnabled(true);
-//            holder.chart.setHighlightPerTapEnabled(true);
-            //holder.chart.setOnChartGestureListener((OnChartGestureListener) this);
-
 
             // set data
             holder.chart.setData(data);
@@ -157,21 +147,26 @@ public class MyInfoActivity extends BaseActivity {
         ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
         String data = "";
         String time = "";
-        float dbm; //power
+        float dbm; // cell signal strength.
         String ssid = ""; //service identifier
-        float rssi; //signal strength
+        float rssi; // wifi signal strength
         int count = 0;
 
+        // Getting data from the CSV file written by CSVFileManager.java
         csvManager = new CSVFileManager(getApplicationContext());
-
         List<CSVFileManager.CSVEntry> csvData = csvManager.readData().getAllData();
         for (CSVFileManager.CSVEntry e : csvData) {
             time += String.format("", e.getTime());
             ssid = String.format("", e.getSsid());
+
+            // Both signal strengths will be in the negative, which makes it hard to show in a bar
+            // chart format. Because of this, we are adding values to the data and making a note
+            // of that in MyInfoActivity "About Graphs" button.
             dbm = e.getDbm() - (-150);
             Log.d("generateData dbm value ", Float.toString(dbm));
             rssi = e.getRssi() - (-127);
             Log.d("generateData rssi ", Float.toString(rssi));
+
             if (cnt == 2){
                 //entries.clear();
 //                for (int i = 0; i < csvData.size(); i++) {
@@ -195,23 +190,4 @@ public class MyInfoActivity extends BaseActivity {
         BarData cd = new BarData(d);
         return cd;
     }
-
-
-
-//    String hardware_name = Build.HARDWARE;
-//    String device_name = Build.DEVICE;
-//    String manufacture_name = Build.MANUFACTURER;
-
-
-//    private TextView generateText(int cnt, String str){
-//        TextView textView = (TextView) findViewById(R.id.textView);
-//        textView.setTextSize(getResources().getDimension(R.dimen.textsize));
-//        textView.getPaddingTop();
-//        textView.setText("Hardware information: " + System.getProperty("line.separator") + "- " +
-//                "hardware name: " + Build
-//                .HARDWARE + System.getProperty("line.separator") + "- device name: " + Build
-//                .DEVICE + System.getProperty("line.separator") + "- " +
-//                "manufacture name: " + Build.MANUFACTURER);
-//        return textView;
-//    }
 }

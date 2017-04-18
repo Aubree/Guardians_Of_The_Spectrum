@@ -11,7 +11,6 @@ public class HardwareInfo extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hardware_info);
 
-
         TextView textView = (TextView) findViewById(R.id.hardware_info);
         textView.setTextSize(getResources().getDimension(R.dimen.textsize));
         textView.getPaddingTop();
