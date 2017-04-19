@@ -68,8 +68,8 @@ public class MyInfoActivity extends BaseActivity {
         // the listview.
         my_listview = (ListView) findViewById(R.id.id_list_view);
         ArrayList<BarData> list = new ArrayList<BarData>();
-        list.add(generateData(1, "Cell Connection Info"));
-        list.add(generateData(2, "WiFi Info"));
+        list.add(generateData(1, "Cell Connection Strength"));
+        list.add(generateData(2, "WiFi Connection Strength"));
         ChartDataAdapter my_adapter = new ChartDataAdapter(getApplicationContext(), list);
         my_listview.setAdapter(my_adapter);
     }
@@ -94,13 +94,16 @@ public class MyInfoActivity extends BaseActivity {
             else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            // apply styling
+            // apply styling.
+            // MPAndroid charts does not support X and Y axis labels.
+            // "About Graphs" button explains Y - signal strength, X - time of measurement.
             data.setValueTypeface(mTfLight);
             data.setValueTextColor(Color.BLACK);
             holder.chart.getDescription().setEnabled(false);
             holder.chart.setDrawGridBackground(false);
             XAxis xAxis = holder.chart.getXAxis();
             holder.chart.getXAxis().setPosition(XAxis.XAxisPosition.TOP);
+            holder.chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
             xAxis.setTypeface(mTfLight);
             xAxis.setDrawGridLines(false);
             holder.chart.setDragEnabled(true);
@@ -147,6 +150,8 @@ public class MyInfoActivity extends BaseActivity {
         ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
         String data = "";
         String time = "";
+        //float time_float = 0;
+        int time_int = 0;
         float dbm; // cell signal strength.
         String ssid = ""; //service identifier
         float rssi; // wifi signal strength
@@ -158,6 +163,8 @@ public class MyInfoActivity extends BaseActivity {
         for (CSVFileManager.CSVEntry e : csvData) {
             time += String.format("", e.getTime());
             ssid = String.format("", e.getSsid());
+            //time_float = Float.parseFloat(time);
+
 
             // Both signal strengths will be in the negative, which makes it hard to show in a bar
             // chart format. Because of this, we are adding values to the data and making a note
