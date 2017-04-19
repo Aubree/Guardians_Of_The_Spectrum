@@ -381,8 +381,7 @@ public class ScanService extends Service {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 System.out.println("storage cap: " + prefs.getString("storageCap", "0"));
                 if (Integer.parseInt(prefs.getString("storageCap", "0")) < dataFileManager.getUsedStorageSize()) {
-                    //this will be replaced with new SendTask().execute(...data...)
-                    startActivity(new Intent(getApplicationContext(), SendActivity.class));
+                    //this will be new SendTask().execute(...data...)
                 }
                 Intent resultsIntent = new Intent(GOTS_SCAN_SERVICE_RESULTS);
                 if (lteNetwork) {
