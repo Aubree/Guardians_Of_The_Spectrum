@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Date;
+import java.util.concurrent.Semaphore;
 
 /**
  * Class to handle working with the storage of data collected from scanning.
@@ -18,6 +19,8 @@ public class DataFileManager {
      * The directory in which we store the data before we send it to the server.
      */
     private File newDataDir;
+
+    private static Semaphore dirLock = new Semaphore(1, true);
 
     /**
      * Creates and initializes the Manager.
@@ -33,6 +36,11 @@ public class DataFileManager {
      * @return <code>true</code> if the write completed successfully, <code>false</code> otherwise.
      */
     boolean writeToFile(String JSONData) {
+        try {
+            dirLock.acquire();
+        } catch (InterruptedException e) {
+            return false;
+        }
         long time = new Date().getTime();
         File name = new File(newDataDir, String.format("%d", time));
         System.out.println(String.format("Writing data to file %s", name.getAbsolutePath()));
@@ -40,13 +48,16 @@ public class DataFileManager {
         try {
             out = new FileOutputStream(name);
         } catch (FileNotFoundException e) {
+            dirLock.release();
             return false;
         }
         try {
             out.write(JSONData.getBytes());
         } catch (IOException e) {
+            dirLock.release();
             return false;
         }
+        dirLock.release();
         return true;
     }
 
@@ -54,7 +65,7 @@ public class DataFileManager {
      * Lists all data files.
      * @return An array of the data files
      */
-    File[] listDataFiles() {
+    private File[] listDataFiles() {
         return newDataDir.listFiles();
     }
 
@@ -63,7 +74,7 @@ public class DataFileManager {
      * @param name The filename to read
      * @return The contents of the file, or <code>null</code> if an error occurs
      */
-    String readDataFile(String name) {
+    private String readDataFile(String name) {
         BufferedReader in;
         try {
             //get a convenience wrapper around the bare file reader to give better read()
@@ -91,12 +102,18 @@ public class DataFileManager {
      * @return An array containing the contents of each file.
      */
     String[] readAllDataFiles() {
+        try {
+            dirLock.acquire();
+        } catch (InterruptedException e) {
+            return new String[1];
+        }
         File[] newFiles = listDataFiles();
         String[] ret = new String[newFiles.length];
         for (int i = 0; i < newFiles.length; i++) {
             System.out.println(String.format("Reading file: %s\n", newFiles[i].getAbsolutePath()));
             ret[i] = readDataFile(newFiles[i].getName());
         }
+        dirLock.release();
         return ret;
     }
 
@@ -105,7 +122,7 @@ public class DataFileManager {
      * @param name The name of the file to delete
      * @return <code>true</code> if the file was deleted successfully, <code>false</code> if not
      */
-    boolean deleteDataFile(String name) {
+    private boolean deleteDataFile(String name) {
         File f = new File(newDataDir, name);
         if (f.exists()) {
             return f.delete();
@@ -119,12 +136,18 @@ public class DataFileManager {
      * @return <code>true</code> if all files were deleted successfully, <code>false</code> otherwise
      */
     boolean deleteAllDataFiles() {
+        try {
+            dirLock.acquire();
+        } catch (InterruptedException e) {
+            return false;
+        }
         File[] s = listDataFiles();
         boolean ret = true;
         for (int i = 0; i < s.length; i++) {
             System.out.println(String.format("Deleting file: %s\n", s[i].getAbsolutePath()));
             ret = ret && deleteDataFile(s[i].getName());
         }
+        dirLock.release();
         return ret;
     }
 
