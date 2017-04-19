@@ -4,6 +4,7 @@ package edu.colorado.gots.guardiansofthespectrum;
 import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.os.Build;
+import android.telephony.CellInfoLte;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -121,13 +122,16 @@ public class JSONBuilder {
         JSONObject ret = new JSONObject();
        try {
            System.out.println("building lte JSON\n");
-           ret.put("Dbm", lte.getLTEinfo().getCellSignalStrength().getDbm());
-           ret.put("CellID", lte.getLTEinfo().getCellIdentity().getCi());
-           ret.put("MCC", lte.getLTEinfo().getCellIdentity().getMcc());
-           ret.put("MNC", lte.getLTEinfo().getCellIdentity().getMnc());
-           ret.put("PCI", lte.getLTEinfo().getCellIdentity().getPci());
-           ret.put("TAC", lte.getLTEinfo().getCellIdentity().getTac());
-           ret.put("TimingAdvance", lte.getLTEinfo().getCellSignalStrength().getTimingAdvance());
+           CellInfoLte cellInfo = lte.getLTEinfo();
+           if (cellInfo != null) {
+               ret.put("Dbm", cellInfo.getCellSignalStrength().getDbm());
+               ret.put("CellID", cellInfo.getCellIdentity().getCi());
+               ret.put("MCC", cellInfo.getCellIdentity().getMcc());
+               ret.put("MNC", cellInfo.getCellIdentity().getMnc());
+               ret.put("PCI", cellInfo.getCellIdentity().getPci());
+               ret.put("TAC", cellInfo.getCellIdentity().getTac());
+               ret.put("TimingAdvance", cellInfo.getCellSignalStrength().getTimingAdvance());
+           }
            ret.put("RSSNR", lte.getRssnr());
            ret.put("CQI", lte.getCqi());
            //ret.put("RSRP", lte.getRsrp());
@@ -157,7 +161,6 @@ public class JSONBuilder {
             ret.put("Manufacturer", Build.MANUFACTURER);
             ret.put("Model", Build.MODEL);
             ret.put("Product", Build.PRODUCT);
-            ret.put("Serial", Build.SERIAL);
             ret.put("Tags", Build.TAGS);
             ret.put("Time", Build.TIME);
             ret.put("Type", Build.TYPE);
