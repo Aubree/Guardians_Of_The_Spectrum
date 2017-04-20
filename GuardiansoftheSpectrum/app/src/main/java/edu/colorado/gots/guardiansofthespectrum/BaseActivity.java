@@ -3,9 +3,6 @@ package edu.colorado.gots.guardiansofthespectrum;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -59,7 +56,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         MenuInflater mMenuInflater = getMenuInflater();
         mMenuInflater.inflate(R.menu.our_menu, menu);
 
+<<<<<<< HEAD
 
+=======
+//        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(mToolbar);
+//        mToolbar.setTitle("NTIA");
+        //mToolbar.setLogo(R.drawable.home);
+>>>>>>> f25e6bf7ee1333e6b94407016ce727c438686474
         return true;
     }
 

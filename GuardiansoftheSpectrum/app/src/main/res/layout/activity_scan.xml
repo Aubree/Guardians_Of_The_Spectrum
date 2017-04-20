@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_scan"
     android:layout_width="match_parent"
@@ -7,11 +8,6 @@
     android:background="@color/blue"
     tools:context="edu.colorado.gots.guardiansofthespectrum.ScanActivity">
 
-    <!--<com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"/>-->
     <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/scroll"
@@ -23,37 +19,86 @@
             android:id="@+id/listView1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/ltBlue"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:orientation="vertical" >
 
-            <TextView
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:id="@+id/relativeLayout1"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/text_LTE"
-                android:background="@color/white"
-                android:visibility="gone"
-                android:textSize="20sp"/>
+                android:background="@color/ltBlue" >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/text_LTE"
+                    android:background="@color/ltBlue"
+                    android:visibility="gone"
+                    android:textSize="20sp"
+                    android:padding="5dip"
+                    android:layout_alignParentLeft="true"/>
+
+                <ImageButton
+                    android:id="@+id/info1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:background="@color/ltBlue"
+                    android:backgroundTint="@color/ltBlue"
+                    android:elevation="24dp"
+                    android:visibility="gone"
+                    android:tint="@color/lime"
+                    app:srcCompat="@android:drawable/ic_dialog_info" />
+
+            </RelativeLayout>
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/chart1"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
-                android:visibility="gone" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/text_Wifi"
-                android:background="@color/white"
                 android:visibility="gone"
-                android:textSize="20sp"/>
+                android:padding="20dip"/>
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/ltBlue" >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/text_Wifi"
+                    android:background="@color/ltBlue"
+                    android:visibility="gone"
+                    android:textSize="20sp"
+                    android:padding="5dip"
+                    android:layout_alignParentLeft="true"/>
+
+                <ImageButton
+                    android:id="@+id/info2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:background="@color/ltBlue"
+                    android:backgroundTint="@color/ltBlue"
+                    android:elevation="24dp"
+                    android:visibility="gone"
+                    android:tint="@color/lime"
+                    app:srcCompat="@android:drawable/ic_dialog_info" />
+
+            </RelativeLayout>
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/chart2"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:padding="20dip" />
         </LinearLayout>
 
     </ScrollView>

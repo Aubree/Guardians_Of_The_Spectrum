@@ -10,6 +10,7 @@ import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.nfc.Tag;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -21,6 +22,7 @@ import android.telephony.CellInfo;
 import android.telephony.CellInfoLte;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import com.google.android.gms.location.LocationResult;
 
@@ -90,7 +92,11 @@ public class ScanService extends Service {
     /**
      * The current LTE information of the device.
      */
-    volatile CellInfoLte LTEInfo;
+    //volatile CellInfoLte LTEInfo;
+    /**
+     *  The current LTE information of the device bundled with telephony info.
+     */
+    volatile LTE_Info LTE_Info;
     /**
      * The current WIFI information of the device.
      */
@@ -207,7 +213,8 @@ public class ScanService extends Service {
         //set up lte state listener
         signalStrengthListener = new SignalStrengthListener();
         //register lte listener
-        tM.listen(signalStrengthListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS | PhoneStateListener.LISTEN_CELL_INFO);
+        tM.listen(signalStrengthListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS /*|
+                PhoneStateListener.LISTEN_CELL_INFO*/);
         //see if we have an LTE network
         lteNetwork = tM.getNetworkType() == TelephonyManager.NETWORK_TYPE_LTE;
         System.out.println("LTE Network detected: " + lteNetwork);
@@ -316,11 +323,11 @@ public class ScanService extends Service {
          * @see #lteNetwork
          * @see #currentLocation
          * @see #wifiInfo
-         * @see #LTEInfo
+         * @see #LTE_Info
          */
         private boolean checkInfo() {
             if (lteNetwork) {
-                return (currentLocation == null || LTEInfo == null || wifiInfo == null) && running;
+                return (currentLocation == null || LTE_Info == null || wifiInfo == null) && running;
             } else {
                 return (currentLocation == null || wifiInfo == null) && running;
             }
@@ -351,7 +358,7 @@ public class ScanService extends Service {
                 if (!running) {
                     break;
                 }
-                String jsonText = JSONBuilder.scanToJSON(LTEInfo, wifiInfo, currentLocation);
+                String jsonText = JSONBuilder.scanToJSON(LTE_Info, wifiInfo, currentLocation);
                 dataFileManager.writeToFile(jsonText);
                 Intent resultsIntent = new Intent(GOTS_SCAN_SERVICE_RESULTS);
                 resultsIntent.putExtra(GOTS_SCAN_SERVICE_RESULTS_EXTRA, jsonText);
@@ -359,9 +366,11 @@ public class ScanService extends Service {
                 resultsIntent.putExtra(GOTS_SCAN_SERVICE_RESULTS_CURRENT_WIFI_SSID, currentWifi.getSSID());
                 resultsIntent.putExtra(GOTS_SCAN_SERVICE_RESULTS_CURRENT_WIFI_RSSI, currentWifi.getRssi());
                 LocalBroadcastManager.getInstance(ScanService.this).sendBroadcast(resultsIntent);
-                csvFileManager.writeData(new Date().getTime(), LTEInfo.getCellSignalStrength().getDbm(),
+                csvFileManager.writeData(new Date().getTime(), LTE_Info
+                                .getLTEinfo().getCellSignalStrength()
+                                .getDbm(),
                         currentWifi.getSSID(), currentWifi.getRssi());
-                LTEInfo = null;
+                LTE_Info = null;
                 wifiInfo = null;
             }
             stopSelf();
@@ -392,11 +401,11 @@ public class ScanService extends Service {
          * Called when the Cell information of the device changes
          * @param info The list of cells the device can see.
          */
-        public void onCellInfoChanged(List<CellInfo> info) {
+        /*public void onCellInfoChanged(List<CellInfo> info) {
             System.out.println("cell info changed\n");
             LTEInfo = getLTEInfo(info);
             super.onCellInfoChanged(info);
-        }
+        }*/
 
         /**
          * Called when the signal strength of the phone changes.
@@ -404,7 +413,17 @@ public class ScanService extends Service {
          */
         public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
             System.out.println("signal strength changed\n");
-            LTEInfo = getLTEInfo(tM.getAllCellInfo());
+            String ltestr = signalStrength.toString();
+            String[] parts = ltestr.split(" ");
+            String rsrq = parts[10];
+            String cqi = parts[12];
+            String rssnr = parts[11];
+            Log.d("SS Changed", "rsrq = " + parts[10]);
+            Log.d("SS Changed", "cqi = " + parts[12]);
+            Log.d("SS Changed", "rssnr = " + parts[11]);
+            // adjusted value: rsrp(parts[9]) + 80
+            Log.d("SS Changed", "LTE SS = " + parts[8]);
+            LTE_Info = new LTE_Info(getLTEInfo(tM.getAllCellInfo()), rsrq, cqi, rssnr);
             super.onSignalStrengthsChanged(signalStrength);
         }
 
@@ -423,6 +442,39 @@ public class ScanService extends Service {
                 }
             }
             return null;
+        }
+    }
+
+    /**
+     *  Wrapper class to combine LTE objects and values.
+     */
+    protected class LTE_Info{
+        private CellInfoLte LTEinfo;
+        private String rsrq;
+        private String rssnr;
+        private String cqi;
+
+        private LTE_Info(CellInfoLte info, String rsrq, String cqi, String rssnr){
+            this.LTEinfo = info;
+            this.cqi = cqi;
+            this.rsrq = rsrq;
+            this.rssnr = rssnr;
+        }
+
+        public String getRsrq() {
+            return rsrq;
+        }
+
+        public String getRssnr() {
+            return rssnr;
+        }
+
+        public String getCqi() {
+            return cqi;
+        }
+
+        public CellInfoLte getLTEinfo() {
+            return LTEinfo;
         }
     }
 }

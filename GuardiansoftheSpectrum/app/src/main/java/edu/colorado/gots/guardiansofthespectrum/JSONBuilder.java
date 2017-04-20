@@ -3,8 +3,6 @@ package edu.colorado.gots.guardiansofthespectrum;
 
 import android.location.Location;
 import android.net.wifi.ScanResult;
-import android.telephony.CellInfo;
-import android.telephony.CellInfoLte;
 import android.os.Build;
 
 import org.json.JSONArray;
@@ -27,7 +25,7 @@ public class JSONBuilder {
      * @return The JSON string. Will always be valid, but may be an empty JSON object if an error
      * occurs.
      */
-    public static String scanToJSON(CellInfoLte lte, List<ScanResult> wifi, Location current) {
+    public static String scanToJSON(ScanService.LTE_Info lte, List<ScanResult> wifi, Location current) {
         JSONObject main = new JSONObject();
         try {
             if (current != null) {
@@ -119,17 +117,20 @@ public class JSONBuilder {
      * @param lte The LTE information collected from the scan
      * @return A JSONObject representing the LTE information. Will be empty if an error occurs.
      */
-    private static JSONObject buildLTEJSON(CellInfoLte lte) {
+    private static JSONObject buildLTEJSON(ScanService.LTE_Info lte) {
         JSONObject ret = new JSONObject();
        try {
            System.out.println("building lte JSON\n");
-           ret.put("Dbm", lte.getCellSignalStrength().getDbm());
-           ret.put("CellID", lte.getCellIdentity().getCi());
-           ret.put("MCC", lte.getCellIdentity().getMcc());
-           ret.put("MNC", lte.getCellIdentity().getMnc());
-           ret.put("PCI", lte.getCellIdentity().getPci());
-           ret.put("TAC", lte.getCellIdentity().getTac());
-           ret.put("TimingAdvance", lte.getCellSignalStrength().getTimingAdvance());
+           ret.put("Dbm", lte.getLTEinfo().getCellSignalStrength().getDbm());
+           ret.put("CellID", lte.getLTEinfo().getCellIdentity().getCi());
+           ret.put("MCC", lte.getLTEinfo().getCellIdentity().getMcc());
+           ret.put("MNC", lte.getLTEinfo().getCellIdentity().getMnc());
+           ret.put("PCI", lte.getLTEinfo().getCellIdentity().getPci());
+           ret.put("TAC", lte.getLTEinfo().getCellIdentity().getTac());
+           ret.put("TimingAdvance", lte.getLTEinfo().getCellSignalStrength().getTimingAdvance());
+           ret.put("RSSNR", lte.getRssnr());
+           ret.put("CQI", lte.getCqi());
+           //ret.put("RSRP", lte.getRsrp());
            return ret;
        } catch (JSONException e) {
            System.out.println("lte json fail\n");
