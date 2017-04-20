@@ -112,6 +112,8 @@ public class MyInfoActivity extends BaseActivity {
             holder.chart.setBackgroundColor(Color.WHITE);
             holder.chart.setNoDataText("No Data");
 
+            //xAxis.setGranularity(1f); // one hour
+
 
             YAxis leftAxis = holder.chart.getAxisLeft();
             leftAxis.setTypeface(mTfLight);
