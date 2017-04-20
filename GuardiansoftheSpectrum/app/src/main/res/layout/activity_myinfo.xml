@@ -5,36 +5,38 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/ltBlue"
                 android:weightSum="1">
-
-    <!-- <include layout="@layout/toolbar" /> -->
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:minHeight="?attr/actionBarSize"
-        android:layout_centerHorizontal="true"/>
-
-    <ScrollView
-        android:id="@+id/dataDemoScroll"
-        android:layout_width="match_parent"
-        android:layout_height="90dp">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/dataDemo" />
-    </ScrollView>
-
-
+     <include layout="@layout/toolbar" />
 
     <ListView
         android:id="@+id/id_list_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/dataDemoScroll">
+        android:layout_height="wrap_content">
     </ListView>
+
+    <Button
+        android:id="@+id/button_graphs"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:layout_below="@id/id_list_view"
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="50dp"
+        android:text="@string/graphButton"
+        android:background="@color/blue"
+        android:textColor="@color/white"/>
+    <Button
+        android:id="@+id/button_hardware"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:layout_below="@id/id_list_view"
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="50dp"
+        android:text="@string/hardwareButton"
+        android:background="@color/blue"
+        android:textColor="@color/white"/>
 </RelativeLayout>

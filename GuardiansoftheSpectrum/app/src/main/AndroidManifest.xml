@@ -51,6 +51,9 @@
         <activity
             android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".HardwareInfo"
+            android:parentActivityName=".MyInfoActivity"/>
 
         <service
             android:name=".ScanService"

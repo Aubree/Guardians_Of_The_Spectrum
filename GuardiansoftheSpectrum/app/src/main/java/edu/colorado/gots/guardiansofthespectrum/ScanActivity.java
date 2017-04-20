@@ -144,16 +144,16 @@ public class ScanActivity extends LocationActivity {
      * Parses data received from scan data receiver.
      * If the data received is valid i.e. not NULL and Dbm and rssi are not max int,
      * will pass data to be added to corresponding datasets.
-     * @param data String of the JSON object of all collect info from ScanDataReceiver
+     * @param dbm Int Dbm of the current LTE signal strength
      * @param wifi_ssid String name of the currently connected wifi ap
-     * @param wifi_rssi Int singal strength of currently connected wifi ap
+     * @param wifi_rssi Int signal strength of currently connected wifi ap
      */
-    protected void ParseData(String data, String wifi_ssid, int wifi_rssi){
+    protected void ParseData(int dbm, String wifi_ssid, int wifi_rssi){
         //String[] objects = data.split(Pattern.quote("{"));
-        Log.d("ParseData", data);
+        Log.d("ParseData", Integer.toString(dbm));
         Log.d("ParseData", wifi_ssid);
         Log.d("ParseData", Integer.toString(wifi_rssi));
-        int pos = data.indexOf("Dbm");
+        /*int pos = data.indexOf("Dbm");
         int endPos = data.indexOf("CellID");
 
         // check to ensure the LTE object was not null
@@ -166,6 +166,10 @@ public class ScanActivity extends LocationActivity {
                 addEntry(dbm, wifi_ssid, wifi_rssi);
                 count++;
             }
+        }*/
+        if (dbm < 0 && wifi_rssi < 0) {
+            addEntry(dbm, wifi_ssid, wifi_rssi);
+            count++;
         }
     }
 
@@ -267,7 +271,9 @@ public class ScanActivity extends LocationActivity {
             WIFItext.setVisibility(VISIBLE);
             moreInfoLTE.setVisibility(VISIBLE);
             moreInfoWIFI.setVisibility(VISIBLE);
-            ParseData(i.getStringExtra(ScanService.GOTS_SCAN_SERVICE_RESULTS_EXTRA), i.getStringExtra(ScanService.GOTS_SCAN_SERVICE_RESULTS_CURRENT_WIFI_SSID), i.getIntExtra(ScanService.GOTS_SCAN_SERVICE_RESULTS_CURRENT_WIFI_RSSI, Integer.MAX_VALUE));
+            ParseData(i.getIntExtra(ScanService.GOTS_SCAN_SERVICE_RESULTS_LTE_DBM, Integer.MAX_VALUE),
+                    i.getStringExtra(ScanService.GOTS_SCAN_SERVICE_RESULTS_CURRENT_WIFI_SSID),
+                    i.getIntExtra(ScanService.GOTS_SCAN_SERVICE_RESULTS_CURRENT_WIFI_RSSI, Integer.MAX_VALUE));
         }
     }
 
