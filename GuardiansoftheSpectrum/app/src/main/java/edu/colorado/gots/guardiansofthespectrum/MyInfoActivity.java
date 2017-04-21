@@ -15,6 +15,9 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -99,21 +102,34 @@ public class MyInfoActivity extends BaseActivity {
             // "About Graphs" button explains Y - signal strength, X - time of measurement.
             data.setValueTypeface(mTfLight);
             data.setValueTextColor(Color.BLACK);
-            holder.chart.getDescription().setEnabled(false);
+
+            Description descriptionX = new Description();
+            descriptionX.setText("Time");
+            holder.chart.setDescription(descriptionX);
+            holder.chart.getDescription().setEnabled(true);
+
+            Legend legend = holder.chart.getLegend();
+            legend.setFormSize(10f); // set the size of the legend forms/shapes
+            legend.setForm(Legend.LegendForm.CIRCLE); // set what type of form/shape should be used
+            legend.setTextSize(12f);
+            legend.setTextColor(Color.BLACK);
+            legend.setXEntrySpace(5f); // set the space between the legend entries on the x-axis
+            legend.setYEntrySpace(5f); // set the space between the legend entries on the y-axis
+
+
             holder.chart.setDrawGridBackground(false);
             XAxis xAxis = holder.chart.getXAxis();
+            //xAxis.setLabelRotationAngle(-45);
             holder.chart.getXAxis().setPosition(XAxis.XAxisPosition.TOP);
             holder.chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
             xAxis.setTypeface(mTfLight);
             xAxis.setDrawGridLines(false);
+            xAxis.setGranularity(1f); // one hour
             holder.chart.setDragEnabled(true);
             holder.chart.setScaleEnabled(true);
             holder.chart.setHighlightPerDragEnabled(true);
             holder.chart.setBackgroundColor(Color.WHITE);
             holder.chart.setNoDataText("No Data");
-
-            //xAxis.setGranularity(1f); // one hour
-
 
             YAxis leftAxis = holder.chart.getAxisLeft();
             leftAxis.setTypeface(mTfLight);
@@ -127,9 +143,28 @@ public class MyInfoActivity extends BaseActivity {
             leftAxis.setYOffset(-9f);
             leftAxis.setTextColor(Color.rgb(0, 0, 255));
 
-
             YAxis rightAxis = holder.chart.getAxisRight();
             rightAxis.setEnabled(false);
+
+
+/////////////////
+            LimitLine ll = new LimitLine(80f, "Poor Signal");
+            ll.setLineColor(Color.RED);
+            ll.setLineWidth(4f);
+            ll.setTextColor(Color.BLACK);
+            ll.setTextSize(12f);
+
+            LimitLine l2 = new LimitLine(82f, "Excellent Signal");
+            l2.setLineColor(Color.GREEN);
+            l2.setLineWidth(4f);
+            l2.setTextColor(Color.BLACK);
+            l2.setTextSize(12f);
+
+            leftAxis.addLimitLine(ll);
+            leftAxis.addLimitLine(l2);
+///////////////
+
+
 
             // set data
             holder.chart.setData(data);
@@ -193,7 +228,7 @@ public class MyInfoActivity extends BaseActivity {
             count++;
         }
         BarDataSet d = new BarDataSet(entries, str);
-        d.setColors(ColorTemplate.VORDIPLOM_COLORS);
+        d.setColors(ColorTemplate.getHoloBlue());
         d.setBarShadowColor(Color.rgb(203, 203, 203));
 
         BarData cd = new BarData(d);
