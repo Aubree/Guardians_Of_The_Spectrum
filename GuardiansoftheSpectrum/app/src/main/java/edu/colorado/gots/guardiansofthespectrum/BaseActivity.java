@@ -33,12 +33,16 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_base);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setLogo(R.drawable.home);
-        mToolbar.setTitle("NTIA");
+        //mToolbar.setNavigationIcon(R.drawable.ic_dehaze_white_24px);
+
+       // mToolbar.setLogo(R.drawable.side_button);
+        //mToolbar.setTitle("NTIA");
+
         setSupportActionBar(mToolbar);
+
+        getSupportActionBar().setIcon(R.drawable.ic_dehaze_white_24px);
         addDrawerItems();
     }
-
     @Override
     //instead of overriding the base content view, we inflate the requested one
     //into the main FrameLayout inside the DrawerLayout
@@ -46,16 +50,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         FrameLayout content = (FrameLayout) findViewById(R.id.contentLayout);
         content.addView(getLayoutInflater().inflate(layoutResID, null));
     }
-
+//DELETE
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater mMenuInflater = getMenuInflater();
         mMenuInflater.inflate(R.menu.our_menu, menu);
-
-//        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(mToolbar);
-//        mToolbar.setTitle("NTIA");
-        //mToolbar.setLogo(R.drawable.home);
         return true;
     }
 
@@ -89,7 +88,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void addDrawerItems() {
-        String[] mTitles = {"Scan", "My Info", "Settings", "About"};
+        String[] mTitles = {"Scan", "My Info", "Settings", "About"}; //Side bar slide out
         mTitle = mDrawerTitle = getTitle();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.sidebar);
         mDrawerList = (ListView) findViewById(R.id.navList);
