@@ -28,7 +28,7 @@ public class SettingsActivity extends LocationActivity implements SharedPreferen
     private void pushNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         //taskbar icon
-        builder.setSmallIcon(R.drawable.notification);
+        builder.setSmallIcon(R.drawable.wave_notif);
         //title and text on notification
         builder.setContentTitle(getResources().getString(R.string.notificationTitle));
         builder.setContentText(getResources().getString(R.string.notificationText));
