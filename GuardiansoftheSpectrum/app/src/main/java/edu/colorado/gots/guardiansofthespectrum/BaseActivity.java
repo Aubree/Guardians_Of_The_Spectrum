@@ -41,6 +41,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
 
         getSupportActionBar().setIcon(R.drawable.ic_dehaze_white_24px);
+        //prevents title from showing on the bar
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         addDrawerItems();
     }
     @Override
