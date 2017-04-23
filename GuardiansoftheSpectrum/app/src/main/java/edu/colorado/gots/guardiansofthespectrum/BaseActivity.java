@@ -21,9 +21,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     protected Toolbar mToolbar;
 
+    /**
+     * Responsible for setting up the ActionBar, populating the Navigation Drawer,
+     * and setting the base Content View which will allow the Navigation Drawer to
+     * appear in all subclassed Activities
+     * @param savedInstanceState The saved state from any previous instances
+     */
     @Override
-    //responsible for adding in the NavigationDrawer Items, and setting the
-    //base content view
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_base);
@@ -37,14 +41,24 @@ public abstract class BaseActivity extends AppCompatActivity {
         addDrawerItems();
     }
 
+    /**
+     * Override that allows us to inflate the requested layout into the <code>FrameView</code> in
+     * the base layout, rather than replace the entire screen. This allows the NavigationDrawer to
+     * appear in every screen.
+     * @param layoutResID The ID of the layout we wish to display
+     */
     @Override
-    //instead of overriding the base content view, we inflate the requested one
-    //into the main FrameLayout inside the DrawerLayout
     public void setContentView(@LayoutRes int layoutResID) {
         FrameLayout content = (FrameLayout) findViewById(R.id.contentLayout);
         content.addView(getLayoutInflater().inflate(layoutResID, null));
     }
-//DELETE
+
+    //DELETE
+    /**
+     * Called when we need to populate the ActionBar with our various menu items
+     * @param menu The base menu into which we will inflate our custom menu
+     * @return Always true
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater mMenuInflater = getMenuInflater();
@@ -52,6 +66,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Called when an Item in the ActionBar is selected by the user.
+     * @param item The item that was clicked
+     * @return True if the item selected can be handled
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -139,7 +158,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
     }
-
 
     /**
      * Override needed by the <code>ActionBarDrawerToggle</code> class.
