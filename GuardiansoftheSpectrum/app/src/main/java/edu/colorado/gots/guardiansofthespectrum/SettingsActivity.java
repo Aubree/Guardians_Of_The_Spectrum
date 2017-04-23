@@ -69,23 +69,8 @@ public class SettingsActivity extends LocationActivity implements SharedPreferen
         LocalBroadcastManager.getInstance(this).registerReceiver(counterReceiver,
                 new IntentFilter(ScanService.GOTS_COUNTER));
 
-        //grab location manager
-        //LSManager = new LocationServicesManager(this);
-        //serviceSwitch = (Switch) findViewById(R.id.scanServiceSwitch);
-        //serviceSwitch.setChecked(switchState);
         serviceIntent = new Intent(this, ScanService.class);
         serviceIntent.setAction(ScanService.GOTS_SCAN_BACKGROUND_START);
-        /*serviceSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-                if (isChecked && scanEnabled) {
-                    //LSManager.checkAndResolvePermissions();
-                    LSManager.connect();
-                } else {
-                    stopService(serviceIntent);
-                    switchState = false;
-                }
-            }
-        });*/
         fragment = new SettingsFragment();
         getFragmentManager().beginTransaction().replace(R.id.settingsFragLayout, fragment).commit();
         //force outstanding transactions to complete, else, we can get null instead of
