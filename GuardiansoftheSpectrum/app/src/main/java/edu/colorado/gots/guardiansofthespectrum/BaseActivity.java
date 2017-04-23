@@ -1,6 +1,7 @@
 package edu.colorado.gots.guardiansofthespectrum;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v4.widget.DrawerLayout;
@@ -17,13 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 
 public abstract class BaseActivity extends AppCompatActivity {
-    private ArrayAdapter<String> mAdapter;
-    private ListView mDrawerList;
-    private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
-    private CharSequence mDrawerTitle;
-    private CharSequence mTitle;
-
     protected Toolbar mToolbar;
 
     @Override
@@ -33,18 +28,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_base);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        //mToolbar.setNavigationIcon(R.drawable.ic_dehaze_white_24px);
-
-       // mToolbar.setLogo(R.drawable.side_button);
-        //mToolbar.setTitle("NTIA");
+        mToolbar.setNavigationIcon(R.drawable.ic_dehaze_white_24px);
 
         setSupportActionBar(mToolbar);
 
-        getSupportActionBar().setIcon(R.drawable.ic_dehaze_white_24px);
         //prevents title from showing on the bar
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         addDrawerItems();
     }
+
     @Override
     //instead of overriding the base content view, we inflate the requested one
     //into the main FrameLayout inside the DrawerLayout
@@ -89,18 +81,22 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Populate the <code>NavigationDrawer</code> with the necessary items, and
+     * set up listeners to handle when they are selected.
+     */
     private void addDrawerItems() {
-        String[] mTitles = {"Scan", "My Info", "Settings", "About"}; //Side bar slide out
-        mTitle = mDrawerTitle = getTitle();
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.sidebar);
-        mDrawerList = (ListView) findViewById(R.id.navList);
+        final DrawerLayout navLayout = (DrawerLayout) findViewById(R.id.sidebar);
+        ListView navList = (ListView) findViewById(R.id.navList);
         //setting adapter for the list view.
-        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mTitles);
-        mDrawerList.setAdapter(mAdapter);
+        ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
+                getResources().getStringArray(R.array.navDrawerLabels));
+        navList.setAdapter(adapter);
         //set the list's click listener.
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        navList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                navLayout.closeDrawers();
                 switch (position) {
                     case 0:
                         Intent scan = new Intent(BaseActivity.this, ScanActivity.class);
@@ -124,68 +120,34 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         });
 
-        /*mDrawerToggle = new ActionBarDrawerToggle(MainActivity.this, mDrawerLayout, R.string
-                .drawer_open, R.string.drawer_close) {
-            *//**
-         * Called when a drawer has settled in a completely closed state.
-         *//*
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                if (mTitle != null){
-                    getActionBar().setTitle(mTitle);
-                }
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            *//**
-         * Called when a drawer has settled in a completely open state.
-         *//*
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                getActionBar().setTitle(mDrawerTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
+        mDrawerToggle = new ActionBarDrawerToggle(BaseActivity.this, navLayout, mToolbar,
+                R.string.drawer_open, R.string.drawer_close);
         // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.addDrawerListener(mDrawerToggle);
+        navLayout.addDrawerListener(mDrawerToggle);
 
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
-        //getActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
     }
 
-    *//* Called whenever we call invalidateOptionsMenu() *//*
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        // If the nav drawer is open, hide action items related to the content view
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        //menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);//!!!!!!!!!!!!!!!!!!!!!!!
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
+    /**
+     * Override needed by <code>ActionBarDrawerToggle</code>
+     * Must call <code>ActionBarDrawerToggle.syncState()</code> to force
+     * Drawer into appropriate open/close state after reloading screen
+     * @param savedInstanceState saved state as passed to <code>onCreate</code>
+     */
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
     }
 
+
+    /**
+     * Override needed by the <code>ActionBarDrawerToggle</code> class.
+     * We must call <code>ActionBarDrawerToggle.onConfigurationChanged</code>
+     */
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Pass the event to ActionBarDrawerToggle, if it returns
-        // true, then it has handled the app icon touch event
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        // Handle your other action bar items...
-
-        return super.onOptionsItemSelected(item);
-
-    }*/
     }
 }
