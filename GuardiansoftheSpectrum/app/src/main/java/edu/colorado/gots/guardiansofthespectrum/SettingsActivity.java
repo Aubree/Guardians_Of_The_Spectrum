@@ -23,7 +23,6 @@ public class SettingsActivity extends LocationActivity implements SharedPreferen
     private Intent serviceIntent;
     private boolean scanEnabled = true;
     private BatteryReceiver batteryReceiver;
-    private CounterReceiver counterReceiver;
 
     private void pushNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
@@ -64,11 +63,6 @@ public class SettingsActivity extends LocationActivity implements SharedPreferen
         intentFilter.addAction(Intent.ACTION_BATTERY_OKAY);
         registerReceiver(batteryReceiver, intentFilter);
 
-        //set up a quick and dirty listener to receiver counter updates from the service
-        counterReceiver = new CounterReceiver();
-        LocalBroadcastManager.getInstance(this).registerReceiver(counterReceiver,
-                new IntentFilter(ScanService.GOTS_COUNTER));
-
         serviceIntent = new Intent(this, ScanService.class);
         serviceIntent.setAction(ScanService.GOTS_SCAN_BACKGROUND_START);
         fragment = new SettingsFragment();
@@ -90,7 +84,6 @@ public class SettingsActivity extends LocationActivity implements SharedPreferen
     }
 
     public void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(counterReceiver);
         unregisterReceiver(batteryReceiver);
         super.onDestroy();
     }
@@ -151,13 +144,6 @@ public class SettingsActivity extends LocationActivity implements SharedPreferen
     public void initiateSend(View v) {
         Intent i = new Intent(this, SendActivity.class);
         startActivity(i);
-    }
-
-    public class CounterReceiver extends BroadcastReceiver {
-        public void onReceive(Context context, Intent intent){
-            serviceSwitch.setTitle(String.format("Service running: %d\n",
-                    intent.getIntExtra(ScanService.GOTS_COUNTER_EXTRA, 0)));
-        }
     }
 
     private class BatteryReceiver extends BroadcastReceiver  {
