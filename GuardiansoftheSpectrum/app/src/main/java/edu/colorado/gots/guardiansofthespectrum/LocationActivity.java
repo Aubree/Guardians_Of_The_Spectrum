@@ -74,7 +74,7 @@ public abstract class LocationActivity extends BaseActivity implements LocationS
      * later versions of Android.
      * @param requestCode Identify what the request was for
      * @param permissions Ignored
-     * @param grantResults Array of the permissions tatus for each requested permission
+     * @param grantResults Array of the permissions status for each requested permission
      */
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
