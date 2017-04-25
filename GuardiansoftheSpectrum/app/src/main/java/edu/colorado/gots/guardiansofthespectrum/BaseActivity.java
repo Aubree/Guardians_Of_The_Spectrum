@@ -35,7 +35,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         //mToolbar.setNavigationIcon(R.drawable.ic_dehaze_white_24px);
 
-       // mToolbar.setLogo(R.drawable.side_button);
+        // mToolbar.setLogo(R.drawable.side_button);
         //mToolbar.setTitle("NTIA");
 
         setSupportActionBar(mToolbar);
@@ -50,12 +50,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         FrameLayout content = (FrameLayout) findViewById(R.id.contentLayout);
         content.addView(getLayoutInflater().inflate(layoutResID, null));
     }
-//DELETE
+    //DELETE
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater mMenuInflater = getMenuInflater();
         mMenuInflater.inflate(R.menu.our_menu, menu);
-
         return true;
     }
 
@@ -135,7 +134,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                 }
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
-
             *//**
          * Called when a drawer has settled in a completely open state.
          *//*
@@ -147,11 +145,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         };
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.addDrawerListener(mDrawerToggle);
-
         //getActionBar().setDisplayHomeAsUpEnabled(true);
         //getActionBar().setHomeButtonEnabled(true);
     }
-
     *//* Called whenever we call invalidateOptionsMenu() *//*
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -160,20 +156,17 @@ public abstract class BaseActivity extends AppCompatActivity {
         //menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);//!!!!!!!!!!!!!!!!!!!!!!!
         return super.onPrepareOptionsMenu(menu);
     }
-
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
     }
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Pass the event to ActionBarDrawerToggle, if it returns
@@ -182,9 +175,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             return true;
         }
         // Handle your other action bar items...
-
         return super.onOptionsItemSelected(item);
-
     }*/
     }
 }
