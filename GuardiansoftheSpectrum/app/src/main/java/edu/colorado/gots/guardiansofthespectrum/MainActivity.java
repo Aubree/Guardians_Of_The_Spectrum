@@ -13,8 +13,8 @@ public class MainActivity extends BaseActivity {
     private LinkDialogFragment link;
 
     /**
-     *
-     * @param savedInstanceState
+     * Creates the Activity
+     * @param savedInstanceState The saved state of any previous instances
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {

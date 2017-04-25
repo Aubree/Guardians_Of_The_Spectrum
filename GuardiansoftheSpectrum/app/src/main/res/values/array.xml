@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Settings Activity Preference arrays -->
     <string-array name="storageCapNames">
         <item>10 KB</item>
         <item>100 KB</item>
     </string-array>
-
     <string-array name="storageCapValues">
         <item>10</item>
         <item>100</item>
+    </string-array>
+
+    <!-- Navigation Drawer Labels -->
+    <string-array name="navDrawerLabels">
+        <item>@string/menu_action_scan</item>
+        <item>@string/menu_my_info</item>
+        <item>@string/menu_settings</item>
+        <item>@string/menu_about</item>
     </string-array>
 </resources>
