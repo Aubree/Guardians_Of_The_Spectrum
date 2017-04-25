@@ -92,10 +92,6 @@ public class ScanService extends Service {
      */
     volatile Location currentLocation;
     /**
-     * The current LTE information of the device.
-     */
-    //volatile CellInfoLte LTEInfo;
-    /**
      *  The current LTE information of the device bundled with telephony info.
      */
     volatile LTE_Info LTE_Info;
@@ -103,17 +99,6 @@ public class ScanService extends Service {
      * The current WIFI information of the device.
      */
     volatile List<ScanResult> wifiInfo;
-
-    /**
-     * THIS IS TEMPORARY AND CAN BE REMOVED AT A LATER DATE!!
-     * <p>
-     * A counter value to indicate how long the service has been sleeping while waiting for
-     * results. Passed back to the SettingsActivity for visual verification that the service is
-     * running.
-     * @see #GOTS_COUNTER
-     * @see #GOTS_COUNTER_EXTRA
-     */
-    private int counter = 0;
     /**
      * Value indicating whether the service should be running. When set to <code>false</code>,
      * the service will attempt to stop itself.
@@ -134,21 +119,6 @@ public class ScanService extends Service {
      * we ignore any results from the LTE listener.
      */
     private boolean lteNetwork = false;
-
-    /**
-     * An Intent action which indicates the Intent contains an updated value of our counter to
-     * display in the SettingsActivity. This calue can be accessed with GOTS_COUNTER_EXTRA.
-     * @see #counter
-     * @see #GOTS_COUNTER_EXTRA
-     */
-    public static final String GOTS_COUNTER = "edu.colorado.gots.guardainsofthespectrum.counter";
-    /**
-     * A key for Intent extras which will retrieve the updated counter value of an Intent sent with
-     * the GOTS_COUNTER action.
-     * @see #counter
-     * @see #GOTS_COUNTER
-     */
-    public static final String GOTS_COUNTER_EXTRA = "edu.colorado.gots.guardiansofthespectrum.counter.extra";
 
     /**
      * An Intent action indicating that the intent contains a new Location for the service to use.
@@ -363,11 +333,6 @@ public class ScanService extends Service {
                     try {
                         System.out.printf("waiting... running is %b\n", running);
                         Thread.sleep(100);
-                        counter++;
-                        Intent broadcast = new Intent(ScanService.this, SettingsActivity.CounterReceiver.class);
-                        broadcast.setAction(GOTS_COUNTER);
-                        broadcast.putExtra(GOTS_COUNTER_EXTRA, counter);
-                        LocalBroadcastManager.getInstance(ScanService.this).sendBroadcast(broadcast);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
