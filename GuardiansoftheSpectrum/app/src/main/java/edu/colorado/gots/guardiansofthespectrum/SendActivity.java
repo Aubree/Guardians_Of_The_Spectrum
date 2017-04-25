@@ -35,10 +35,22 @@ import javax.net.ssl.TrustManagerFactory;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+/**
+ * This Activity is most likely temporary unless the user should be allowed to initiate the sending
+ * of data explicitly. Unless this is the case, the only necessary part of this to keep is the
+ * <code>ScanTask</code> inner class, as this does the necessary communication.
+ */
 public class SendActivity extends AppCompatActivity implements ServerDialogFragment.ServerDialogListener {
 
+    /**
+     * A reference to the view for displaying the collected data.
+     */
     TextView textView;
 
+    /**
+     * Create the activity and set necessary state
+     * @param savedInstanceState The saved state from any previous Instances
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +59,9 @@ public class SendActivity extends AppCompatActivity implements ServerDialogFragm
         textView = (TextView) findViewById(R.id.full_json_data);
     }
 
+    /**
+     * Called when the activity starts execution. Initiates the dialog to allow the user to send data.
+     */
     public void onStart() {
         super.onStart();
         //note: call this for data.
@@ -56,24 +71,46 @@ public class SendActivity extends AppCompatActivity implements ServerDialogFragm
     }
 
 
+    /**
+     * Called when the user selects the "OK" button on the dialog
+     * @param dialog Ignored
+     */
     public void onDialogPositiveClick(DialogFragment dialog) {
         new SendTask().execute(textView.getText().toString());
     }
 
+    /**
+     * Called when the user selects "cancel" or dismisses the dialog.
+     * @param dialog Ignored
+     */
     public void onDialogNegativeClick(DialogFragment dialog) {
 
     }
 
+    /**
+     * Perform the actual sending of collected scan data in a one-time background thread
+     */
     private class SendTask extends AsyncTask<String, Void, String> {
+        /**
+         * A reference to a progress bar to allow the user to see work is occurring
+         */
         private ProgressBar bar;
 
-        //show our progress bar
+        /**
+         * Called when the task is starting. Sets upt he progress bar.
+         */
         protected void onPreExecute() {
             bar = (ProgressBar) findViewById(R.id.sendProgressBar);
             bar.setVisibility(VISIBLE);
         }
 
-        //send the data to our server
+        /**
+         * Called after <code>onPreExecute()</code>. Handles the actual sending of data
+         * in a background thread.
+         * @param params The arguments passed to <code>SendTask().execute()</code>. Index 0 contains
+         *               the string of JSON data
+         * @return A string indicating the result of the send
+         */
         protected String doInBackground(String... params) {
             //load in our certificate authority information
             CertificateFactory cf;
@@ -214,7 +251,11 @@ public class SendActivity extends AppCompatActivity implements ServerDialogFragm
             return "Data Sent";
         }
 
-        //hide the progress bar and display the status of the send
+        /**
+         * Called after <code>doInBackground(String[])</code> completes execution.
+         * @param result The result of the send
+         * @see #doInBackground(String[])
+         */
         protected void onPostExecute(String result) {
             bar.setVisibility(GONE);
             Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
