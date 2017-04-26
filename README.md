@@ -7,6 +7,12 @@ NTIA Spectrum Map is a crowdsourcing Android app that empowers citizen scientist
 * Local and cloud based visualization service
 
 ## Building:
+* Download Android Studio
+* Import project
+* Attach Android device and enable Development Options
+* Run project from Android Studio
+* After the app is running, stop the project from Android Studio
+* App is now installed on the device
 ## Quick Start:
 ## Support:
 ## Legal:
