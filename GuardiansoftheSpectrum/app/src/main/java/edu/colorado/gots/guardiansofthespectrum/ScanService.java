@@ -313,8 +313,15 @@ public class ScanService extends Service {
          * @return the Dbm of the current LTE signal strength, or Integer.MAX_VALUE if invalid
          */
         private int getLTEDbmOrMaxInt(LTE_Info lte) {
+            int rsrp;
             if (lteNetwork && lte.getLTEinfo() != null) {
-                return lte.getLTEinfo().getCellSignalStrength().getDbm();
+                if(lte.getLTEinfo().getCellSignalStrength().getDbm() > 0) {
+                    rsrp = Integer.parseInt(lte.getRSRP());
+                }
+                else {
+                    rsrp = lte.getLTEinfo().getCellSignalStrength().getDbm();
+                }
+                return rsrp;
             } else {
                 return Integer.MAX_VALUE;
             }
@@ -406,12 +413,14 @@ public class ScanService extends Service {
             String rsrq = parts[10];
             String cqi = parts[12];
             String rssnr = parts[11];
+            String rsrp = parts[9];
             Log.d("SS Changed", "rsrq = " + parts[10]);
             Log.d("SS Changed", "cqi = " + parts[12]);
             Log.d("SS Changed", "rssnr = " + parts[11]);
             // adjusted value: rsrp(parts[9]) + 80
             Log.d("SS Changed", "LTE SS = " + parts[8]);
-            LTE_Info = new LTE_Info(getLTEInfo(tM.getAllCellInfo()), rsrq, cqi, rssnr);
+            Log.d("SS Changed", "LTE RSRP = " + parts[9]);
+            LTE_Info = new LTE_Info(getLTEInfo(tM.getAllCellInfo()), rsrp, rsrq, cqi, rssnr);
             super.onSignalStrengthsChanged(signalStrength);
         }
 
@@ -438,20 +447,24 @@ public class ScanService extends Service {
      */
     protected class LTE_Info{
         private CellInfoLte LTEinfo;
+        private String rsrp;
         private String rsrq;
         private String rssnr;
         private String cqi;
 
-        private LTE_Info(CellInfoLte info, String rsrq, String cqi, String rssnr){
+        private LTE_Info(CellInfoLte info, String rsrp, String rsrq, String cqi, String rssnr){
             this.LTEinfo = info;
             this.cqi = cqi;
             this.rsrq = rsrq;
             this.rssnr = rssnr;
+            this.rsrp = rsrp;
         }
 
         public String getRsrq() {
             return rsrq;
         }
+
+        public String getRSRP() {return rsrp;}
 
         public String getRssnr() {
             return rssnr;

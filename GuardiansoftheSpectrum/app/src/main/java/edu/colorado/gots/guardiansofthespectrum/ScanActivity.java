@@ -167,7 +167,7 @@ public class ScanActivity extends LocationActivity {
                 count++;
             }
         }*/
-        if (dbm < 0 && wifi_rssi < 0) {
+        if (dbm < 0 || wifi_rssi < 0) {
             addEntry(dbm, wifi_ssid, wifi_rssi);
             count++;
         }
@@ -284,38 +284,63 @@ public class ScanActivity extends LocationActivity {
      * @param wifi_rssi Int signal strength of current connected WIFI ap
      */
     private void addEntry(int dbm, String wifi_ssid, int wifi_rssi) {
-        LineData LTEdata = chart1.getData();
-        LineData WIFIdata = chart2.getData();
+        //LineData LTEdata = chart1.getData();
+        //LineData WIFIdata = chart2.getData();
 
-        ILineDataSet LTEset = LTEdata.getDataSetByIndex(0);
-        ILineDataSet WIFIset = WIFIdata.getDataSetByIndex(0);
+        //ILineDataSet LTEset = LTEdata.getDataSetByIndex(0);
+        //ILineDataSet WIFIset = WIFIdata.getDataSetByIndex(0);
 
-        if(LTEset == null) {
-            LTEset = createSet(true);
-            LTEdata.addDataSet(LTEset);
+        //if(LTEset == null) {
+        //    LTEset = createSet(true);
+        //    LTEdata.addDataSet(LTEset);
+        //}
+        //if(WIFIset == null) {
+        //    WIFIset = createSet(false);
+        //    WIFIdata.addDataSet(WIFIset);
+        //}
+
+        if(dbm < 0) {
+            LineData LTEdata = chart1.getData();
+            ILineDataSet LTEset = LTEdata.getDataSetByIndex(0);
+
+            if(LTEset == null) {
+                LTEset = createSet(true);
+                LTEdata.addDataSet(LTEset);
+            }
+            LTEdata.addEntry(new Entry(LTEset.getEntryCount(), dbm), 0);
+            LTEdata.notifyDataChanged();
+            // let the charts know it's data has changed
+            chart1.notifyDataSetChanged();
+            chart1.moveViewToX(LTEdata.getEntryCount());
         }
-        if(WIFIset == null) {
-            WIFIset = createSet(false);
-            WIFIdata.addDataSet(WIFIset);
+
+
+        if(wifi_rssi < 0 && wifi_rssi > -127) {
+            LineData WIFIdata = chart2.getData();
+            ILineDataSet WIFIset = WIFIdata.getDataSetByIndex(0);
+
+            if(WIFIset == null) {
+                WIFIset = createSet(false);
+                WIFIdata.addDataSet(WIFIset);
+            }
+            WIFIdata.addEntry(new Entry(WIFIset.getEntryCount(), wifi_rssi), 0);
+            WIFIdata.notifyDataChanged();
+            // let the charts know it's data has changed
+            chart2.notifyDataSetChanged();
+            chart2.moveViewToX(WIFIdata.getEntryCount());
         }
-
-        LTEdata.addEntry(new Entry(LTEset.getEntryCount(), dbm), 0);
-        LTEdata.notifyDataChanged();
-
-        WIFIdata.addEntry(new Entry(WIFIset.getEntryCount(), wifi_rssi), 0);
-        WIFIdata.notifyDataChanged();
 
         // let the charts know it's data has changed
-        chart1.notifyDataSetChanged();
-        chart2.notifyDataSetChanged();
+        //chart1.notifyDataSetChanged();
+        //chart2.notifyDataSetChanged();
 
         // limit the number of visible entries
-        chart1.setVisibleXRangeMaximum(5);
+        //chart1.setVisibleXRangeMaximum(5);
         // mChart.setVisibleYRange(30, AxisDependency.LEFT);
 
         // move to the latest entry
-        chart1.moveViewToX(LTEdata.getEntryCount());
-        chart2.moveViewToX(LTEdata.getEntryCount());
+        //chart1.moveViewToX(LTEdata.getEntryCount());
+        //chart2.moveViewToX(LTEdata.getEntryCount());
         //chart1.invalidate();
         //chart2.invalidate();
     }

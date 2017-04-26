@@ -124,7 +124,12 @@ public class JSONBuilder {
            System.out.println("building lte JSON\n");
            CellInfoLte cellInfo = lte.getLTEinfo();
            if (cellInfo != null) {
-               ret.put("Dbm", cellInfo.getCellSignalStrength().getDbm());
+               // Check for reasonable rsrp value
+               if( cellInfo.getCellSignalStrength().getDbm() < 0) {
+                   ret.put("Dbm", cellInfo.getCellSignalStrength().getDbm());
+               } else {
+                   ret.put("Dbm", lte.getRSRP());
+               }
                ret.put("CellID", cellInfo.getCellIdentity().getCi());
                ret.put("MCC", cellInfo.getCellIdentity().getMcc());
                ret.put("MNC", cellInfo.getCellIdentity().getMnc());
