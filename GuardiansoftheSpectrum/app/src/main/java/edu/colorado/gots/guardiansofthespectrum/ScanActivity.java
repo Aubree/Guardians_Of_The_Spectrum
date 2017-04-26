@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -18,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -54,9 +56,12 @@ public class ScanActivity extends LocationActivity {
     LineChart chart2;
     TextView LTEtext;
     TextView WIFItext;
+    TextView waitingText;
     ImageButton moreInfoLTE;
     ImageButton moreInfoWIFI;
+    FloatingActionButton pauseFAB;
     int count;
+    Boolean pauseGraph;
 
     private boolean scanning = false;
 
@@ -73,11 +78,14 @@ public class ScanActivity extends LocationActivity {
         LTEentries = new ArrayList<>();
         WIFIentries = new ArrayList<>();
         count = 1;
+        pauseGraph = false;
 
         LTEtext = (TextView) findViewById(R.id.text_LTE);
         LTEtext.setText("LTE Data:");
         WIFItext = (TextView) findViewById(R.id.text_Wifi);
         WIFItext.setText("WIFI Data:");
+        waitingText = (TextView) findViewById(R.id.waiting_text);
+        waitingText.setVisibility(VISIBLE);
 
         moreInfoLTE = (ImageButton) findViewById(R.id.info1);
         moreInfoLTE.setOnClickListener(new View.OnClickListener() {
@@ -97,9 +105,25 @@ public class ScanActivity extends LocationActivity {
             }
         });
 
+        pauseFAB = (FloatingActionButton) findViewById(R.id.pause);
+        pauseFAB.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                pauseGraph = !pauseGraph;
+                if(pauseGraph) {
+                    pauseFAB.setImageResource(android.R.drawable.ic_media_play);
+                    Toast.makeText(getApplicationContext(), "Scan Paused", Toast.LENGTH_SHORT).show();
+                } else {
+                    pauseFAB.setImageResource(android.R.drawable.ic_media_pause);
+                    Toast.makeText(getApplicationContext(), "Resuming Scan", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         bar = (ImageView) findViewById(R.id.scanProgressAnim);
         ((AnimationDrawable) bar.getDrawable()).start();
         bar.setVisibility(VISIBLE);
+
+
         receiver = new ScanDataReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(ScanService.GOTS_SCAN_SERVICE_RESULTS));
         LSManager.connect();
@@ -153,23 +177,12 @@ public class ScanActivity extends LocationActivity {
         Log.d("ParseData", Integer.toString(dbm));
         Log.d("ParseData", wifi_ssid);
         Log.d("ParseData", Integer.toString(wifi_rssi));
-        /*int pos = data.indexOf("Dbm");
-        int endPos = data.indexOf("CellID");
 
-        // check to ensure the LTE object was not null
-        if( (pos != -1) && (endPos != -1) ) {
-            // example of the string: Dbm":-104,"CellID
-            String sdbm = data.substring(pos + 5, endPos - 2);
-            int dbm = parseInt(sdbm);
-            // discard unwanted values of dbm and rssi
-            if(dbm < 0 && wifi_rssi < 0) {
+        if(!pauseGraph) {
+            if (dbm < 0 || wifi_rssi < 0) {
                 addEntry(dbm, wifi_ssid, wifi_rssi);
                 count++;
             }
-        }*/
-        if (dbm < 0 && wifi_rssi < 0) {
-            addEntry(dbm, wifi_ssid, wifi_rssi);
-            count++;
         }
     }
 
@@ -265,12 +278,14 @@ public class ScanActivity extends LocationActivity {
         public void onReceive(Context c, Intent i) {
             ((AnimationDrawable) bar.getDrawable()).stop();
             bar.setVisibility(GONE);
+            waitingText.setVisibility(GONE);
 		    chart1.setVisibility(VISIBLE);
             chart2.setVisibility(VISIBLE);
             LTEtext.setVisibility(VISIBLE);
             WIFItext.setVisibility(VISIBLE);
             moreInfoLTE.setVisibility(VISIBLE);
             moreInfoWIFI.setVisibility(VISIBLE);
+            pauseFAB.setVisibility(VISIBLE);
             ParseData(i.getIntExtra(ScanService.GOTS_SCAN_SERVICE_RESULTS_LTE_DBM, Integer.MAX_VALUE),
                     i.getStringExtra(ScanService.GOTS_SCAN_SERVICE_RESULTS_CURRENT_WIFI_SSID),
                     i.getIntExtra(ScanService.GOTS_SCAN_SERVICE_RESULTS_CURRENT_WIFI_RSSI, Integer.MAX_VALUE));
@@ -284,40 +299,42 @@ public class ScanActivity extends LocationActivity {
      * @param wifi_rssi Int signal strength of current connected WIFI ap
      */
     private void addEntry(int dbm, String wifi_ssid, int wifi_rssi) {
-        LineData LTEdata = chart1.getData();
-        LineData WIFIdata = chart2.getData();
 
-        ILineDataSet LTEset = LTEdata.getDataSetByIndex(0);
-        ILineDataSet WIFIset = WIFIdata.getDataSetByIndex(0);
+        if(dbm < 0) {
+            LineData LTEdata = chart1.getData();
+            ILineDataSet LTEset = LTEdata.getDataSetByIndex(0);
 
-        if(LTEset == null) {
-            LTEset = createSet(true);
-            LTEdata.addDataSet(LTEset);
+            if(LTEset == null) {
+                LTEset = createSet(true);
+                LTEdata.addDataSet(LTEset);
+            }
+            LTEdata.addEntry(new Entry(LTEset.getEntryCount(), dbm), 0);
+            LTEdata.notifyDataChanged();
+            // let the charts know it's data has changed
+            chart1.notifyDataSetChanged();
+            chart1.moveViewToX(LTEdata.getEntryCount());
         }
-        if(WIFIset == null) {
-            WIFIset = createSet(false);
-            WIFIdata.addDataSet(WIFIset);
+
+
+        if(wifi_rssi < 0 && wifi_rssi > -127) {
+            LineData WIFIdata = chart2.getData();
+            ILineDataSet WIFIset = WIFIdata.getDataSetByIndex(0);
+
+            if(WIFIset == null) {
+                WIFIset = createSet(false);
+                WIFIdata.addDataSet(WIFIset);
+            }
+            WIFIdata.addEntry(new Entry(WIFIset.getEntryCount(), wifi_rssi), 0);
+            WIFIdata.notifyDataChanged();
+            // let the charts know it's data has changed
+            chart2.notifyDataSetChanged();
+            chart2.moveViewToX(WIFIdata.getEntryCount());
         }
-
-        LTEdata.addEntry(new Entry(LTEset.getEntryCount(), dbm), 0);
-        LTEdata.notifyDataChanged();
-
-        WIFIdata.addEntry(new Entry(WIFIset.getEntryCount(), wifi_rssi), 0);
-        WIFIdata.notifyDataChanged();
-
-        // let the charts know it's data has changed
-        chart1.notifyDataSetChanged();
-        chart2.notifyDataSetChanged();
 
         // limit the number of visible entries
-        chart1.setVisibleXRangeMaximum(5);
-        // mChart.setVisibleYRange(30, AxisDependency.LEFT);
+        chart1.setVisibleXRangeMaximum(8);
+        chart2.setVisibleXRangeMaximum(8);
 
-        // move to the latest entry
-        chart1.moveViewToX(LTEdata.getEntryCount());
-        chart2.moveViewToX(LTEdata.getEntryCount());
-        //chart1.invalidate();
-        //chart2.invalidate();
     }
 
     /**
@@ -328,9 +345,9 @@ public class ScanActivity extends LocationActivity {
     private LineDataSet createSet(boolean LTE) {
         LineDataSet set;
         if(LTE) {
-            set = new LineDataSet(null, "LTE Dbm");
+            set = new LineDataSet(null, "LTE dBm");
         } else {
-            set = new LineDataSet(null, "WIFI RSSI DBm");
+            set = new LineDataSet(null, "WIFI dBm");
         }
         set.setLineWidth(2.5f);
         set.setCircleRadius(4.5f);
