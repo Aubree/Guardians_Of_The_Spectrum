@@ -22,6 +22,7 @@
             android:background="@color/ltBlue"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
+            android:paddingTop="16dp"
             android:orientation="vertical" >
 
             <RelativeLayout
@@ -103,6 +104,7 @@
 
     </ScrollView>
 
+
     <ImageView
         android:id="@+id/scanProgressAnim"
         android:layout_width="match_parent"
@@ -111,6 +113,29 @@
         android:layout_centerVertical="true"
         android:scaleType="center"
         android:src="@drawable/spec_animated"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/waiting_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="false"
+        android:layout_gravity="center_vertical"
+        android:text="@string/Waiting_for_Results"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:visibility="gone"/>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:clickable="true"
+        android:src="@android:drawable/ic_media_pause"
         android:visibility="gone" />
 
 </RelativeLayout>
