@@ -18,19 +18,19 @@ NTIA Spectrum Map is a crowdsourcing Android app that empowers citizen scientist
 * App is now installed on the device
 ## Quick Start:
 * #### Home: 
-    * shows main server site visualization across all phones
+    * shows main server site visualization across all phones </p>![home](/images/home.PNG)
 * #### Scan: scans for LTE and WiFi strength connection
     * Provides dynamic updates for LTE and WiFi.
-    * Updates with change of signal strength.
+    * Updates with change of signal strength. </p>![scanning](/images/scan.PNG)
 * #### My Info: personal usage information
     * Provides personal LTE and WiFi usage summary.
-    * Provides hardware information.
+    * Provides hardware information. </p>![myinfo](/images/myinfo.PNG)
 * #### Settings:
     * Allows to send data to the server.
     * Allows to delete files locally.
     * Provides scanning as a background service.
-    * Background scanning notification switch.
+    * Background scanning notification switch. </p>![settings](/images/settings.PNG)
 * #### About:
-    * Basic and legal app information.
+    * Basic and legal app information.</p>![about](/images/about.PNG)
 ## Support:
 ## Legal:
