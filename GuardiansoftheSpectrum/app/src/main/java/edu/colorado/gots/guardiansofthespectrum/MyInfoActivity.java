@@ -26,21 +26,47 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-// Local visualization is done using a free tool MPAnroidChart
-// https://github.com/PhilJay/MPAndroidChart
-// Bar chart code is following ListViewBarChartActivity.java
-
+/**
+ * My info provides local phone information: LTE and WiFi signal strength, device information.
+ * Local visualization is done using a free tool MPAnroidChart
+ * https://github.com/PhilJay/MPAndroidChart
+ * Bar chart code is following ListViewBarChartActivity.java
+ */
 public class MyInfoActivity extends BaseActivity {
+    /**
+     * Listview creates a view, in which graphs are treated as a list.
+     */
     private ListView my_listview;
+    /**
+     * mTfLight styles the text that is on the graphs.
+     */
     protected Typeface mTfLight;
-    private  Typeface mTypeFaceLight;
+    /**
+     * CSV manager brings signal information.
+     * @see CSVFileManager
+     */
     CSVFileManager csvManager;
+    /**
+     * Button for graphs leads to a window that gives additional information about graphs.
+     * @see ReadingGraphFragment
+     */
     Button graphs_button;
+    /**
+     * Button for hardware leads to the device information activity.
+     * @see HardwareInfo
+     */
     Button button_hardware;
 
+    /**
+     * On create sets up the window, puts listview and buttons.
+     * Calls for reading data from CSV file.
+     * @see #generateData(int, String)
+     * @param savedInstanceState The saved state from any previous instances
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Gets the layout of this activity.
         setContentView(R.layout.activity_myinfo);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager
                 .LayoutParams.FLAG_FULLSCREEN);
@@ -74,9 +100,11 @@ public class MyInfoActivity extends BaseActivity {
         ChartDataAdapter my_adapter = new ChartDataAdapter(getApplicationContext(), list);
         my_listview.setAdapter(my_adapter);
     }
-
-
-
+    /**
+     * Adapter is taken directly from MPAndoid Charts.
+     * Adapter sets the view in the requested graph type.
+     * Here adapter sets the view into the bar chart: colors, text, size, etc.
+     */
     private class ChartDataAdapter extends ArrayAdapter<BarData>{
         public ChartDataAdapter(Context context, List<BarData> objects){
             super(context, 0, objects);
@@ -84,11 +112,13 @@ public class MyInfoActivity extends BaseActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
             BarData data = getItem(position);
+            // Holder is a wrapper for the graph.
             ViewHolder holder = null;
             if (convertView == null) {
                 holder = new ViewHolder();
                 convertView = LayoutInflater.from(getContext()).inflate(
                         R.layout.list_item_barchart, null);
+                // Putting bar chart into holder.
                 holder.chart = (BarChart) convertView.findViewById(R.id.chart);
                 convertView.setTag(holder);
             }
@@ -96,7 +126,7 @@ public class MyInfoActivity extends BaseActivity {
                 holder = (ViewHolder) convertView.getTag();
             }
             // apply styling.
-            // MPAndroid charts does not support X and Y axis labels.
+            // MPAndroid charts does not support Y axis label.
             // "About Graphs" button explains Y - signal strength, X - time of measurement.
             data.setValueTypeface(mTfLight);
             data.setValueTextColor(Color.BLACK);
@@ -106,29 +136,26 @@ public class MyInfoActivity extends BaseActivity {
             holder.chart.setDescription(descriptionX);
             holder.chart.getDescription().setEnabled(true);
 
-//            Description descriptionY = new Description();
-//            descriptionY.setText("Signal Strength");
-//            holder.chart.setDescription(descriptionY);
-//            holder.chart.getDescription().setEnabled(true);
-
-
             Legend legend = holder.chart.getLegend();
-            legend.setFormSize(10f); // set the size of the legend forms/shapes
-            legend.setForm(Legend.LegendForm.CIRCLE); // set what type of form/shape should be used
+            // Sets the size of the legend forms/shapes.
+            legend.setFormSize(10f);
+            // Sets circle for the legend.
+            legend.setForm(Legend.LegendForm.CIRCLE);
             legend.setTextSize(12f);
             legend.setTextColor(Color.BLACK);
-            legend.setXEntrySpace(5f); // set the space between the legend entries on the x-axis
-            legend.setYEntrySpace(5f); // set the space between the legend entries on the y-axis
+            // Sets the space between the legend entries on the x and y-axis.
+            legend.setXEntrySpace(5f);
+            legend.setYEntrySpace(5f);
 
 
             holder.chart.setDrawGridBackground(false);
             XAxis xAxis = holder.chart.getXAxis();
-            //xAxis.setLabelRotationAngle(-45);
             holder.chart.getXAxis().setPosition(XAxis.XAxisPosition.TOP);
             holder.chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
             xAxis.setTypeface(mTfLight);
             xAxis.setDrawGridLines(false);
-            xAxis.setGranularity(1f); // one hour
+            // Sets x-axis number line.
+            xAxis.setGranularity(1f);
             holder.chart.setDragEnabled(true);
             holder.chart.setScaleEnabled(true);
             holder.chart.setHighlightPerDragEnabled(true);
@@ -150,11 +177,11 @@ public class MyInfoActivity extends BaseActivity {
             YAxis rightAxis = holder.chart.getAxisRight();
             rightAxis.setEnabled(false);
 
-            // set data
+            // Sets data to the chart.
             holder.chart.setData(data);
             holder.chart.setFitBars(true);
 
-            // do not forget to refresh the chart
+            // Refreshes the chart.
             holder.chart.invalidate();
             holder.chart.animateY(700);
 
@@ -166,16 +193,24 @@ public class MyInfoActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Taking data from CSV file and adjusting it for the bar graph representation.
+     * @param cnt
+     * @param str
+     * @return
+     */
     private BarData generateData(int cnt, String str) {
 
         ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
         String data = "";
         String time = "";
-        //float time_float = 0;
         int time_int = 0;
-        float dbm; // cell signal strength.
-        String ssid = ""; //service identifier
-        float rssi; // wifi signal strength
+        // Cell signal strength.
+        float dbm;
+        // Service identifier.
+        String ssid = "";
+        // WiFi signal strength.
+        float rssi;
         int count = 0;
 
         // Getting data from the CSV file written by CSVFileManager.java
@@ -184,8 +219,6 @@ public class MyInfoActivity extends BaseActivity {
         for (CSVFileManager.CSVEntry e : csvData) {
             time += String.format("", e.getTime());
             ssid = String.format("", e.getSsid());
-            //time_float = Float.parseFloat(time);
-
 
             // Both signal strengths will be in the negative, which makes it hard to show in a bar
             // chart format. Because of this, we are adding values to the data and making a note
