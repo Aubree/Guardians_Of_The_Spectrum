@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import android.widget.ListView;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -71,8 +69,8 @@ public class MyInfoActivity extends BaseActivity {
         // the listview.
         my_listview = (ListView) findViewById(R.id.id_list_view);
         ArrayList<BarData> list = new ArrayList<BarData>();
-        list.add(generateData(1, "Cell Connection Strength"));
-        list.add(generateData(2, "WiFi Connection Strength"));
+        list.add(generateData(1, "Effective Cell Connection Strength in dBm."));
+        list.add(generateData(2, "Effective WiFi Connection Strength in dBm."));
         ChartDataAdapter my_adapter = new ChartDataAdapter(getApplicationContext(), list);
         my_listview.setAdapter(my_adapter);
     }
@@ -107,6 +105,12 @@ public class MyInfoActivity extends BaseActivity {
             descriptionX.setText("Time");
             holder.chart.setDescription(descriptionX);
             holder.chart.getDescription().setEnabled(true);
+
+//            Description descriptionY = new Description();
+//            descriptionY.setText("Signal Strength");
+//            holder.chart.setDescription(descriptionY);
+//            holder.chart.getDescription().setEnabled(true);
+
 
             Legend legend = holder.chart.getLegend();
             legend.setFormSize(10f); // set the size of the legend forms/shapes
@@ -145,26 +149,6 @@ public class MyInfoActivity extends BaseActivity {
 
             YAxis rightAxis = holder.chart.getAxisRight();
             rightAxis.setEnabled(false);
-
-
-/////////////////
-            LimitLine ll = new LimitLine(80f, "Poor Signal");
-            ll.setLineColor(Color.RED);
-            ll.setLineWidth(4f);
-            ll.setTextColor(Color.BLACK);
-            ll.setTextSize(12f);
-
-            LimitLine l2 = new LimitLine(82f, "Excellent Signal");
-            l2.setLineColor(Color.GREEN);
-            l2.setLineWidth(4f);
-            l2.setTextColor(Color.BLACK);
-            l2.setTextSize(12f);
-
-            leftAxis.addLimitLine(ll);
-            leftAxis.addLimitLine(l2);
-///////////////
-
-
 
             // set data
             holder.chart.setData(data);
@@ -207,23 +191,13 @@ public class MyInfoActivity extends BaseActivity {
             // chart format. Because of this, we are adding values to the data and making a note
             // of that in MyInfoActivity "About Graphs" button.
             dbm = e.getDbm() - (-150);
-            Log.d("generateData dbm value ", Float.toString(dbm));
             rssi = e.getRssi() - (-127);
-            Log.d("generateData rssi ", Float.toString(rssi));
 
             if (cnt == 2){
-                //entries.clear();
-//                for (int i = 0; i < csvData.size(); i++) {
                     entries.add(new BarEntry(count, rssi));
-                    Log.d("generateData dbm2 ", Float.toString(dbm));
-//                }
             }
             else {
-               // entries.clear();
-//                for (int i = 0; i < csvData.size(); i++) {
                     entries.add(new BarEntry(count, dbm));
-                    Log.d("generateData rssi2 ", Float.toString(rssi));
-//                }
             }
             count++;
         }

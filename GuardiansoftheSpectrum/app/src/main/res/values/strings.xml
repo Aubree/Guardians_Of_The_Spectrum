@@ -6,6 +6,7 @@
     <string name="serviceDesc">The background scanning service for the Guardians of the Spectrum App</string>
 
     <!-- ActionBar Labels -->
+    <string name="menu_home">Home</string>
     <string name="menu_action_scan">Scan</string>
     <string name="menu_my_info">My Info</string>
     <string name="menu_settings">Settings</string>
@@ -44,8 +45,8 @@
     <string name="Waiting_for_Results">Waiting for LTE or WIFI results.\nPlease insure phone is not on Airplane mode\n and/or is connected to 4G LTE.</string>
 
     <!-- MyInfo Activity About Graphs -->
-    <string name="Graph_text">Graphs are adjusted for bar representation. We added 150 to Cell
-        Signal and 127 to WiFi Signal strength.\nVertical axis indicates signal strength.
+    <string name="Graph_text">Graphs are adjusted for bar representation. We added 150 dBm to Cell
+        Signal and 127 dBm to WiFi Signal strength.\nVertical axis indicates signal strength.
         Horizontal axis indicates time of measurement.</string>
 
     <!-- About Fragment strings -->

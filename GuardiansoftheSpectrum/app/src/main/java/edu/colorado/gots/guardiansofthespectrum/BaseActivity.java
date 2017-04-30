@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -75,10 +76,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()){
-            /*
-            case R.id.activity_main:
+
+            case R.id.action_home:
                 NavUtils.navigateUpFromSameTask(this);
-                return true; */
+                return true;
             case R.id.action_scan:
                 Intent scan = new Intent(this, ScanActivity.class);
                 startActivity(scan);
@@ -118,18 +119,21 @@ public abstract class BaseActivity extends AppCompatActivity {
                 navLayout.closeDrawers();
                 switch (position) {
                     case 0:
+                        NavUtils.navigateUpFromSameTask(BaseActivity.this);
+                        break;
+                    case 1:
                         Intent scan = new Intent(BaseActivity.this, ScanActivity.class);
                         startActivity(scan);
                         break;
-                    case 1:
+                    case 2:
                         Intent info = new Intent(BaseActivity.this, MyInfoActivity.class);
                         startActivity(info);
                         break;
-                    case 2:
+                    case 3:
                         Intent settings = new Intent(BaseActivity.this, SettingsActivity.class);
                         startActivity(settings);
                         break;
-                    case 3:
+                    case 4:
                         AboutDialogFragment aboutDialog = new AboutDialogFragment();
                         aboutDialog.show(getSupportFragmentManager(), "aboutDialog");
                         break;
