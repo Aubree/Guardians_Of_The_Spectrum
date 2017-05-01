@@ -5,12 +5,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.widget.TextView;
 
+/**
+ * Hardware info collects information about the phone and shows it to user.
+ * This activity is called from MyInfo activity
+ * @see MyInfoActivity
+ */
 public class HardwareInfo extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Gets the layout of this activity, which is TextView.
         setContentView(R.layout.activity_hardware_info);
-
         TextView textView = (TextView) findViewById(R.id.hardware_info);
         textView.setTextSize(getResources().getDimension(R.dimen.textsize));
         textView.getPaddingTop();
