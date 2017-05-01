@@ -8,21 +8,21 @@
 
     <item
         android:id="@+id/action_scan"
+        android:icon="@drawable/ic_speaker_phone_white_24px"
         android:title="@string/menu_action_scan"
         app:showAsAction="ifRoom"/>
-    <!--android:icon="@drawable/ic_speaker_phone_white_24px" -->
 
     <item
         android:id="@+id/action_my_info"
-        android:title="my info"
+        android:icon="@drawable/ic_info_outline_white_24px"
+        android:title="@string/menu_my_info"
         app:showAsAction="ifRoom"/>
-    <!-- android:icon="@drawable/ic_info_outline_white_24px" -->
 
     <item
         android:id="@+id/action_settings"
-        android:title= "@string/menu_settings"
+        android:icon="@drawable/ic_settings_white_24px"
+        android:title="@string/menu_settings"
         app:showAsAction="ifRoom"/>
-    <!-- android:icon="@drawable/ic_settings_white_24px" -->
 
     <item
         android:id="@+id/action_about"

@@ -16,19 +16,47 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 
-
+/**
+ * This Activity acts as the Settings page for the application and provides an interface
+ * for users to alter the behavior of the app.
+ */
 public class SettingsActivity extends LocationActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+    /**
+     * The fragment containing the UI for the various options we provide.
+     */
     private SettingsFragment fragment;
+    /**
+     * The toggle switch allowing the user to start and stop the background service that performs
+     * the scan.
+     */
     private SwitchPreference serviceSwitch;
+    /**
+     * A reference to the stored Intent used to start the background service if the user chooses
+     * to start it and grants all necessary permissions for its operation.
+     */
     private Intent serviceIntent;
+    /**
+     * A flag intended to be used with the <code>BatteryReceiver</code> class to prevent the app
+     * from allowing the background scanning service from being started if the system is low on
+     * battery power.
+     * @see BatteryReceiver
+     */
     private boolean scanEnabled = true;
+    /**
+     * A reference to the <code>BatteryReceiver</code> class to handle receiving power notifications
+     * from the Android operating system.
+     */
     private BatteryReceiver batteryReceiver;
-    private CounterReceiver counterReceiver;
 
+    /**
+     * Pushes a notification to the user's taskbar indicating that there is a background scan
+     * running.
+     * @see #cancelNotification()
+     */
     private void pushNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         //taskbar icon
-        builder.setSmallIcon(R.drawable.notification);
+        builder.setSmallIcon(R.drawable.wave_notif);
         //title and text on notification
         builder.setContentTitle(getResources().getString(R.string.notificationTitle));
         builder.setContentText(getResources().getString(R.string.notificationText));
@@ -48,10 +76,19 @@ public class SettingsActivity extends LocationActivity implements SharedPreferen
         ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(0, builder.build());
     }
 
+    /**
+     * Remove the notification from the user's taskbar indicating that a background scan
+     * is running.
+     * @see #pushNotification()
+     */
     private void cancelNotification() {
         ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).cancel(0);
     }
 
+    /**
+     * Initialize the necessary activity state and layout
+     * @param savedInstanceState Ignored
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,28 +101,8 @@ public class SettingsActivity extends LocationActivity implements SharedPreferen
         intentFilter.addAction(Intent.ACTION_BATTERY_OKAY);
         registerReceiver(batteryReceiver, intentFilter);
 
-        //set up a quick and dirty listener to receiver counter updates from the service
-        counterReceiver = new CounterReceiver();
-        LocalBroadcastManager.getInstance(this).registerReceiver(counterReceiver,
-                new IntentFilter(ScanService.GOTS_COUNTER));
-
-        //grab location manager
-        //LSManager = new LocationServicesManager(this);
-        //serviceSwitch = (Switch) findViewById(R.id.scanServiceSwitch);
-        //serviceSwitch.setChecked(switchState);
         serviceIntent = new Intent(this, ScanService.class);
         serviceIntent.setAction(ScanService.GOTS_SCAN_BACKGROUND_START);
-        /*serviceSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-                if (isChecked && scanEnabled) {
-                    //LSManager.checkAndResolvePermissions();
-                    LSManager.connect();
-                } else {
-                    stopService(serviceIntent);
-                    switchState = false;
-                }
-            }
-        });*/
         fragment = new SettingsFragment();
         getFragmentManager().beginTransaction().replace(R.id.settingsFragLayout, fragment).commit();
         //force outstanding transactions to complete, else, we can get null instead of
@@ -94,26 +111,51 @@ public class SettingsActivity extends LocationActivity implements SharedPreferen
         serviceSwitch = (SwitchPreference) fragment.findPreference("serviceSwitch");
     }
 
+    /**
+     * Called when app resumes its execution. Responsible for registering the activity to listen for
+     * changes in the options state.
+     * @see #onSharedPreferenceChanged(SharedPreferences, String)
+     */
     public void onResume() {
         super.onResume();
         fragment.getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
+    /**
+     * Call when the app stops executing. Responsible for unregistering the activity to listen for
+     * changes in the options.
+     * @see #onSharedPreferenceChanged(SharedPreferences, String)
+     */
     public void onPause() {
         super.onPause();
         fragment.getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 
+    /**
+     * Called when the activity is no longer needed. Responsible for unregistering the receiver for
+     * incoming battery level notifications.
+     */
     public void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(counterReceiver);
         unregisterReceiver(batteryReceiver);
         super.onDestroy();
     }
 
+    /**
+     * Called when the Google API client successfully establishes a connection. We can now issue
+     * a request to check the current permissions granted to the app to see if we can start a
+     * background scan if the user wants one.
+     * @see LocationServicesManager#checkAndResolvePermissions()
+     * @see LocationServicesManager.LocationServicesCallbacks
+     */
     public void onConnected() {
         LSManager.checkAndResolvePermissions();
     }
 
+    /**
+     * Called when we have all necessary permissions to start a background scan. The service will
+     * be started and a notification will be pushed to the user's taskbar if allowed.
+     * @see LocationServicesManager.LocationServicesCallbacks
+     */
     public void onLocationEnabled() {
         startService(serviceIntent);
         //push notification if we are allowed to
@@ -122,10 +164,19 @@ public class SettingsActivity extends LocationActivity implements SharedPreferen
         }
     }
 
+    /**
+     * Called when permissions are insufficient to allow a background scan sto start.
+     * @see LocationServicesManager.LocationServicesCallbacks
+     */
     public void onLocationNotEnabled() {
         serviceSwitch.setChecked(false);
     }
 
+    /**
+     * Called when the user changes the state of one of the options on the screen.
+     * @param pref The new state of the options
+     * @param key The key assigned to the option that was changed
+     */
     public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
         if (key.equals("serviceSwitch")) {
             boolean isChecked = pref.getBoolean(key, false);
@@ -155,7 +206,10 @@ public class SettingsActivity extends LocationActivity implements SharedPreferen
         }
     }
 
-    //delete local data file storage
+    /**
+     * Delete all local data storage
+     * @param v Ignored
+     */
     public void initiateDelete(View v) {
         DataFileManager dFM = new DataFileManager(getApplicationContext());
         dFM.deleteAllDataFiles();
@@ -163,19 +217,25 @@ public class SettingsActivity extends LocationActivity implements SharedPreferen
         cFM.deleteFiles();
     }
 
+    /**
+     * Send collected scan data to the server
+     * @param v Ignored
+     * @see SendActivity
+     */
     public void initiateSend(View v) {
         Intent i = new Intent(this, SendActivity.class);
         startActivity(i);
     }
 
-    public class CounterReceiver extends BroadcastReceiver {
-        public void onReceive(Context context, Intent intent){
-            serviceSwitch.setTitle(String.format("Service running: %d\n",
-                    intent.getIntExtra(ScanService.GOTS_COUNTER_EXTRA, 0)));
-        }
-    }
-
+    /**
+     * Class responsible for receiving battery level notifications from the Android OS
+     */
     private class BatteryReceiver extends BroadcastReceiver  {
+        /**
+         * Called when a new notification is received
+         * @param context Ignored
+         * @param intent An intent containing the information
+         */
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(Intent.ACTION_BATTERY_LOW)) {

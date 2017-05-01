@@ -92,10 +92,6 @@ public class ScanService extends Service {
      */
     volatile Location currentLocation;
     /**
-     * The current LTE information of the device.
-     */
-    //volatile CellInfoLte LTEInfo;
-    /**
      *  The current LTE information of the device bundled with telephony info.
      */
     volatile LTE_Info LTE_Info;
@@ -103,17 +99,6 @@ public class ScanService extends Service {
      * The current WIFI information of the device.
      */
     volatile List<ScanResult> wifiInfo;
-
-    /**
-     * THIS IS TEMPORARY AND CAN BE REMOVED AT A LATER DATE!!
-     * <p>
-     * A counter value to indicate how long the service has been sleeping while waiting for
-     * results. Passed back to the SettingsActivity for visual verification that the service is
-     * running.
-     * @see #GOTS_COUNTER
-     * @see #GOTS_COUNTER_EXTRA
-     */
-    private int counter = 0;
     /**
      * Value indicating whether the service should be running. When set to <code>false</code>,
      * the service will attempt to stop itself.
@@ -134,21 +119,6 @@ public class ScanService extends Service {
      * we ignore any results from the LTE listener.
      */
     private boolean lteNetwork = false;
-
-    /**
-     * An Intent action which indicates the Intent contains an updated value of our counter to
-     * display in the SettingsActivity. This calue can be accessed with GOTS_COUNTER_EXTRA.
-     * @see #counter
-     * @see #GOTS_COUNTER_EXTRA
-     */
-    public static final String GOTS_COUNTER = "edu.colorado.gots.guardainsofthespectrum.counter";
-    /**
-     * A key for Intent extras which will retrieve the updated counter value of an Intent sent with
-     * the GOTS_COUNTER action.
-     * @see #counter
-     * @see #GOTS_COUNTER
-     */
-    public static final String GOTS_COUNTER_EXTRA = "edu.colorado.gots.guardiansofthespectrum.counter.extra";
 
     /**
      * An Intent action indicating that the intent contains a new Location for the service to use.
@@ -343,8 +313,15 @@ public class ScanService extends Service {
          * @return the Dbm of the current LTE signal strength, or Integer.MAX_VALUE if invalid
          */
         private int getLTEDbmOrMaxInt(LTE_Info lte) {
+            int rsrp;
             if (lteNetwork && lte.getLTEinfo() != null) {
-                return lte.getLTEinfo().getCellSignalStrength().getDbm();
+                if(lte.getLTEinfo().getCellSignalStrength().getDbm() > 0) {
+                    rsrp = Integer.parseInt(lte.getRSRP());
+                }
+                else {
+                    rsrp = lte.getLTEinfo().getCellSignalStrength().getDbm();
+                }
+                return rsrp;
             } else {
                 return Integer.MAX_VALUE;
             }
@@ -363,11 +340,6 @@ public class ScanService extends Service {
                     try {
                         System.out.printf("waiting... running is %b\n", running);
                         Thread.sleep(100);
-                        counter++;
-                        Intent broadcast = new Intent(ScanService.this, SettingsActivity.CounterReceiver.class);
-                        broadcast.setAction(GOTS_COUNTER);
-                        broadcast.putExtra(GOTS_COUNTER_EXTRA, counter);
-                        LocalBroadcastManager.getInstance(ScanService.this).sendBroadcast(broadcast);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
@@ -441,12 +413,14 @@ public class ScanService extends Service {
             String rsrq = parts[10];
             String cqi = parts[12];
             String rssnr = parts[11];
+            String rsrp = parts[9];
             Log.d("SS Changed", "rsrq = " + parts[10]);
             Log.d("SS Changed", "cqi = " + parts[12]);
             Log.d("SS Changed", "rssnr = " + parts[11]);
             // adjusted value: rsrp(parts[9]) + 80
             Log.d("SS Changed", "LTE SS = " + parts[8]);
-            LTE_Info = new LTE_Info(getLTEInfo(tM.getAllCellInfo()), rsrq, cqi, rssnr);
+            Log.d("SS Changed", "LTE RSRP = " + parts[9]);
+            LTE_Info = new LTE_Info(getLTEInfo(tM.getAllCellInfo()), rsrp, rsrq, cqi, rssnr);
             super.onSignalStrengthsChanged(signalStrength);
         }
 
@@ -473,20 +447,24 @@ public class ScanService extends Service {
      */
     protected class LTE_Info{
         private CellInfoLte LTEinfo;
+        private String rsrp;
         private String rsrq;
         private String rssnr;
         private String cqi;
 
-        private LTE_Info(CellInfoLte info, String rsrq, String cqi, String rssnr){
+        private LTE_Info(CellInfoLte info, String rsrp, String rsrq, String cqi, String rssnr){
             this.LTEinfo = info;
             this.cqi = cqi;
             this.rsrq = rsrq;
             this.rssnr = rssnr;
+            this.rsrp = rsrp;
         }
 
         public String getRsrq() {
             return rsrq;
         }
+
+        public String getRSRP() {return rsrp;}
 
         public String getRssnr() {
             return rssnr;
