@@ -9,12 +9,13 @@
     tools:context="edu.colorado.gots.guardiansofthespectrum.MainActivity">
 
     <ImageView
+        android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ntia_logo"
-        android:id="@+id/logo"
         android:layout_below="@+id/toolbar"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ntia_logo" />
 
     <!-- it's a secret to everybody -->
     <Button
@@ -27,10 +28,12 @@
 
     <WebView
         android:id="@+id/webview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_below="@+id/logo"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="112dp" />
+        android:layout_marginTop="0dp"
+        />
+
 
 </RelativeLayout>
