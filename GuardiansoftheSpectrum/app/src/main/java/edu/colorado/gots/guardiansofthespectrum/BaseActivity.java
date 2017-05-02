@@ -74,11 +74,11 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()){
-
             case R.id.action_home:
-                NavUtils.navigateUpFromSameTask(this);
+                if(!(this instanceof MainActivity)){
+                    NavUtils.navigateUpFromSameTask(BaseActivity.this);
+                }
                 return true;
             case R.id.action_scan:
                 Intent scan = new Intent(this, ScanActivity.class);
@@ -119,7 +119,9 @@ public abstract class BaseActivity extends AppCompatActivity {
                 navLayout.closeDrawers();
                 switch (position) {
                     case 0:
-                        NavUtils.navigateUpFromSameTask(BaseActivity.this);
+                        if(!(BaseActivity.this instanceof MainActivity)){
+                            NavUtils.navigateUpFromSameTask(BaseActivity.this);
+                        }
                         break;
                     case 1:
                         Intent scan = new Intent(BaseActivity.this, ScanActivity.class);
