@@ -12,6 +12,7 @@
 
     <!-- Navigation Drawer Labels -->
     <string-array name="navDrawerLabels">
+        <item>@string/menu_home</item>
         <item>@string/menu_action_scan</item>
         <item>@string/menu_my_info</item>
         <item>@string/menu_settings</item>
