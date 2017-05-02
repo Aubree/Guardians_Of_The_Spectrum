@@ -19,8 +19,8 @@
     <string name="drawer_close">Close navigation drawer</string>
 
     <!-- Settings Activity Strings -->
-    <string name="sendButton">Send Data</string>
-    <string name="deleteButton">Delete Files</string>
+    <string name="sendButton">  Send Data</string>
+    <string name="deleteButton">  Delete Files</string>
     <string name="scanServiceLabel">Background Scanning Service</string>
     <string name="scanServiceLabelTextOn">Enabled</string>
     <string name="scanServiceLabelTextOff">Disabled</string>

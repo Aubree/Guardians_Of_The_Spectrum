@@ -11,25 +11,23 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ntia_logo"
-        android:id="@+id/logo"
         android:layout_below="@+id/toolbar"
-        android:layout_centerHorizontal="true" />
+
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ntia_logo" />
 
     <!-- it's a secret to everybody -->
     <Button
         android:id="@+id/button2"
         android:background="@android:color/transparent"
         android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_alignTop="@+id/logo"
-        android:layout_toStartOf="@+id/logo" />
+        android:layout_height="20dp"/>
 
     <WebView
         android:id="@+id/webview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/logo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="112dp" />
 
